@@ -36,3 +36,4 @@ build/
 application.yml
 key.json
 .yml
+.yaml
