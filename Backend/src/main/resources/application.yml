@@ -1,1 +1,32 @@
-
+spring:
+  profiles:
+    active: development
+  cloud:
+    gcp:
+      credentials:
+        location: classpath:key.json
+bucket: example
+directory: media
+subdirectory:
+  news: news
+  plants: plants
+  planting: planting
+  diseases: diseases
+  weeds: weeds
+  pests: pests
+  care: care
+  user: user
+---
+spring:
+  profiles: development
+  cloud:
+    gcp:
+      sql:
+        enabled: false
+---
+spring:
+  profiles: production
+  cloud:
+    gcp:
+      sql:
+        enabled: true

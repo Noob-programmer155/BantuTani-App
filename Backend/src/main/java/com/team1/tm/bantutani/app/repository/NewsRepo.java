@@ -1,2 +1,9 @@
-package com.team1.tm.bantutani.app.repository;public interface NewsRepo {
+package com.team1.tm.bantutani.app.repository;
+
+import com.team1.tm.bantutani.app.model.News;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface NewsRepo extends JpaRepository<News, Long> {
 }
