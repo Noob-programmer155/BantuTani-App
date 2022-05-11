@@ -23,7 +23,7 @@ public class PlantsPlanting {
     private String animation;
     private String image;
     private String video;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable
     private User authorPlantsPlanting;
     @OneToMany(mappedBy = "plantsPlantingTips")

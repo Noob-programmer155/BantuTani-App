@@ -17,7 +17,9 @@ public class Plants {
     private String name;
     @ElementCollection
     private List<String> otherNames;
-    private String plantType;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinTable
+    private PlantTypeImpl plantTypeImpl;
     private String image;
     @Column(length = 500)
     private String shortDescription;
@@ -28,19 +30,19 @@ public class Plants {
     private int minCost;
     private int regionCost; // current cost
     private Date dateUpdateCost;
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     @JoinTable
     private Set<PlantsCare> caringPlants = new LinkedHashSet<>();
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     @JoinTable
     private Set<PlantsPlanting> plantingPlants = new LinkedHashSet<>();
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     @JoinTable
     private Set<PlantsDisease> diseasePlants = new LinkedHashSet<>();
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     @JoinTable
     private Set<PlantsWeeds> weedPlants = new LinkedHashSet<>();
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     @JoinTable
     private Set<PlantsPest> pestPlants = new LinkedHashSet<>();
 
@@ -50,7 +52,7 @@ public class Plants {
     public Plants(Builder builder) {
         this.name = builder.name;
         this.otherNames = builder.otherNames;
-        this.plantType = builder.plantType;
+        this.plantTypeImpl = builder.plantTypeImpl;
         this.shortDescription = builder.shortDescription;
         this.image = builder.image;
         this.characteristic = builder.characteristic;
@@ -81,12 +83,12 @@ public class Plants {
 
     public void setOtherNames(List<String> otherNames) { this.otherNames = otherNames; }
 
-    public String getPlantType() {
-        return plantType;
+    public PlantTypeImpl getPlantType() {
+        return plantTypeImpl;
     }
 
-    public void setPlantType(String plantType) {
-        this.plantType = plantType;
+    public void setPlantType(PlantTypeImpl plantTypeImpl) {
+        this.plantTypeImpl = plantTypeImpl;
     }
 
     public String getShortDescription() {
@@ -227,7 +229,7 @@ public class Plants {
     public static class Builder {
         private String name;
         private List<String> otherNames;
-        private String plantType;
+        private PlantTypeImpl plantTypeImpl;
         private String image;
         private String shortDescription;
         private String characteristic;
@@ -244,8 +246,8 @@ public class Plants {
             this.otherNames = otherNames;
             return this;
         }
-        public Builder plantType(String plantType) {
-            this.plantType = plantType;
+        public Builder plantType(PlantTypeImpl plantTypeImpl) {
+            this.plantTypeImpl = plantTypeImpl;
             return this;
         }
         public Builder image(String image) {

@@ -1,6 +1,8 @@
 package com.team1.tm.bantutani.app.model.other;
 
-public enum Status {
+import org.springframework.security.core.GrantedAuthority;
+
+public enum Status implements GrantedAuthority {
     EXPERTS("Tenaga Ahli"),
     FARMER("Petani"),
     USER("Pelanggan"),
@@ -15,5 +17,10 @@ public enum Status {
 
     public String getLabel() {
         return label;
+    }
+
+    @Override
+    public String getAuthority() {
+        return toString();
     }
 }

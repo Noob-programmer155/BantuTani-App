@@ -1,27 +1,52 @@
 package com.team1.tm.bantutani.app.configuration;
 
+import com.team1.tm.bantutani.app.configuration.security.MainUserService;
+import com.team1.tm.bantutani.app.configuration.security.token.TokenFilter;
+import com.team1.tm.bantutani.app.configuration.security.token.TokenManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 public class Security extends WebSecurityConfigurerAdapter {
+
+    private MainUserService mainUserService;
+    private TokenManager tokenManager;
+    Security(MainUserService mainUserService, TokenManager tokenManager) {
+        this.mainUserService = mainUserService;
+        this.tokenManager = tokenManager;
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        super.configure(auth);
+        auth.userDetailsService(mainUserService).passwordEncoder(new SCryptPasswordEncoder());
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        super.configure(web);
+        web.ignoring().antMatchers("/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+        http.
+                cors().disable().
+                csrf().csrfTokenRepository(new HttpSessionCsrfTokenRepository()).
+                and().
+                requiresChannel().anyRequest().
+                requiresInsecure().
+                and().
+                authorizeRequests().antMatchers("/**").permitAll().
+                anyRequest().authenticated();
+        http.addFilterBefore(new TokenFilter(tokenManager, Arrays.asList("/**")), UsernamePasswordAuthenticationFilter.class);
     }
 }

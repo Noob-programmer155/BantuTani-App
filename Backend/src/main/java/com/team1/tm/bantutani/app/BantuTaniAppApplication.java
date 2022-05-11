@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableCaching
 @EnableScheduling
-@EnableJpaRepositories("")
+@EnableJpaRepositories("com.team1.tm.bantutani.app.repository")
 public class BantuTaniAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BantuTaniAppApplication.class, args);

@@ -16,8 +16,8 @@ public class News {
     private String descriptionSummary;
     private Date date;
     private String source;
-    @ElementCollection
-    private List<String> keywords = new LinkedList<>();
+    @ManyToMany(mappedBy = "newsListTags")
+    private List<NewsTags> keywords = new LinkedList<>();
     @ElementCollection
     private List<String> images = new LinkedList<>();
     private String video;
@@ -31,7 +31,6 @@ public class News {
         this.descriptionSummary = build.descriptionSummary;
         this.date = build.date;
         this.source = build.source;
-        this.keywords = build.keywords;
         this.images = build.images;
         this.video = build.video;
     }
@@ -84,14 +83,6 @@ public class News {
         this.source = source;
     }
 
-    public List<String> getKeywords() {
-        return keywords;
-    }
-
-    public void setKeywords(List<String> keywords) {
-        this.keywords = keywords;
-    }
-
     public List<String> getImages() {
         return images;
     }
@@ -108,13 +99,27 @@ public class News {
         this.video = video;
     }
 
+    public List<NewsTags> getKeywords() {
+        return keywords;
+    }
+
+    public void addTag(NewsTags newsTags) {
+        if(this.keywords.contains(newsTags)) return ;
+        this.keywords.add(newsTags);
+        newsTags.addNews(this);
+    }
+    public void removeTag(NewsTags newsTags) {
+        if(!this.keywords.contains(newsTags)) return ;
+        this.keywords.remove(newsTags);
+        newsTags.removeNews(this);
+    }
+
     public static class Builder{
         private String title;
         private String description;
         private String descriptionSummary;
         private Date date;
         private String source;
-        private List<String> keywords = new LinkedList<>();
         private List<String> images = new LinkedList<>();
         private String video;
 
@@ -139,10 +144,6 @@ public class News {
         }
         public Builder source(String source) {
             this.source = source;
-            return this;
-        }
-        public Builder keywords(List<String> keywords) {
-            this.keywords = keywords;
             return this;
         }
         public Builder images(List<String> images) {

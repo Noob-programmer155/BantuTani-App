@@ -18,13 +18,16 @@ public class PlantsPest {
     @GeneratedValue
     private Long id;
     private String name;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinTable
+    private PlantTypePest plantTypePest;
     @ElementCollection
     private List<String> otherNames = new LinkedList<>();
     @Column(length = 500)
     private String description;
     @ElementCollection
     private List<String> images = new LinkedList<>();
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable
     private User authorPlantsPest;
     @OneToMany(mappedBy = "plantsPestCare")
@@ -37,6 +40,7 @@ public class PlantsPest {
 
     public PlantsPest(Builder builder) {
         this.name = builder.name;
+        this.plantTypePest = builder.plantTypePest;
         this.otherNames = builder.otherNames;
         this.description = builder.description;
         this.images = builder.images;
@@ -58,6 +62,14 @@ public class PlantsPest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public PlantTypePest getPlantTypePest() {
+        return plantTypePest;
+    }
+
+    public void setPlantTypePest(PlantTypePest plantTypePest) {
+        this.plantTypePest = plantTypePest;
     }
 
     public List<String> getOtherNames() {
@@ -117,6 +129,7 @@ public class PlantsPest {
 
     public static class Builder {
         private String name;
+        private PlantTypePest plantTypePest;
         private List<String> otherNames;
         private String description;
         private List<String> images;
@@ -124,6 +137,10 @@ public class PlantsPest {
         private List<PlantsCare> plantsCares = new LinkedList<>();
         public Builder name(String name) {
             this.name = name;
+            return this;
+        }
+        public Builder plantTypePest(PlantTypePest plantTypePest) {
+            this.plantTypePest = plantTypePest;
             return this;
         }
         public Builder description(String description) {

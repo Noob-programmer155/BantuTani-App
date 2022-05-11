@@ -23,16 +23,16 @@ public class PlantsCare {
     private String animation;
     private String image;
     private String video;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable
     private User authorPlantsCare;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable
     private PlantsDisease plantsDiseaseCare;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable
     private PlantsWeeds plantsWeedsCare;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable
     private PlantsPest plantsPestCare;
     @OneToMany(mappedBy = "plantsCareTips", orphanRemoval = true)
