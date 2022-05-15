@@ -23,13 +23,13 @@ public class TipsNTrick {
     @Enumerated
     private TypeActivity typeActivity;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name = "AuthorTipsNTrickTable")
     private User authorTipsNTrick;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name = "PlantsCareTipsTable")
     private PlantsCare plantsCareTips;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name = "PlantsPlantingTipsTable")
     private PlantsPlanting plantsPlantingTips;
 
     public TipsNTrick() {

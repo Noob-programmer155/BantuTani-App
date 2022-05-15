@@ -18,7 +18,7 @@ public class Plants {
     @ElementCollection
     private List<String> otherNames;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name="PlantTypeImplTable")
     private PlantTypeImpl plantTypeImpl;
     private String image;
     @Column(length = 500)
@@ -30,20 +30,18 @@ public class Plants {
     private int minCost;
     private int regionCost; // current cost
     private Date dateUpdateCost;
+    @OneToMany(mappedBy = "caringPlants")
+    private List<PlantsCare> cares = new LinkedList<>();
+    @OneToMany(mappedBy = "plantingPlants")
+    private List<PlantsPlanting> planting = new LinkedList<>();
     @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-    @JoinTable
-    private Set<PlantsCare> caringPlants = new LinkedHashSet<>();
-    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-    @JoinTable
-    private Set<PlantsPlanting> plantingPlants = new LinkedHashSet<>();
-    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-    @JoinTable
+    @JoinTable(name = "DiseasePlantsTable")
     private Set<PlantsDisease> diseasePlants = new LinkedHashSet<>();
     @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-    @JoinTable
+    @JoinTable(name = "WeedPlantsTable")
     private Set<PlantsWeeds> weedPlants = new LinkedHashSet<>();
     @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-    @JoinTable
+    @JoinTable(name = "PestPlantsTable")
     private Set<PlantsPest> pestPlants = new LinkedHashSet<>();
 
     public Plants() {
@@ -83,11 +81,11 @@ public class Plants {
 
     public void setOtherNames(List<String> otherNames) { this.otherNames = otherNames; }
 
-    public PlantTypeImpl getPlantType() {
+    public PlantTypeImpl getPlantTypeImpl() {
         return plantTypeImpl;
     }
 
-    public void setPlantType(PlantTypeImpl plantTypeImpl) {
+    public void setPlantTypeImpl(PlantTypeImpl plantTypeImpl) {
         this.plantTypeImpl = plantTypeImpl;
     }
 
@@ -151,34 +149,20 @@ public class Plants {
         this.dateUpdateCost = dateUpdateCost;
     }
 
-    public Set<PlantsCare> getCaringPlants() {
-        return caringPlants;
+    public List<PlantsCare> getCares() {
+        return cares;
     }
 
-    public void addCare(PlantsCare plantsCare) {
-        if(this.caringPlants.contains(plantsCare)) return ;
-        this.caringPlants.add(plantsCare);
-        plantsCare.addPlants(this);
-    }
-    public void removeCare(PlantsCare plantsCare) {
-        if(!this.caringPlants.contains(plantsCare)) return ;
-        this.caringPlants.remove(plantsCare);
-        plantsCare.removePlants(this);
+    public void setCares(List<PlantsCare> cares) {
+        this.cares = cares;
     }
 
-    public Set<PlantsPlanting> getPlantingPlants() {
-        return plantingPlants;
+    public List<PlantsPlanting> getPlanting() {
+        return planting;
     }
 
-    public void addPlanting(PlantsPlanting plantsPlanting) {
-        if(this.plantingPlants.contains(plantsPlanting)) return ;
-        this.plantingPlants.add(plantsPlanting);
-        plantsPlanting.addPlants(this);
-    }
-    public void removePlanting(PlantsPlanting plantsPlanting) {
-        if(!this.plantingPlants.contains(plantsPlanting)) return ;
-        this.plantingPlants.remove(plantsPlanting);
-        plantsPlanting.removePlants(this);
+    public void setPlanting(List<PlantsPlanting> planting) {
+        this.planting = planting;
     }
 
     public Set<PlantsDisease> getDiseasePlants() {

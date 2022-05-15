@@ -28,11 +28,12 @@ public class TokenManager {
         privateKey = keyPair.getPrivate();
     }
 
-    private String createToken(String username, String email, Status status) {
+    private String createToken(String username, Long id, String email, Status status) {
         Date date = new Date();
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("email", email);
         claims.put("role", status);
+        claims.put("idx",id);
         return Jwts.builder().
                 setClaims(claims).
                 setIssuedAt(date).
@@ -41,9 +42,9 @@ public class TokenManager {
                 compact();
     }
 
-    public void bindToken(String username, String email, Status status, HttpServletResponse response) {
-        String token = createToken(username, email, status);
-        response.addHeader("S_TOKEN",token);
+    public void bindToken(String username, Long id, String email, Status status, HttpServletResponse response) {
+        String token = createToken(username, id, email, status);
+        response.addHeader("S_TOKEN", "Bearer "+token);
     }
 
     public Authentication getAuth(String token) {
@@ -56,7 +57,7 @@ public class TokenManager {
     public String resolveToken(HttpServletRequest request) {
         String token = request.getHeader("S_TOKEN");
         if(token != null)
-            return token;
+            return token.substring(7);
         else
             throw new RuntimeException("Credential's Failed");
     }

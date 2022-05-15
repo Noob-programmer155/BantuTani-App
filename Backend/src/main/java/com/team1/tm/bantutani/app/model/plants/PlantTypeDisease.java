@@ -1,5 +1,7 @@
 package com.team1.tm.bantutani.app.model.plants;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.team1.tm.bantutani.app.model.Plants;
 
 import javax.persistence.*;
@@ -7,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class)
 public class PlantTypeDisease implements PlantType{
     @Id
     @GeneratedValue

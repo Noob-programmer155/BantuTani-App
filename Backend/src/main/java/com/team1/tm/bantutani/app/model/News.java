@@ -1,23 +1,30 @@
 package com.team1.tm.bantutani.app.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class)
 public class News {
     @Id
     @GeneratedValue
     private Long id;
     private String title;
-    @Column(length=5000000)
+    @Column(length = 5000000)
     private String description;
+    @Column(length = 20000)
     private String descriptionSummary;
     private Date date;
     private String source;
     @ManyToMany(mappedBy = "newsListTags")
-    private List<NewsTags> keywords = new LinkedList<>();
+    private Set<NewsTags> keywords = new LinkedHashSet<>();
     @ElementCollection
     private List<String> images = new LinkedList<>();
     private String video;
@@ -99,7 +106,7 @@ public class News {
         this.video = video;
     }
 
-    public List<NewsTags> getKeywords() {
+    public Set<NewsTags> getKeywords() {
         return keywords;
     }
 

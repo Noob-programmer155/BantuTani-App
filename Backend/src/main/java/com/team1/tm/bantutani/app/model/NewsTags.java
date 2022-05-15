@@ -1,10 +1,16 @@
 package com.team1.tm.bantutani.app.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class)
 public class NewsTags {
     @Id
     @GeneratedValue
@@ -12,8 +18,8 @@ public class NewsTags {
     @Column(unique = true,nullable = false)
     private String name;
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinTable
-    private List<News> newsListTags = new LinkedList<>();
+    @JoinTable(name = "NewsListTagsTable")
+    private Set<News> newsListTags = new LinkedHashSet<>();
 
     public Long getId() {
         return id;
@@ -31,7 +37,7 @@ public class NewsTags {
         this.name = name;
     }
 
-    public List<News> getNewsListTags() {
+    public Set<News> getNewsListTags() {
         return newsListTags;
     }
 

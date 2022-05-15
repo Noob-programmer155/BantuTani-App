@@ -24,12 +24,13 @@ public class PlantsPlanting {
     private String image;
     private String video;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name="AuthorPlantsPlantingTable")
     private User authorPlantsPlanting;
-    @OneToMany(mappedBy = "plantsPlantingTips")
+    @OneToMany(mappedBy = "PlantsPlantingTips")
     private List<TipsNTrick> tipsNTricks = new LinkedList<>();
-    @ManyToMany(mappedBy = "plantingPlants")
-    private Set<Plants> plants = new LinkedHashSet<>();
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinTable(name = "PlantingPlantsTable")
+    private Plants plantingPlants;
 
     public PlantsPlanting() {
     }
@@ -41,6 +42,7 @@ public class PlantsPlanting {
         this.video = builder.video;
         this.authorPlantsPlanting = builder.authorPlantsPlanting;
         this.tipsNTricks = builder.tipsNTricks;
+        this.plantingPlants = builder.plants;
     }
 
     public Long getId() {
@@ -95,19 +97,12 @@ public class PlantsPlanting {
         this.tipsNTricks = tipsNTricks;
     }
 
-    public Set<Plants> getPlants() {
-        return plants;
+    public Plants getPlantingPlants() {
+        return plantingPlants;
     }
 
-    public void addPlants(Plants plants) {
-        if(this.plants.contains(plants)) return ;
-        this.plants.add(plants);
-        plants.addPlanting(this);
-    }
-    public void removePlants(Plants plants) {
-        if(!this.plants.contains(plants)) return ;
-        this.plants.remove(plants);
-        plants.removePlanting(this);
+    public void setPlantingPlants(Plants plantingPlants) {
+        this.plantingPlants = plantingPlants;
     }
 
     public static class Builder {
@@ -117,6 +112,7 @@ public class PlantsPlanting {
         private String video;
         private User authorPlantsPlanting;
         private List<TipsNTrick> tipsNTricks = new LinkedList<>();
+        private Plants plants;
         public Builder description(String description) {
             this.description = description;
             return this;
@@ -143,6 +139,10 @@ public class PlantsPlanting {
         }
         public Builder addTipsNTrick(TipsNTrick tipsNTrick) {
             this.tipsNTricks.add(tipsNTrick);
+            return this;
+        }
+        public Builder plants(Plants plants) {
+            this.plants = plants;
             return this;
         }
         public PlantsPlanting build() {

@@ -24,21 +24,22 @@ public class PlantsCare {
     private String image;
     private String video;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name = "AuthorPlantsCareTable")
     private User authorPlantsCare;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name = "PlantsDiseaseCareTable")
     private PlantsDisease plantsDiseaseCare;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name = "PlantsWeedsCareTable")
     private PlantsWeeds plantsWeedsCare;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name = "PlantsPestCareTable")
     private PlantsPest plantsPestCare;
     @OneToMany(mappedBy = "plantsCareTips", orphanRemoval = true)
     private List<TipsNTrick> tipsNTricks = new LinkedList<>();
-    @ManyToMany(mappedBy = "caringPlants")
-    private Set<Plants> plant = new LinkedHashSet<>();
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinTable(name = "PlantsCaringTable")
+    private Plants caringPlants;
 
     public PlantsCare() {}
 
@@ -52,6 +53,7 @@ public class PlantsCare {
         this.plantsDiseaseCare = builder.plantsDiseaseCare;
         this.plantsWeedsCare = builder.plantsWeedsCare;
         this.plantsPestCare = builder.plantsPestCare;
+        this.caringPlants = builder.plants;
     }
 
     public Long getId() {
@@ -136,19 +138,12 @@ public class PlantsCare {
 
     public void setTipsNTricks(List<TipsNTrick> tipsNTricks) { this.tipsNTricks = tipsNTricks; }
 
-    public Set<Plants> getPlant() {
-        return plant;
+    public Plants getCaringPlants() {
+        return caringPlants;
     }
 
-    public void addPlants(Plants plants) {
-        if(this.plant.contains(plants)) return ;
-        this.plant.add(plants);
-        plants.addCare(this);
-    }
-    public void removePlants(Plants plants) {
-        if(!this.plant.contains(plants)) return ;
-        this.plant.remove(plants);
-        plants.removeCare(this);
+    public void setCaringPlants(Plants caringPlants) {
+        this.caringPlants = caringPlants;
     }
 
     public static class Builder {
@@ -161,6 +156,7 @@ public class PlantsCare {
         private PlantsDisease plantsDiseaseCare;
         private PlantsWeeds plantsWeedsCare;
         private PlantsPest plantsPestCare;
+        private Plants plants;
         public Builder description(String description) {
             this.description = description;
             return this;
@@ -195,6 +191,10 @@ public class PlantsCare {
         }
         public Builder author(User author) {
             this.authorPlantsCare = author;
+            return this;
+        }
+        public Builder plants(Plants plants) {
+            this.plants = plants;
             return this;
         }
         public PlantsCare build() {

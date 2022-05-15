@@ -1,10 +1,14 @@
 package com.team1.tm.bantutani.app.model.plants;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class)
 public class PlantTypePest implements PlantType{
     @Id
     @GeneratedValue

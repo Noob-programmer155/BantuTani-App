@@ -11,14 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 public class Security extends WebSecurityConfigurerAdapter {
-
     private MainUserService mainUserService;
     private TokenManager tokenManager;
     Security(MainUserService mainUserService, TokenManager tokenManager) {
@@ -40,12 +38,12 @@ public class Security extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.
                 cors().disable().
-                csrf().csrfTokenRepository(new HttpSessionCsrfTokenRepository()).
-                and().
+                csrf().disable().
                 requiresChannel().anyRequest().
                 requiresInsecure().
                 and().
-                authorizeRequests().antMatchers("/**").permitAll().
+                authorizeRequests().antMatchers("/actuator").hasAuthority("ADMIN")
+                .antMatchers("/**").permitAll().
                 anyRequest().authenticated();
         http.addFilterBefore(new TokenFilter(tokenManager, Arrays.asList("/**")), UsernamePasswordAuthenticationFilter.class);
     }

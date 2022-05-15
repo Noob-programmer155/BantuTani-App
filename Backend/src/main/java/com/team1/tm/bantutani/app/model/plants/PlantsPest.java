@@ -19,7 +19,7 @@ public class PlantsPest {
     private Long id;
     private String name;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name = "PlantTypePestTable")
     private PlantTypePest plantTypePest;
     @ElementCollection
     private List<String> otherNames = new LinkedList<>();
@@ -28,7 +28,7 @@ public class PlantsPest {
     @ElementCollection
     private List<String> images = new LinkedList<>();
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name = "AuthorPlantsPestTable")
     private User authorPlantsPest;
     @OneToMany(mappedBy = "plantsPestCare")
     private List<PlantsCare> plantsCares = new LinkedList<>();

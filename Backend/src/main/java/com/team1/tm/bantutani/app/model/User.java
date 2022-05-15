@@ -20,7 +20,6 @@ public class User {
     @GeneratedValue
     private Long id;
     @NotEmpty
-    @Column(unique = true)
     private String username;
     @JsonIgnore
     private String password;
