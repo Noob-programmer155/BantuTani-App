@@ -12,4 +12,11 @@ public enum TypeStep {
     public String getLabel() {
         return label;
     }
+
+    public static TypeStep getFromLabel(String label) {
+        for (TypeStep e : values())
+            if (e.getLabel().equalsIgnoreCase(label))
+                return e;
+        throw new IllegalArgumentException(label);
+    }
 }

@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface PlantsCareRepo extends JpaRepository<PlantsCare, Long> {
-
 }

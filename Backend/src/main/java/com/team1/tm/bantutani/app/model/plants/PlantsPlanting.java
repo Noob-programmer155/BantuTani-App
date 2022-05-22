@@ -26,7 +26,7 @@ public class PlantsPlanting {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable(name="AuthorPlantsPlantingTable")
     private User authorPlantsPlanting;
-    @OneToMany(mappedBy = "PlantsPlantingTips")
+    @OneToMany(mappedBy = "plantsPlantingTips", orphanRemoval = true)
     private List<TipsNTrick> tipsNTricks = new LinkedList<>();
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable(name = "PlantingPlantsTable")
@@ -41,7 +41,6 @@ public class PlantsPlanting {
         this.image = builder.image;
         this.video = builder.video;
         this.authorPlantsPlanting = builder.authorPlantsPlanting;
-        this.tipsNTricks = builder.tipsNTricks;
         this.plantingPlants = builder.plants;
     }
 
@@ -111,7 +110,6 @@ public class PlantsPlanting {
         private String image;
         private String video;
         private User authorPlantsPlanting;
-        private List<TipsNTrick> tipsNTricks = new LinkedList<>();
         private Plants plants;
         public Builder description(String description) {
             this.description = description;
@@ -131,14 +129,6 @@ public class PlantsPlanting {
         }
         public Builder author(User author) {
             this.authorPlantsPlanting = author;
-            return this;
-        }
-        public Builder addTipsNTricks(List<TipsNTrick> tipsNTricks) {
-            this.tipsNTricks.addAll(tipsNTricks);
-            return this;
-        }
-        public Builder addTipsNTrick(TipsNTrick tipsNTrick) {
-            this.tipsNTricks.add(tipsNTrick);
             return this;
         }
         public Builder plants(Plants plants) {

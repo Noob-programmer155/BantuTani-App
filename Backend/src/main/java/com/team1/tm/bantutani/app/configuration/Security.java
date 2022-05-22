@@ -3,8 +3,11 @@ package com.team1.tm.bantutani.app.configuration;
 import com.team1.tm.bantutani.app.configuration.security.MainUserService;
 import com.team1.tm.bantutani.app.configuration.security.token.TokenFilter;
 import com.team1.tm.bantutani.app.configuration.security.token.TokenManager;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,6 +19,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class Security extends WebSecurityConfigurerAdapter {
     private MainUserService mainUserService;
     private TokenManager tokenManager;
@@ -46,5 +50,11 @@ public class Security extends WebSecurityConfigurerAdapter {
                 .antMatchers("/**").permitAll().
                 anyRequest().authenticated();
         http.addFilterBefore(new TokenFilter(tokenManager, Arrays.asList("/**")), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    @Override
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
     }
 }

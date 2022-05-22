@@ -10,19 +10,21 @@ import com.team1.tm.bantutani.app.model.plants.PlantsCare;
 import com.team1.tm.bantutani.app.model.plants.PlantsPlanting;
 import com.team1.tm.bantutani.app.repository.*;
 import com.team1.tm.bantutani.app.service.utils.AnimationServiceUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public class TipsNTrikService extends AnimationServiceUtils {
+public class TipsNTrickService extends AnimationServiceUtils {
     protected TipsNTrickRepo tipsNTrickRepo;
     protected UserRepo userRepo;
     protected PlantsCareRepo plantsCareRepo;
     protected PlantsPlantingRepo plantsPlantingRepo;
     protected StorageConfig storageConfig;
-    public TipsNTrikService(TipsNTrickRepo tipsNTrickRepo, UserRepo userRepo,
-                            PlantsCareRepo plantsCareRepo, PlantsPlantingRepo plantsPlantingRepo,
-                            StorageConfig storageConfig, AnimationRepo animationRepo) {
+    public TipsNTrickService(TipsNTrickRepo tipsNTrickRepo, UserRepo userRepo,
+                             PlantsCareRepo plantsCareRepo, PlantsPlantingRepo plantsPlantingRepo,
+                             StorageConfig storageConfig, AnimationRepo animationRepo) {
         super(storageConfig, animationRepo);
         this.tipsNTrickRepo = tipsNTrickRepo;
         this.userRepo = userRepo;
@@ -32,31 +34,21 @@ public class TipsNTrikService extends AnimationServiceUtils {
     }
 
     @Transactional
-    public TipsNTrick addTipsNTrick(TipsNTrickDTO tipsNTrickDTO, Long id) {
+    public TipsNTrick addTipsNTrick(TipsNTrickDTO tipsNTrickDTO) {
         TipsNTrick tipsNTrick = new TipsNTrick.Builder().description(tipsNTrickDTO.getDescription()).
                 animation(tipsNTrickDTO.getAnimation()).
-                typeActivity(TypeActivity.valueOf(tipsNTrickDTO.getTypeActivity())).
-                typeStep(TypeStep.valueOf(tipsNTrickDTO.getTypeStep())).
+                typeActivity(TypeActivity.getFromLabel(tipsNTrickDTO.getTypeActivity())).
+                typeStep(TypeStep.getFromLabel(tipsNTrickDTO.getTypeStep())).
                 name(tipsNTrickDTO.getName()).build();
-        User user = userRepo.findById(id).get();
+        User user = userRepo.findById(tipsNTrickDTO.getAuthorTipsNTrick()).get();
         user.getTipsNTricks().add(tipsNTrick);
         tipsNTrick.setAuthorTipsNTrick(user);
-        if(tipsNTrickDTO.getPlantsCareTips() != null) {
-            PlantsCare plantsCare = plantsCareRepo.findById(tipsNTrickDTO.getPlantsCareTips()).get();
-            plantsCare.getTipsNTricks().add(tipsNTrick);
-            tipsNTrick.setPlantsCareTips(plantsCare);
-        }
-        if(tipsNTrickDTO.getPlantsPlantingTips() != null){
-            PlantsPlanting plantsPlanting = plantsPlantingRepo.findById(tipsNTrickDTO.getPlantsPlantingTips()).get();
-            plantsPlanting.getTipsNTricks().add(tipsNTrick);
-            tipsNTrick.setPlantsPlantingTips(plantsPlanting);
-        }
         return tipsNTrickRepo.save(tipsNTrick);
     }
 
     @Transactional
-    public void updateTipsNTrick(TipsNTrickDTO tipsNTrickDTO, Long id) {
-        TipsNTrick tipsNTrick = tipsNTrickRepo.findById(id).get();
+    public void updateTipsNTrick(TipsNTrickDTO tipsNTrickDTO) {
+        TipsNTrick tipsNTrick = tipsNTrickRepo.findById(tipsNTrickDTO.getId()).get();
         if (tipsNTrickDTO.getDescription() != null)
             tipsNTrick.setDescription(tipsNTrickDTO.getDescription());
         if (tipsNTrickDTO.getAnimation() != null)
@@ -64,9 +56,9 @@ public class TipsNTrikService extends AnimationServiceUtils {
         if (tipsNTrickDTO.getName() != null)
             tipsNTrick.setName(tipsNTrickDTO.getName());
         if (tipsNTrickDTO.getTypeActivity() != null)
-            tipsNTrick.setTypeActivity(TypeActivity.valueOf(tipsNTrickDTO.getTypeActivity()));
+            tipsNTrick.setTypeActivity(TypeActivity.getFromLabel(tipsNTrickDTO.getTypeActivity()));
         if (tipsNTrickDTO.getTypeStep() != null)
-            tipsNTrick.setTypeStep(TypeStep.valueOf(tipsNTrickDTO.getTypeStep()));
+            tipsNTrick.setTypeStep(TypeStep.getFromLabel(tipsNTrickDTO.getTypeStep()));
         tipsNTrickRepo.save(tipsNTrick);
     }
 

@@ -30,7 +30,7 @@ public class PlantsPest {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable(name = "AuthorPlantsPestTable")
     private User authorPlantsPest;
-    @OneToMany(mappedBy = "plantsPestCare")
+    @OneToMany(mappedBy = "plantsPestCare", orphanRemoval = true)
     private List<PlantsCare> plantsCares = new LinkedList<>();
     @ManyToMany(mappedBy = "pestPlants")
     private Set<Plants> plants = new LinkedHashSet<>();

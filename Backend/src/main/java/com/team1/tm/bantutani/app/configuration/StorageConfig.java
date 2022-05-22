@@ -37,7 +37,9 @@ public class StorageConfig {
         PEST(subPathConfigurations.getPests()),
         CARE(subPathConfigurations.getCare()),
         USER(subPathConfigurations.getUser()),
-        ANIMATION("animation");
+        ANIMATION("animation"),
+        AVATAR("avatar");
+
 
         private String dirname;
         SubDir(String dirname) {

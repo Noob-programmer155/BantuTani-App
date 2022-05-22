@@ -19,6 +19,13 @@ public enum Status implements GrantedAuthority {
         return label;
     }
 
+    public static Status getFromLabel(String label) {
+        for (Status e : values())
+            if (e.getLabel().equalsIgnoreCase(label))
+                return e;
+        throw new IllegalArgumentException(label);
+    }
+
     @Override
     public String getAuthority() {
         return toString();

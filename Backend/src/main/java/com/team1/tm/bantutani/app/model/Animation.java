@@ -1,6 +1,9 @@
 package com.team1.tm.bantutani.app.model;
 
+import com.team1.tm.bantutani.app.model.other.AnimationType;
+
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -10,6 +13,8 @@ public class Animation {
     @GeneratedValue
     private Long id;
     private String filename;
+    @Enumerated
+    private AnimationType animationType;
 
     public Long getId() {
         return id;
@@ -25,5 +30,13 @@ public class Animation {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public AnimationType getAnimationType() {
+        return animationType;
+    }
+
+    public void setAnimationType(AnimationType animationType) {
+        this.animationType = animationType;
     }
 }

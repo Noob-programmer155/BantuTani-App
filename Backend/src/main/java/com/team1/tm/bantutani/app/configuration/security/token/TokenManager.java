@@ -18,8 +18,8 @@ import java.util.Date;
 
 @Component
 public class TokenManager {
-    private long time = 86400000*7;
-    private PrivateKey privateKey;
+    private static long time = 86400000*7;
+    private static PrivateKey privateKey;
     @Scheduled(fixedRate = 86400000*7)
     private void generateToken() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -28,7 +28,7 @@ public class TokenManager {
         privateKey = keyPair.getPrivate();
     }
 
-    private String createToken(String username, Long id, String email, Status status) {
+    private static String createToken(String username, Long id, String email, Status status) {
         Date date = new Date();
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("email", email);
@@ -42,9 +42,9 @@ public class TokenManager {
                 compact();
     }
 
-    public void bindToken(String username, Long id, String email, Status status, HttpServletResponse response) {
+    public static void bindToken(String username, Long id, String email, Status status, HttpServletResponse response) {
         String token = createToken(username, id, email, status);
-        response.addHeader("S_TOKEN", "Bearer "+token);
+        response.addHeader("Authorization", "Bearer "+token);
     }
 
     public Authentication getAuth(String token) {
@@ -55,7 +55,7 @@ public class TokenManager {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String token = request.getHeader("S_TOKEN");
+        String token = request.getHeader("Authorization");
         if(token != null)
             return token.substring(7);
         else

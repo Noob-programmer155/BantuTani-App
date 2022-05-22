@@ -14,4 +14,11 @@ public enum CareType {
     public String getLabel() {
         return label;
     }
+
+    public static CareType getFromLabel(String label) {
+        for (CareType e : values())
+            if (e.getLabel().equalsIgnoreCase(label))
+                return e;
+        throw new IllegalArgumentException(label);
+    }
 }

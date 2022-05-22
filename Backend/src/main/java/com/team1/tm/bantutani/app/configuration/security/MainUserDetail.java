@@ -12,12 +12,14 @@ public class MainUserDetail implements UserDetails, OAuth2User {
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attribute;
     private String password;
+    private boolean disable;
 
     public MainUserDetail(Builder builder) {
         this.name = builder.username;
         this.authorities = builder.authorities;
         this.attribute = builder.attributes;
         this.password = builder.password;
+        this.disable = builder.disable;
     }
 
     @Override
@@ -47,22 +49,22 @@ public class MainUserDetail implements UserDetails, OAuth2User {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return !disable;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !disable;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return !disable;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !disable;
     }
 
     public static class Builder {
@@ -70,6 +72,7 @@ public class MainUserDetail implements UserDetails, OAuth2User {
         private Collection<? extends GrantedAuthority> authorities;
         private Map<String, Object> attributes;
         private String password;
+        private boolean disable;
         public Builder name(String username) {
             this.username = username;
             return this;
@@ -84,6 +87,10 @@ public class MainUserDetail implements UserDetails, OAuth2User {
         }
         public Builder password(String password) {
             this.password = password;
+            return this;
+        }
+        public Builder disable(boolean disable) {
+            this.disable = disable;
             return this;
         }
         public MainUserDetail build() {

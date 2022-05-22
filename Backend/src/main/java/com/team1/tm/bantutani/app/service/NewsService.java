@@ -3,6 +3,8 @@ package com.team1.tm.bantutani.app.service;
 import com.team1.tm.bantutani.app.configuration.StorageConfig;
 import com.team1.tm.bantutani.app.dto.NewsDTO;
 import com.team1.tm.bantutani.app.dto.TagsDTO;
+import com.team1.tm.bantutani.app.dto.response.NewsResponseDTO;
+import com.team1.tm.bantutani.app.dto.response.NewsResponseMinDTO;
 import com.team1.tm.bantutani.app.model.News;
 import com.team1.tm.bantutani.app.model.NewsTags;
 import com.team1.tm.bantutani.app.repository.NewsRepo;
@@ -10,6 +12,7 @@ import com.team1.tm.bantutani.app.repository.NewsTagsRepo;
 import com.team1.tm.bantutani.app.repository.UserRepo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -36,51 +39,55 @@ public class NewsService {
         this.newsTagsRepo = newsTagsRepo;
     }
 
-    @Cacheable(value = "allMediaNews")
+    @Cacheable(value = "allMediaNews", key = "#name")
     public byte[] getMedia (String name) {
         return storageConfig.getMedia(name, StorageConfig.SubDir.NEWS);
     }
 
-    @Cacheable(value = "allNews")
-    public List<NewsDTO> getAllNews (Date start, Date end,int page, int size) {
+    @Cacheable(value = "allNews", key = "{#start,#end}")
+    public List<NewsResponseMinDTO> getAllNews (Date start, Date end,int page, int size) {
         return newsRepo.getAllNews(start, end, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date")))
-                .stream().map(item ->
-                new NewsDTO.Builder().
+                .map(item ->
+                new NewsResponseMinDTO.Builder().
                         id(item.getId()).
                         title(item.getTitle()).
-                        imagesResponse(item.getImages()).
-                        keywordsResponse(item.getKeywords().stream().map(it -> it.getName()).collect(Collectors.toList())).
+                        images(item.getImages().get(0)).
                         video(item.getVideo()).
                         date(item.getDate()).
-                        description(item.getDescription()).
-                        descriptionSummary(item.getDescriptionSummary()).
-                        source(item.getSource()).build()).collect(Collectors.toList());
+                        build()).getContent();
     }
 
-    @Cacheable(value = "searchTitle")
+    @Cacheable(value = "searchTitle", key = "#title")
     public List<String> getSearchTitles(String title, int size) {
         return newsRepo.findAllDistinctByTitleContainingOrKeywordsName(title, title, PageRequest.of(0,size)).map(item -> item.getTitle()).getContent();
     }
 
     @Cacheable(value = "newsCache")
-    public List<NewsDTO> getNews(String title, int page, int size) {
+    public List<NewsResponseMinDTO> getNews(String title, int page, int size) {
         return newsRepo.findDistinctByTitleContainingOrKeywordsName(title, title,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.ASC,"title"))).map(item ->
-                new NewsDTO.Builder().
+                new NewsResponseMinDTO.Builder().
                         id(item.getId()).
                         title(item.getTitle()).
-                        imagesResponse(item.getImages()).
-                        keywordsResponse(item.getKeywords().stream().map(it -> it.getName()).collect(Collectors.toList())).
+                        images(item.getImages().get(0)).
                         video(item.getVideo()).
                         date(item.getDate()).
-                        description(item.getDescription()).
-                        descriptionSummary(item.getDescriptionSummary()).
-                        source(item.getSource()).build()).getContent();
+                        build()).getContent();
     }
 
-    @Cacheable(value = "tagsCache")
-    public List<TagsDTO> getTags(String name) {
-        return newsTagsRepo.findByNameContaining(name,PageRequest.of(0,10)).map(item -> {
+    @Cacheable(value = "mainNewsCache")
+    public NewsResponseDTO getNews(Long id) {
+        return newsRepo.findById(id).map(item ->
+                new NewsResponseDTO.Builder().id(item.getId()).description(item.getDescription()).
+                        descriptionSummary(item.getDescriptionSummary()).source(item.getSource()).
+                        date(item.getDate()).images(item.getImages()).
+                        keywords(item.getKeywords().stream().map(it -> it.getName()).collect(Collectors.toList())).
+                        title(item.getTitle()).video(item.getVideo()).build()).get();
+    }
+
+    @Cacheable(value = "tagsCache", key = "#name")
+    public List<TagsDTO> getTags(String name, int size) {
+        return newsTagsRepo.findByNameContaining(name,PageRequest.of(0,size)).map(item -> {
             TagsDTO tagsDTO =  new TagsDTO();
             tagsDTO.setId(item.getId());
             tagsDTO.setName(item.getName());
@@ -89,7 +96,6 @@ public class NewsService {
     }
 
     @Transactional
-    @CacheEvict(value = {"allNews","newsCache","searchTitle","tagsCache"},allEntries = true)
     public void addNews(NewsDTO newsDTO, List<String> newTags) {
         News news = new News.Builder().date(new Date(new java.util.Date().getTime())).
                 title(newsDTO.getTitle()).
@@ -128,7 +134,11 @@ public class NewsService {
     }
 
     @Transactional
-    @CacheEvict(value = {"allNews","newsCache","searchTitle","tagsCache"},allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "mainNewsCache", key = "#newsDTO.getId", condition = "#newsDTO.getId!=null"),
+            @CacheEvict(value = {"searchTitle"}, key = "#newsDTO.getTitle", condition="#newsDTO.getTitle!=null"),
+            @CacheEvict(value = {"newsCache","allNews","tagsCache"},allEntries = true)
+    })
     public void updateNews(NewsDTO newsDTO, List<String> newTags) {
         News news = newsRepo.findById(newsDTO.getId()).get();
         if (newsDTO.getTitle() != null && !newsDTO.getTitle().isBlank())
@@ -166,12 +176,14 @@ public class NewsService {
     }
 
     @Transactional
-    @CacheEvict(value = {"allNews","newsCache","searchTitle","allMediaNews"},allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "mainNewsCache", key = "#id", condition = "#id!=null"),
+            @CacheEvict(value = {"allNews","newsCache"},allEntries = true)
+    })
     public void updateImage(MultipartFile image, String imgName, Long id, boolean delete) {
         News news = newsRepo.findById(id).get();
         if (delete) {
-            if (storageConfig.deleteMedia(imgName, StorageConfig.SubDir.NEWS))
-                news.getImages().remove(imgName);
+            deleteImage(imgName, news);
         } else {
 //            news.getImages().add("example"+ UUID.randomUUID().toString()+".jpg");
             news.getImages().add(storageConfig.addMedia(image, "newsImages", StorageConfig.SubDir.NEWS));
@@ -179,18 +191,38 @@ public class NewsService {
         newsRepo.save(news);
     }
 
+    @CacheEvict(value = "allMediaNews", key = "#imgName", condition = "#imgName!=null")
+    public void deleteImage(String imgName, News news){
+        if (storageConfig.deleteMedia(imgName, StorageConfig.SubDir.NEWS))
+            news.getImages().remove(imgName);
+    }
+
     @Transactional
-    @CacheEvict(value = {"allNews","newsCache","searchTitle","tagsCache","allMediaNews"},allEntries = true)
+    @CacheEvict(value = {"tagsCache","mainNewsCache"}, allEntries = true)
+    public void deleteTags(Long id) {
+        newsTagsRepo.deleteById(id);
+    }
+
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "mainNewsCache", key = "#id", condition = "#id!=null"),
+            @CacheEvict(value = {"allNews","newsCache","searchTitle","tagsCache"},allEntries = true)
+    })
     public void deleteNews(Long id) {
         News news = newsRepo.findById(id).get();
         news.getImages().forEach(item -> {
-            if (!storageConfig.deleteMedia(item, StorageConfig.SubDir.NEWS))
-                throw new RuntimeException("failed delete news, something wrong with file images, please try again");
+            deleteImage(item);
         });
         new LinkedHashSet<>(news.getKeywords()).forEach(item -> {
             item.removeNews(news);
         });
         News news1 = newsRepo.save(news);
         newsRepo.delete(news1);
+    }
+
+    @CacheEvict(value = "allMediaNews", key = "#imgName", condition = "#imgName!=null")
+    public void deleteImage(String imgName){
+        if (!storageConfig.deleteMedia(imgName, StorageConfig.SubDir.NEWS))
+            throw new RuntimeException("failed delete news, something wrong with file images, please try again");
     }
 }

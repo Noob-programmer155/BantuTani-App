@@ -20,6 +20,7 @@ public class User {
     @GeneratedValue
     private Long id;
     @NotEmpty
+    @Column(unique = true)
     private String username;
     @JsonIgnore
     private String password;
@@ -32,11 +33,12 @@ public class User {
     private String clientId;
     @Enumerated
     private Status status;
+    private boolean disable;
     @OneToMany(mappedBy = "authorPlantsCare")
-    private List<PlantsCare> plant = new LinkedList<>();
+    private List<PlantsCare> care = new LinkedList<>();
     @OneToMany(mappedBy = "authorPlantsPlanting")
-    private List<PlantsPlanting> care = new LinkedList<>();
-    @OneToMany(mappedBy = "authorPlantsDisease")
+    private List<PlantsPlanting> plantings = new LinkedList<>();
+    @OneToMany(mappedBy = "authorPlantsAttribute")
     private List<PlantsDisease> diseases = new LinkedList<>();
     @OneToMany(mappedBy = "authorPlantsWeeds")
     private List<PlantsWeeds> weeds = new LinkedList<>();
@@ -122,20 +124,28 @@ public class User {
         this.status = status;
     }
 
-    public List<PlantsCare> getPlant() {
-        return plant;
+    public boolean isDisable() {
+        return disable;
     }
 
-    public void setPlant(List<PlantsCare> plant) {
-        this.plant = plant;
+    public void setDisable(boolean disable) {
+        this.disable = disable;
     }
 
-    public List<PlantsPlanting> getCare() {
+    public List<PlantsCare> getCare() {
         return care;
     }
 
-    public void setCare(List<PlantsPlanting> care) {
+    public void setCare(List<PlantsCare> care) {
         this.care = care;
+    }
+
+    public List<PlantsPlanting> getPlantings() {
+        return plantings;
+    }
+
+    public void setPlantings(List<PlantsPlanting> plantings) {
+        this.plantings = plantings;
     }
 
     public List<PlantsDisease> getDiseases() {

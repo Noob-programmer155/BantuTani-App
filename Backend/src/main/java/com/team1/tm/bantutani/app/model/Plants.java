@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.team1.tm.bantutani.app.model.plants.*;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.*;
 
 @Entity
@@ -20,19 +19,17 @@ public class Plants {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable(name="PlantTypeImplTable")
     private PlantTypeImpl plantTypeImpl;
-    private String image;
+    @ElementCollection
+    private List<String> image = new LinkedList<>();
     @Column(length = 500)
     private String shortDescription;
     @Column(length = 5000000)
     private String characteristic;
-    private int stableCost; // mean
-    private int maxCost;
-    private int minCost;
-    private int regionCost; // current cost
-    private Date dateUpdateCost;
-    @OneToMany(mappedBy = "caringPlants")
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    private CostPlant plantsCost;
+    @OneToMany(mappedBy = "caringPlants", orphanRemoval = true)
     private List<PlantsCare> cares = new LinkedList<>();
-    @OneToMany(mappedBy = "plantingPlants")
+    @OneToMany(mappedBy = "plantingPlants", orphanRemoval = true)
     private List<PlantsPlanting> planting = new LinkedList<>();
     @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     @JoinTable(name = "DiseasePlantsTable")
@@ -54,11 +51,6 @@ public class Plants {
         this.shortDescription = builder.shortDescription;
         this.image = builder.image;
         this.characteristic = builder.characteristic;
-        this.stableCost = builder.stableCost;
-        this.maxCost = builder.maxCost;
-        this.minCost = builder.minCost;
-        this.regionCost = builder.regionCost;
-        this.dateUpdateCost = builder.dateUpdateCost;
     }
 
     public Long getId() {
@@ -105,48 +97,16 @@ public class Plants {
         this.characteristic = characteristic;
     }
 
-    public String getImage() { return image; }
+    public List<String> getImage() { return image; }
 
-    public void setImage(String image) { this.image = image; }
+    public void setImage(List<String> image) { this.image = image; }
 
-    public int getStableCost() {
-        return stableCost;
+    public CostPlant getPlantsCost() {
+        return plantsCost;
     }
 
-    public void setStableCost(int stableCost) {
-        this.stableCost = stableCost;
-    }
-
-    public int getMaxCost() {
-        return maxCost;
-    }
-
-    public void setMaxCost(int maxCost) {
-        this.maxCost = maxCost;
-    }
-
-    public int getMinCost() {
-        return minCost;
-    }
-
-    public void setMinCost(int minCost) {
-        this.minCost = minCost;
-    }
-
-    public int getRegionCost() {
-        return regionCost;
-    }
-
-    public void setRegionCost(int regionCost) {
-        this.regionCost = regionCost;
-    }
-
-    public Date getDateUpdateCost() {
-        return dateUpdateCost;
-    }
-
-    public void setDateUpdateCost(Date dateUpdateCost) {
-        this.dateUpdateCost = dateUpdateCost;
+    public void setPlantsCost(CostPlant plantsCost) {
+        this.plantsCost = plantsCost;
     }
 
     public List<PlantsCare> getCares() {
@@ -214,14 +174,9 @@ public class Plants {
         private String name;
         private List<String> otherNames;
         private PlantTypeImpl plantTypeImpl;
-        private String image;
+        private List<String> image;
         private String shortDescription;
         private String characteristic;
-        private int stableCost; // mean
-        private int maxCost;
-        private int minCost;
-        private int regionCost; // current cost
-        private Date dateUpdateCost;
         public Builder name(String name) {
             this.name = name;
             return this;
@@ -234,7 +189,7 @@ public class Plants {
             this.plantTypeImpl = plantTypeImpl;
             return this;
         }
-        public Builder image(String image) {
+        public Builder image(List<String> image) {
             this.image = image;
             return this;
         }
@@ -244,26 +199,6 @@ public class Plants {
         }
         public Builder characteristic(String characteristic) {
             this.characteristic = characteristic;
-            return this;
-        }
-        public Builder stableCost(int stableCost) {
-            this.stableCost = stableCost;
-            return this;
-        }
-        public Builder maxCost(int maxCost) {
-            this.maxCost = maxCost;
-            return this;
-        }
-        public Builder minCost(int minCost) {
-            this.minCost = minCost;
-            return this;
-        }
-        public Builder regionCost(int regionCost) {
-            this.regionCost = regionCost;
-            return this;
-        }
-        public Builder dateUpdateCost(Date dateUpdateCost) {
-            this.dateUpdateCost = dateUpdateCost;
             return this;
         }
         public Plants build() {

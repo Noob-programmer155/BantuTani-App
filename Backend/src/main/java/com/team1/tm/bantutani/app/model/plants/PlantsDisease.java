@@ -27,8 +27,8 @@ public class PlantsDisease {
     private List<String> images = new LinkedList<>();
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable(name = "AuthorPlantsDiseaseTable")
-    private User authorPlantsDisease;
-    @OneToMany(mappedBy = "plantsDiseaseCare")
+    private User authorPlantsAttribute;
+    @OneToMany(mappedBy = "plantsDiseaseCare", orphanRemoval = true)
     private List<PlantsCare> plantsCares = new LinkedList<>();
     @ManyToMany(mappedBy = "diseasePlants")
     private Set<Plants> plants = new LinkedHashSet<>();
@@ -42,7 +42,7 @@ public class PlantsDisease {
         this.otherNames = builder.otherNames;
         this.description = builder.description;
         this.images = builder.images;
-        this.authorPlantsDisease = builder.authorPlantsDisease;
+        this.authorPlantsAttribute = builder.authorPlantsAttribute;
         this.plantsCares = builder.plantsCares;
     }
 
@@ -92,14 +92,12 @@ public class PlantsDisease {
 
     public void setImages(List<String> images) { this.images = images; }
 
-    public Set<Plants> getPlant() { return plants; }
-
-    public User getAuthorPlantsDisease() {
-        return authorPlantsDisease;
+    public User getAuthorPlantsAttribute() {
+        return authorPlantsAttribute;
     }
 
-    public void setAuthorPlantsDisease(User authorPlantsDisease) {
-        this.authorPlantsDisease = authorPlantsDisease;
+    public void setAuthorPlantsDisease(User authorPlantsAttribute) {
+        this.authorPlantsAttribute = authorPlantsAttribute;
     }
 
     public List<PlantsCare> getPlantsCares() {
@@ -131,7 +129,7 @@ public class PlantsDisease {
         private List<String> otherNames;
         private String description;
         private List<String> images;
-        private User authorPlantsDisease;
+        private User authorPlantsAttribute;
         private List<PlantsCare> plantsCares = new LinkedList<>();
         public Builder name(String name) {
             this.name = name;
@@ -146,7 +144,7 @@ public class PlantsDisease {
             return this;
         }
         public Builder author(User author) {
-            this.authorPlantsDisease = author;
+            this.authorPlantsAttribute = author;
             return this;
         }
         public Builder addOtherNames(List<String> otherNames) {

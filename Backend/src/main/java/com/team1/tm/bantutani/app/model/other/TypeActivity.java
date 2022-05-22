@@ -18,4 +18,11 @@ public enum TypeActivity {
     public String getLabel() {
         return label;
     }
+
+    public static TypeActivity getFromLabel(String label) {
+        for (TypeActivity e : values())
+            if (e.getLabel().equalsIgnoreCase(label))
+                return e;
+        throw new IllegalArgumentException(label);
+    }
 }

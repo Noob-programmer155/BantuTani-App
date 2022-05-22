@@ -25,6 +25,7 @@ public class MainUserService implements UserDetailsService {
             return new MainUserDetail.Builder().
                     name(usr.getUsername()).
                     password(usr.getPassword()).
+                    disable(usr.isDisable()).
                     authorities(Arrays.asList(usr.getStatus())).build();
         }
         return null;

@@ -13,25 +13,11 @@ public class NewsDTO {
     private Date date;
     private String source;
     private List<Long> keywords;
-    private List<String> keywordsResponse;
     private List<String> keywordsRequest;
     private List<MultipartFile> images;
-    private List<String> imagesResponse;
     private String video;
 
     public NewsDTO() {
-    }
-
-    public NewsDTO(Builder builder) {
-        this.id = builder.id;
-        this.title = builder.title;
-        this.description = builder.description;
-        this.descriptionSummary = builder.descriptionSummary;
-        this.date = builder.date;
-        this.source = builder.source;
-        this.keywordsResponse = builder.keywordsResponse;
-        this.imagesResponse = builder.imagesResponse;
-        this.video = builder.video;
     }
 
     public Long getId() {
@@ -90,14 +76,6 @@ public class NewsDTO {
         this.keywords = keywords;
     }
 
-    public List<String> getKeywordsResponse() {
-        return keywordsResponse;
-    }
-
-    public void setKeywordsResponse(List<String> keywordsResponse) {
-        this.keywordsResponse = keywordsResponse;
-    }
-
     public List<String> getKeywordsRequest() {
         return keywordsRequest;
     }
@@ -114,70 +92,11 @@ public class NewsDTO {
         this.images = images;
     }
 
-    public List<String> getImagesResponse() {
-        return imagesResponse;
-    }
-
-    public void setImagesResponse(List<String> imagesResponse) {
-        this.imagesResponse = imagesResponse;
-    }
-
     public String getVideo() {
         return video;
     }
 
     public void setVideo(String video) {
         this.video = video;
-    }
-
-    public static class Builder {
-        private Long id;
-        private String title;
-        private String description;
-        private String descriptionSummary;
-        private Date date;
-        private String source;
-        private List<String> keywordsResponse;
-        private List<String> imagesResponse;
-        private String video;
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-        public Builder title(String title) {
-            this.title = title;
-            return this;
-        }
-        public Builder description(String description) {
-            this.description = description;
-            return this;
-        }
-        public Builder descriptionSummary(String descriptionSummary) {
-            this.descriptionSummary = descriptionSummary;
-            return this;
-        }
-        public Builder date(Date date) {
-            this.date = date;
-            return this;
-        }
-        public Builder source(String source) {
-            this.source = source;
-            return this;
-        }
-        public Builder keywordsResponse(List<String> keywordsResponse) {
-            this.keywordsResponse = keywordsResponse;
-            return this;
-        }
-        public Builder imagesResponse(List<String> imagesResponse) {
-            this.imagesResponse = imagesResponse;
-            return this;
-        }
-        public Builder video(String video) {
-            this.video = video;
-            return this;
-        }
-        public NewsDTO build() {
-            return new NewsDTO(this);
-        }
     }
 }

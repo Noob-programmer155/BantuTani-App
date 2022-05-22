@@ -1,19 +1,29 @@
 package com.team1.tm.bantutani.app.service.plants;
 
 import com.team1.tm.bantutani.app.configuration.StorageConfig;
+import com.team1.tm.bantutani.app.dto.PlantAttributeDTO;
 import com.team1.tm.bantutani.app.dto.PlantsCareDTO;
+import com.team1.tm.bantutani.app.dto.PlantsPlantingDTO;
+import com.team1.tm.bantutani.app.dto.TipsNTrickDTO;
+import com.team1.tm.bantutani.app.dto.response.PlantsCareResponseDTO;
+import com.team1.tm.bantutani.app.dto.response.TipsNTrickResponseDTO;
 import com.team1.tm.bantutani.app.model.Plants;
 import com.team1.tm.bantutani.app.model.TipsNTrick;
+import com.team1.tm.bantutani.app.model.User;
 import com.team1.tm.bantutani.app.model.plants.PlantsCare;
 import com.team1.tm.bantutani.app.model.plants.dataAttr.CareType;
 import com.team1.tm.bantutani.app.repository.*;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class PlantsCareService extends TipsNTrikService{
+public abstract class PlantsCareService extends TipsNTrickService {
     protected PlantsDiseaseRepo plantsDiseaseRepo;
     protected PlantsPestRepo plantsPestRepo;
     protected PlantsWeedsRepo plantsWeedsRepo;
@@ -30,26 +40,49 @@ public class PlantsCareService extends TipsNTrikService{
         this.plantsRepo = plantsRepo;
     }
 
+    public abstract void addDataAttribute(PlantAttributeDTO plantAttributeDTO);
+    public abstract void updateDataAttribute(PlantAttributeDTO plantAttributeDTO);
+    public abstract void updateImageDataAttribute(MultipartFile file, String filename, Long id, boolean delete);
+    public abstract void deleteDataAttribute(Long id);
+
+    public TipsNTrickResponseDTO convertTipsNTrickToDTO(TipsNTrick item) {
+        return new TipsNTrickResponseDTO.Builder().id(item.getId()).
+                        activity(item.getTypeActivity().getLabel()).
+                        author(item.getAuthorTipsNTrick().getUsername()).animation(item.getAnimation()).
+                        step(item.getTypeStep().getLabel()).
+                        description(item.getDescription()).name(item.getName()).build();
+    }
+
+    public PlantsCareResponseDTO convertPlantsCareToDTO(PlantsCare item) {
+        return new PlantsCareResponseDTO.Builder().careType(item.getCareType().getLabel()).
+                animation(item.getAnimation()).author(item.getAuthorPlantsCare().getUsername()).
+                description(item.getDescription()).id(item.getId()).image(item.getImage()).
+                video(item.getVideo()).
+                listTipsNTrick(item.getTipsNTricks().stream().map(it -> convertTipsNTrickToDTO(it)).
+                        collect(Collectors.toList())).build();
+    }
+
+    @Cacheable(value = "plantsCareImageCache", key = "#name")
+    public byte[] getPlantsCareImage(String name) {
+        return storageConfig.getMedia(name, StorageConfig.SubDir.CARE);
+    }
+
     @Transactional
     public PlantsCare addPlantsCare(PlantsCareDTO plantsCareDTO) {
-        PlantsCare plantsCare = new PlantsCare.Builder().careType(CareType.valueOf(plantsCareDTO.getCareType())).
-                author(userRepo.findById(plantsCareDTO.getAuthorPlantsCare()).get()).
+        User user = userRepo.findById(plantsCareDTO.getAuthorPlantsCare()).get();
+        PlantsCare plantsCare = new PlantsCare.Builder().careType(CareType.getFromLabel(plantsCareDTO.getCareType())).
+                author(user).
                 description(plantsCareDTO.getDescription()).build();
+        user.getCare().add(plantsCare);
         if (plantsCareDTO.getTipsNTrickDTOList() != null) {
             List<TipsNTrick> tipsNTrickList = new LinkedList<>();
             plantsCareDTO.getTipsNTrickDTOList().forEach(item -> {
-                TipsNTrick tipsNTrick = addTipsNTrick(item, plantsCareDTO.getAuthorPlantsCare());
+                TipsNTrick tipsNTrick = super.addTipsNTrick(item);
                 tipsNTrick.setPlantsCareTips(plantsCare);
                 tipsNTrickList.add(tipsNTrick);
             });
             plantsCare.getTipsNTricks().addAll(tipsNTrickList);
         }
-        if (plantsCareDTO.getPlantsDiseaseCare() != null)
-            plantsCare.setPlantsDiseaseCare(plantsDiseaseRepo.findById(plantsCareDTO.getPlantsDiseaseCare()).get());
-        if (plantsCareDTO.getPlantsPestCare() != null)
-            plantsCare.setPlantsPestCare(plantsPestRepo.findById(plantsCareDTO.getPlantsPestCare()).get());
-        if (plantsCareDTO.getPlantsWeedsCare() != null)
-            plantsCare.setPlantsWeedsCare(plantsWeedsRepo.findById(plantsCareDTO.getPlantsWeedsCare()).get());
         if (plantsCareDTO.getAnimation() != null)
             plantsCare.setAnimation(plantsCareDTO.getAnimation());
         if (plantsCareDTO.getImage() != null)
@@ -65,15 +98,15 @@ public class PlantsCareService extends TipsNTrikService{
     }
 
     @Transactional
+    @CacheEvict(value = "plantsCareImageCache", key = "#plantsCareDTO.getImage")
     public void updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
         PlantsCare plantsCare = plantsCareRepo.findById(plantsCareDTO.getId()).get();
         if (plantsCareDTO.getCareType() != null)
-            plantsCare.setCareType(CareType.valueOf(plantsCareDTO.getCareType()));
+            plantsCare.setCareType(CareType.getFromLabel(plantsCareDTO.getCareType()));
         if (plantsCareDTO.getDescription() != null)
             plantsCare.setDescription(plantsCareDTO.getDescription());
         if (plantsCareDTO.getAnimation() != null) {
             plantsCare.setAnimation(plantsCareDTO.getAnimation());
-            plantsCare.setImage(null);
             plantsCare.setVideo(null);
         }
         if (plantsCareDTO.getImage() != null) {
@@ -88,14 +121,17 @@ public class PlantsCareService extends TipsNTrikService{
         if (plantsCareDTO.getVideo() != null) {
             plantsCare.setVideo(plantsCareDTO.getVideo());
             plantsCare.setAnimation(null);
-            plantsCare.setImage(null);
         }
         plantsCareRepo.save(plantsCare);
     }
 
     @Transactional
+    @CacheEvict(value = {"plantsCareImageCache"}, allEntries = true)
     public void deletePlantsCare(Long id) {
         PlantsCare plantsCare = plantsCareRepo.findById(id).get();
+        if (plantsCare.getImage() != null)
+            if(!storageConfig.deleteMedia(plantsCare.getImage(), StorageConfig.SubDir.CARE))
+                throw new RuntimeException("failed delete plants care, something wrong with file images, please try again");
         plantsCare.getTipsNTricks().clear();
         PlantsCare plantsCare1 = plantsCareRepo.save(plantsCare);
         plantsCareRepo.delete(plantsCare1);
