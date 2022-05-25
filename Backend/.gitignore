@@ -32,7 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-### data ###
+### Data ###
 !**/src/main/**/application.yml
 *.json
 *.yml
