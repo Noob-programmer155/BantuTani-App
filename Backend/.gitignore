@@ -31,8 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### data ###
 !**/src/main/**/application.yml
 *.json
 *.yml
