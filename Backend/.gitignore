@@ -34,6 +34,6 @@ build/
 
 ### data ###
 !**/src/main/**/application.yml
-!**/src/main/**/key.json
+*.json
 *.yml
 *.yaml
