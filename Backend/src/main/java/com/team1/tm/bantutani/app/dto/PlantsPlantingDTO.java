@@ -12,7 +12,6 @@ public class PlantsPlantingDTO {
     private MultipartFile image;
     private String video;
     private Long authorPlantsPlanting;
-    private List<TipsNTrickDTO> tipsNTricks;
     private Long plantingPlants;
 
     public PlantsPlantingDTO() {
@@ -64,14 +63,6 @@ public class PlantsPlantingDTO {
 
     public void setAuthorPlantsPlanting(Long authorPlantsPlanting) {
         this.authorPlantsPlanting = authorPlantsPlanting;
-    }
-
-    public List<TipsNTrickDTO> getTipsNTricks() {
-        return tipsNTricks;
-    }
-
-    public void setTipsNTricks(List<TipsNTrickDTO> tipsNTricks) {
-        this.tipsNTricks = tipsNTricks;
     }
 
     public Long getPlantingPlants() {

@@ -17,9 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableJpaRepositories("com.team1.tm.bantutani.app.repository")
 @OpenAPIDefinition(info = @Info(title = "Bantu Tani API", version = "1.0", description = "include API for working with plants and user information")
-, tags = {@Tag(name="Spring Boot"),@Tag(name="Spring Security"),@Tag(name="JWT Token"), @Tag(name="Spring Cache"), @Tag(name="JPA"), @Tag(name="MySQL")},
-		security = {@SecurityRequirement(name="Token", scopes = {"JWT","RSA 4096 key","RS512 Algorithm","header"}),@SecurityRequirement(name="Authentication User", scopes = {"USER","ADMIN","EXPERTS","FARMER","DISTRIBUTOR","SALES"}),
-		@SecurityRequirement(name = "Certificate", scopes = "https certificate")})
+, security = {@SecurityRequirement(name="Token", scopes = {"JWT","RSA 4096 key","RS512 Algorithm","header"}),@SecurityRequirement(name="Authentication User", scopes = {"USER","ADMIN","EXPERTS","FARMER","DISTRIBUTOR","SALES"}), @SecurityRequirement(name = "Certificate", scopes = "https certificate")})
 public class BantuTaniAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BantuTaniAppApplication.class, args);

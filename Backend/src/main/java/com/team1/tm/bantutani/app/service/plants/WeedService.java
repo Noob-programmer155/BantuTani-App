@@ -8,6 +8,7 @@ import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseMinDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantsCareResponseDTO;
 import com.team1.tm.bantutani.app.model.Plants;
+import com.team1.tm.bantutani.app.model.TipsNTrick;
 import com.team1.tm.bantutani.app.model.User;
 import com.team1.tm.bantutani.app.model.plants.*;
 import com.team1.tm.bantutani.app.repository.*;
@@ -52,6 +53,11 @@ public class WeedService extends PlantsCareService{
         return plantsWeedsRepo.findById(id).map(item -> convertPlantWeedToDTO(item)).get();
     }
 
+    @Cacheable(value = "plantsTypeWeedCache")
+    public List<String> getPlantsTypeWeed(String type, int size) {
+        return plantTypeWeedRepo.findAllByTypeContaining(type, PageRequest.of(0, size)).map(item -> item.getType()).getContent();
+    }
+
     public PlantAttributeResponseDTO convertPlantWeedToDTO(PlantsWeeds plantsWeeds) {
         return new PlantAttributeResponseDTO.Builder().id(plantsWeeds.getId()).
                 author(plantsWeeds.getAuthorPlantsWeeds().getUsername()).
@@ -62,29 +68,30 @@ public class WeedService extends PlantsCareService{
                 care(getPlantsCare(plantsWeeds.getPlantsCares())).build();
     }
 
-    public PlantAttributeResponseMinDTO convertPlantWeedToMinDTO(PlantsWeeds plantsPest) {
-        return new PlantAttributeResponseMinDTO.Builder().id(plantsPest.getId()).
-                name(plantsPest.getName()).
-                type(plantsPest.getPlantTypeWeed().getType()).
-                image(plantsPest.getImages().get(0)).build();
+    public PlantAttributeResponseMinDTO convertPlantWeedToMinDTO(PlantsWeeds plantsWeed) {
+        PlantAttributeResponseMinDTO responseMinDTO = new PlantAttributeResponseMinDTO.Builder().id(plantsWeed.getId()).
+                name(plantsWeed.getName()).
+                type(plantsWeed.getPlantTypeWeed().getType()).build();
+        if(!plantsWeed.getImages().isEmpty())
+            responseMinDTO.setImage(plantsWeed.getImages().get(0));
+        return responseMinDTO;
     }
 
     public List<PlantsCareResponseDTO> getPlantsCare(List<PlantsCare> plantsCare) {
         return plantsCare.stream().map(item -> convertPlantsCareToDTO(item)).
                 collect(Collectors.toList());
     }
+
     @CacheEvict(value = {"plantsWeedByIdCache"}, allEntries = true)
     @Override
     public void updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
         super.updatePlantsCare(plantsCareDTO);
     }
-
     @CacheEvict(value = {"plantsWeedByIdCache"}, allEntries = true)
     @Override
     public void deletePlantsCare(Long id) {
         super.deletePlantsCare(id);
     }
-
     @CacheEvict(value = {"plantsWeedByIdCache"}, allEntries = true)
     public void updateTipsNTrick(TipsNTrickDTO tipsNTrickDTO) {
         super.updateTipsNTrick(tipsNTrickDTO);
@@ -98,7 +105,14 @@ public class WeedService extends PlantsCareService{
     @Override
     @CacheEvict(value = "userDataCache", key = "#plantAttributeDTO.getAuthorPlantsAttribute", condition = "#plantAttributeDTO.getAuthorPlantsAttribute!=null")
     public void addDataAttribute(PlantAttributeDTO plantAttributeDTO) {
-        PlantTypeWeed plantTypeWeed = plantTypeWeedRepo.findById(plantAttributeDTO.getAttributePlantsType()).get();
+        PlantTypeWeed plantTypeWeed = null;
+        if(plantTypeWeedRepo.existsByType(plantAttributeDTO.getAttributePlantsType()))
+            plantTypeWeed = plantTypeWeedRepo.findByType(plantAttributeDTO.getAttributePlantsType()).get();
+        else {
+            PlantTypeWeed plantTypeWeed1 = new PlantTypeWeed();
+            plantTypeWeed1.setType(plantAttributeDTO.getAttributePlantsType());
+            plantTypeWeed = plantTypeWeedRepo.save(plantTypeWeed1);
+        }
         User user = userRepo.findById(plantAttributeDTO.getAuthorPlantsAttribute()).get();
         Plants plants = plantsRepo.findById(plantAttributeDTO.getPlants()).get();
         PlantsWeeds plantsWeeds = new PlantsWeeds.Builder().plantTypeWeed(plantTypeWeed).
@@ -126,13 +140,30 @@ public class WeedService extends PlantsCareService{
     }
 
     @Transactional
+    @CacheEvict(value = {"plantsWeedByIdCache"}, allEntries = true)
+    public void addTipsNTrickCare(TipsNTrickDTO tipsNTrickDTO, Long idCare) {
+        PlantsCare plantsCare = plantsCareRepo.findById(idCare).get();
+        TipsNTrick tipsNTrick = super.addTipsNTrick(tipsNTrickDTO);
+        plantsCare.getTipsNTricks().add(tipsNTrick);
+        tipsNTrick.setPlantsCareTips(plantsCare);
+        plantsCareRepo.save(plantsCare);
+    }
+
+    @Transactional
     @Override
     @CacheEvict(value = {"plantsAllWeedCache","plantsWeedByIdCache","userDataCache"}, allEntries = true)
     public void updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
         PlantsWeeds plantsWeeds = plantsWeedsRepo.findById(plantAttributeDTO.getId()).get();
         if (plantAttributeDTO.getAttributePlantsType() != null) {
             plantsWeeds.getPlantTypeWeed().getPlantsWeeds().remove(plantsWeeds);
-            PlantTypeWeed plantTypeWeed = plantTypeWeedRepo.findById(plantAttributeDTO.getAttributePlantsType()).get();
+            PlantTypeWeed plantTypeWeed = null;
+            if(plantTypeWeedRepo.existsByType(plantAttributeDTO.getAttributePlantsType()))
+                plantTypeWeed = plantTypeWeedRepo.findByType(plantAttributeDTO.getAttributePlantsType()).get();
+            else {
+                PlantTypeWeed plantTypeWeed1 = new PlantTypeWeed();
+                plantTypeWeed1.setType(plantAttributeDTO.getAttributePlantsType());
+                plantTypeWeed = plantTypeWeedRepo.save(plantTypeWeed1);
+            }
             plantTypeWeed.getPlantsWeeds().add(plantsWeeds);
             plantsWeeds.setPlantTypeWeed(plantTypeWeed);
         }
@@ -194,5 +225,11 @@ public class WeedService extends PlantsCareService{
     private void deleteImage(String filename, StorageConfig.SubDir subDir, String error_message) {
         if (!storageConfig.deleteMedia(filename, subDir))
             throw new RuntimeException(error_message);
+    }
+
+    @Transactional
+    @CacheEvict(value = "plantsTypeWeedCache", allEntries = true)
+    public void deleteTypeWeed(String type) {
+        plantTypeWeedRepo.deleteByType(type);
     }
 }

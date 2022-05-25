@@ -51,7 +51,7 @@ public class TokenManager {
         Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(privateKey).build().parseClaimsJws(token);
         return new UsernamePasswordAuthenticationToken(claims.getBody().getSubject(),
                 "",
-                Arrays.asList((Status) claims.getBody().get("role")));
+                Arrays.asList(Status.valueOf((String) claims.getBody().get("role"))));
     }
 
     public String resolveToken(HttpServletRequest request) {

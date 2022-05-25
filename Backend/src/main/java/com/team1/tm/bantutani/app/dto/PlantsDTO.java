@@ -9,7 +9,7 @@ public class PlantsDTO {
     private Long id;
     private String name;
     private List<String> otherNames;
-    private Long plantTypeImpl;
+    private String plantTypeImpl;
     private List<MultipartFile> image;
     private String shortDescription;
     private String characteristic;
@@ -46,11 +46,11 @@ public class PlantsDTO {
         this.otherNames = otherNames;
     }
 
-    public Long getPlantTypeImpl() {
+    public String getPlantTypeImpl() {
         return plantTypeImpl;
     }
 
-    public void setPlantTypeImpl(Long plantTypeImpl) {
+    public void setPlantTypeImpl(String plantTypeImpl) {
         this.plantTypeImpl = plantTypeImpl;
     }
 

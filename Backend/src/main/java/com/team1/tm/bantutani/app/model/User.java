@@ -33,7 +33,7 @@ public class User {
     private String clientId;
     @Enumerated
     private Status status;
-    private boolean disable;
+    private Boolean disable;
     @OneToMany(mappedBy = "authorPlantsCare")
     private List<PlantsCare> care = new LinkedList<>();
     @OneToMany(mappedBy = "authorPlantsPlanting")
@@ -124,11 +124,11 @@ public class User {
         this.status = status;
     }
 
-    public boolean isDisable() {
+    public Boolean isDisable() {
         return disable;
     }
 
-    public void setDisable(boolean disable) {
+    public void setDisable(Boolean disable) {
         this.disable = disable;
     }
 

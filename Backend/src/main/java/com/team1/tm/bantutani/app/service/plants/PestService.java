@@ -7,7 +7,9 @@ import com.team1.tm.bantutani.app.dto.TipsNTrickDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseMinDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantsCareResponseDTO;
+import com.team1.tm.bantutani.app.dto.response.PlantsResponseMinDTO;
 import com.team1.tm.bantutani.app.model.Plants;
+import com.team1.tm.bantutani.app.model.TipsNTrick;
 import com.team1.tm.bantutani.app.model.User;
 import com.team1.tm.bantutani.app.model.plants.PlantTypePest;
 import com.team1.tm.bantutani.app.model.plants.PlantsCare;
@@ -55,6 +57,11 @@ public class PestService extends PlantsCareService{
         return plantsPestRepo.findById(id).map(item -> convertPlantPestToDTO(item)).get();
     }
 
+    @Cacheable(value = "plantsTypePestCache")
+    public List<String> getPlantsTypePest(String type, int size) {
+        return plantTypePestRepo.findAllByTypeContaining(type, PageRequest.of(0, size)).map(item -> item.getType()).getContent();
+    }
+
     public PlantAttributeResponseDTO convertPlantPestToDTO(PlantsPest plantsPest) {
         return new PlantAttributeResponseDTO.Builder().id(plantsPest.getId()).
                 author(plantsPest.getAuthorPlantsPest().getUsername()).
@@ -66,16 +73,19 @@ public class PestService extends PlantsCareService{
     }
 
     public PlantAttributeResponseMinDTO convertPlantPestToMinDTO(PlantsPest plantsPest) {
-        return new PlantAttributeResponseMinDTO.Builder().id(plantsPest.getId()).
+        PlantAttributeResponseMinDTO responseMinDTO = new PlantAttributeResponseMinDTO.Builder().id(plantsPest.getId()).
                 name(plantsPest.getName()).
-                type(plantsPest.getPlantTypePest().getType()).
-                image(plantsPest.getImages().get(0)).build();
+                type(plantsPest.getPlantTypePest().getType()).build();
+        if(!plantsPest.getImages().isEmpty())
+            responseMinDTO.setImage(plantsPest.getImages().get(0));
+        return responseMinDTO;
     }
 
     public List<PlantsCareResponseDTO> getPlantsCare(List<PlantsCare> plantsCares) {
         return plantsCares.stream().map(item -> convertPlantsCareToDTO(item)).
                 collect(Collectors.toList());
     }
+
     @CacheEvict(value = {"plantsPestByIdCache"}, allEntries = true)
     @Override
     public void updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
@@ -86,7 +96,6 @@ public class PestService extends PlantsCareService{
     public void deletePlantsCare(Long id) {
         super.deletePlantsCare(id);
     }
-
     @CacheEvict(value = {"plantsPestByIdCache"}, allEntries = true)
     public void updateTipsNTrick(TipsNTrickDTO tipsNTrickDTO) {
         super.updateTipsNTrick(tipsNTrickDTO);
@@ -100,7 +109,14 @@ public class PestService extends PlantsCareService{
     @Override
     @CacheEvict(value = "userDataCache", key = "#plantAttributeDTO.getAuthorPlantsAttribute", condition = "#plantAttributeDTO.getAuthorPlantsAttribute!=null")
     public void addDataAttribute(PlantAttributeDTO plantAttributeDTO) {
-        PlantTypePest plantTypePest = plantTypePestRepo.findById(plantAttributeDTO.getAttributePlantsType()).get();
+        PlantTypePest plantTypePest = null;
+        if(plantTypePestRepo.existsByType(plantAttributeDTO.getAttributePlantsType()))
+            plantTypePest = plantTypePestRepo.findByType(plantAttributeDTO.getAttributePlantsType()).get();
+        else {
+            PlantTypePest plantTypePest1 = new PlantTypePest();
+            plantTypePest1.setType(plantAttributeDTO.getAttributePlantsType());
+            plantTypePest = plantTypePestRepo.save(plantTypePest1);
+        }
         User user = userRepo.findById(plantAttributeDTO.getAuthorPlantsAttribute()).get();
         Plants plants = plantsRepo.findById(plantAttributeDTO.getPlants()).get();
         PlantsPest plantsPest = new PlantsPest.Builder().plantTypePest(plantTypePest).
@@ -128,13 +144,31 @@ public class PestService extends PlantsCareService{
     }
 
     @Transactional
+    @CacheEvict(value = {"plantsPestByIdCache"}, allEntries = true)
+    public void addTipsNTrickCare(TipsNTrickDTO tipsNTrickDTO, Long idCare) {
+        PlantsCare plantsCare = plantsCareRepo.findById(idCare).get();
+        TipsNTrick tipsNTrick = super.addTipsNTrick(tipsNTrickDTO);
+        plantsCare.getTipsNTricks().add(tipsNTrick);
+        tipsNTrick.setPlantsCareTips(plantsCare);
+        plantsCareRepo.save(plantsCare);
+    }
+
+    @Transactional
     @Override
     @CacheEvict(value = {"plantsAllPestCache","plantsPestByIdCache","userDataCache"}, allEntries = true)
     public void updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
         PlantsPest plantsPest = plantsPestRepo.findById(plantAttributeDTO.getId()).get();
         if (plantAttributeDTO.getAttributePlantsType() != null) {
             plantsPest.getPlantTypePest().getPlantsPests().remove(plantsPest);
-            PlantTypePest plantTypePest = plantTypePestRepo.findById(plantAttributeDTO.getAttributePlantsType()).get();
+            PlantTypePest plantTypePest = null;
+            if(plantTypePestRepo.existsByType(plantAttributeDTO.getAttributePlantsType())) {
+                plantTypePest = plantTypePestRepo.findByType(plantAttributeDTO.getAttributePlantsType()).get();
+            }
+            else {
+                PlantTypePest plantTypePest1 = new PlantTypePest();
+                plantTypePest1.setType(plantAttributeDTO.getAttributePlantsType());
+                plantTypePest = plantTypePestRepo.save(plantTypePest1);
+            }
             plantTypePest.getPlantsPests().add(plantsPest);
             plantsPest.setPlantTypePest(plantTypePest);
         }
@@ -196,5 +230,11 @@ public class PestService extends PlantsCareService{
     private void deleteImage(String filename, StorageConfig.SubDir subDir, String error_message) {
         if (!storageConfig.deleteMedia(filename, subDir))
             throw new RuntimeException(error_message);
+    }
+
+    @Transactional
+    @CacheEvict(value = "plantsTypePestCache", allEntries = true)
+    public void deletePlantsTypePest(String type) {
+        plantTypePestRepo.deleteByType(type);
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 public class PlantAttributeDTO {
     private Long id;
     private String name;
-    private Long attributePlantsType;
+    private String attributePlantsType;
     private List<String> otherNames;
     private String description;
     private List<MultipartFile> images;
@@ -35,11 +35,11 @@ public class PlantAttributeDTO {
         this.name = name;
     }
 
-    public Long getAttributePlantsType() {
+    public String getAttributePlantsType() {
         return attributePlantsType;
     }
 
-    public void setAttributePlantsType(Long attributePlantsType) {
+    public void setAttributePlantsType(String attributePlantsType) {
         this.attributePlantsType = attributePlantsType;
     }
 

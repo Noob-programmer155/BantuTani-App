@@ -16,6 +16,7 @@ public class PlantTypeImpl implements PlantType{
     private Long id;
     @Column(unique = true,nullable = false)
     private String type;
+    private Boolean icon;
     @OneToMany(mappedBy = "plantTypeImpl")
     private List<Plants> plants = new LinkedList<>();
 
@@ -34,6 +35,14 @@ public class PlantTypeImpl implements PlantType{
 
     public void setPlants(List<Plants> plants) {
         this.plants = plants;
+    }
+
+    public Boolean getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Boolean icon) {
+        this.icon = icon;
     }
 
     @Override

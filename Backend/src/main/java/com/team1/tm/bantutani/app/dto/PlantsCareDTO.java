@@ -12,7 +12,6 @@ public class PlantsCareDTO {
     private MultipartFile image;
     private String video;
     private Long authorPlantsCare;
-    private List<TipsNTrickDTO> tipsNTrickDTOList;
     private Long plantsDiseaseCare;
     private Long plantsWeedsCare;
     private Long plantsPestCare;
@@ -42,14 +41,6 @@ public class PlantsCareDTO {
 
     public void setCareType(String careType) {
         this.careType = careType;
-    }
-
-    public List<TipsNTrickDTO> getTipsNTrickDTOList() {
-        return tipsNTrickDTOList;
-    }
-
-    public void setTipsNTrickDTOList(List<TipsNTrickDTO> tipsNTrickDTOList) {
-        this.tipsNTrickDTOList = tipsNTrickDTOList;
     }
 
     public String getAnimation() {

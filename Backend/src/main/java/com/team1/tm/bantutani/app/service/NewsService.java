@@ -53,7 +53,7 @@ public class NewsService {
                         title(item.getTitle()).
                         images(item.getImages().get(0)).
                         video(item.getVideo()).
-                        date(item.getDate()).
+                        date(item.getDates()).
                         build()).getContent();
     }
 
@@ -71,16 +71,16 @@ public class NewsService {
                         title(item.getTitle()).
                         images(item.getImages().get(0)).
                         video(item.getVideo()).
-                        date(item.getDate()).
+                        date(item.getDates()).
                         build()).getContent();
     }
 
     @Cacheable(value = "mainNewsCache")
     public NewsResponseDTO getNews(Long id) {
         return newsRepo.findById(id).map(item ->
-                new NewsResponseDTO.Builder().id(item.getId()).description(item.getDescription()).
-                        descriptionSummary(item.getDescriptionSummary()).source(item.getSource()).
-                        date(item.getDate()).images(item.getImages()).
+                new NewsResponseDTO.Builder().id(item.getId()).description(item.getDescriptions()).
+                        descriptionSummary(item.getDescriptionSummary()).source(item.getSources()).
+                        date(item.getDates()).images(item.getImages()).
                         keywords(item.getKeywords().stream().map(it -> it.getName()).collect(Collectors.toList())).
                         title(item.getTitle()).video(item.getVideo()).build()).get();
     }
@@ -136,7 +136,7 @@ public class NewsService {
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = "mainNewsCache", key = "#newsDTO.getId", condition = "#newsDTO.getId!=null"),
-            @CacheEvict(value = {"searchTitle"}, key = "#newsDTO.getTitle", condition="#newsDTO.getTitle!=null"),
+            @CacheEvict(value = {"searchTitle"}, allEntries = true),
             @CacheEvict(value = {"newsCache","allNews","tagsCache"},allEntries = true)
     })
     public void updateNews(NewsDTO newsDTO, List<String> newTags) {
@@ -144,7 +144,7 @@ public class NewsService {
         if (newsDTO.getTitle() != null && !newsDTO.getTitle().isBlank())
             news.setTitle(newsDTO.getTitle());
         if (newsDTO.getDescription() != null && !newsDTO.getDescription().isBlank())
-            news.setDescription(newsDTO.getDescription());
+            news.setDescriptions(newsDTO.getDescription());
         if (newsDTO.getDescriptionSummary() != null && !newsDTO.getDescriptionSummary().isBlank())
             news.setDescriptionSummary(newsDTO.getDescriptionSummary());
         if (newsDTO.getKeywords() != null && !newsDTO.getKeywords().isEmpty()) {

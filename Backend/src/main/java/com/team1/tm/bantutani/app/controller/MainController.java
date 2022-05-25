@@ -1,4 +1,4 @@
-package com.team1.tm.bantutani.app.controller.plants;
+package com.team1.tm.bantutani.app.controller;
 
 import com.team1.tm.bantutani.app.configuration.StorageConfig;
 import com.team1.tm.bantutani.app.configuration.security.token.TokenManager;
@@ -11,29 +11,36 @@ import com.team1.tm.bantutani.app.model.other.Status;
 import com.team1.tm.bantutani.app.repository.AnimationRepo;
 import com.team1.tm.bantutani.app.repository.AvatarRepo;
 import com.team1.tm.bantutani.app.repository.UserRepo;
+import com.team1.tm.bantutani.app.service.CommodityService;
 import com.team1.tm.bantutani.app.service.utils.AnimationServiceUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 public class MainController {
+    private CommodityService commodityService;
+
     private AnimationServiceUtils animationServiceUtils;
+
     private UserRepo userRepo;
     private AvatarRepo avatarRepo;
 
@@ -41,40 +48,87 @@ public class MainController {
 
     private StorageConfig storageConfig;
     public MainController(AnimationRepo animationRepo, StorageConfig storageConfig, AvatarRepo avatarRepo,
-                          UserRepo userRepo, AuthenticationManager authenticationManager) {
+                          UserRepo userRepo, AuthenticationManager authenticationManager, CommodityService commodityService) {
         this.animationServiceUtils = new AnimationServiceUtils(storageConfig, animationRepo);
         this.userRepo = userRepo;
         this.authenticationManager = authenticationManager;
         this.storageConfig = storageConfig;
         this.avatarRepo = avatarRepo;
+        this.commodityService = commodityService;
     }
 
     // ================================== API Harga Komoditi ==============================
 
-//    @Tag(name = "", description = ")()
+    @GetMapping("/commodity/v1/data/image/{name}")
+    @Tag(name = "Get Image Commodity", description = "get image icon commodity data")
+    public byte[] getCommodityImage(@PathVariable String name) {
+        return commodityService.getDataImage(name);
+    }
+
+    @GetMapping("/commodity/v1/data/all")
+    @Tag(name = "Get List Commodity", description = "get list commodity data")
+    public List<CommodityResponseDTO> getCommodityList(@RequestParam int page, @RequestParam int size) {
+        return commodityService.getCommodityList(page, size);
+    }
+
+    @GetMapping("/commodity/v1/planttype/all")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Tag(name = "Get List Plants Type Commodity", description = "get list of commodity plant type data for checking available image icon in commodity")
+    public List<PlantTypeResponseDTO> getCommodityTypeList() {
+        return commodityService.getPlantsType();
+    }
+
+    @PostMapping(value = "/commodity/v1/data/image/add/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Tag(name = "Add Image Icon Commodity", description = "adding new image icon commodity")
+    public String addCommodity(@RequestParam(value = "file") MultipartFile file, @PathVariable Long id) {
+        commodityService.addIcon(file, id);
+        return "success";
+    }
+
+    @DeleteMapping("/commodity/v1/data/image/delete/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Tag(name = "Delete Image Icon Commodity", description = "delete image icon commodity")
+    public String deleteCommodity(@PathVariable Long id, @RequestParam String filename) {
+        commodityService.deleteIcon(filename, id);
+        return "success";
+    }
 
     // ================================== API Avatar ======================================
 
-    @PostMapping("/user/v1/avatar/add")
+    @GetMapping("/user/v1/avatar/get/all")
+    @Tag(name = "Get Image Avatar", description = "get images Avatar for User")
+    public List<String> getAvatar(@RequestParam int page, @RequestParam int size) {
+        return avatarRepo.findAll(PageRequest.of(page, size)).map(item -> item.getName()).getContent();
+    }
+
+    @PostMapping(value = "/user/v1/avatar/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Add Image Avatar", description = "adding new images Avatar for User")
-    public void addAvatar(@RequestParam(value = "avatar") MultipartFile avatarFile) {
+    @Transactional
+    public String addAvatar(@RequestParam(value = "avatar") MultipartFile avatarFile) {
         Avatar avatar = new Avatar();
         avatar.setName(storageConfig.addMedia(avatarFile, "avatar", StorageConfig.SubDir.AVATAR));
         avatarRepo.save(avatar);
+        return "success";
     }
 
     @DeleteMapping("/user/v1/avatar/delete/{name}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Delete Image Avatar", description = "delete image avatar from database and storage")
     @CacheEvict(value = "userDataImageCache", key = "#name")
-    public void deleteAvatar(@PathVariable String name) {
+    @Transactional
+    public String deleteAvatar(@PathVariable String name) {
         Avatar avatar = avatarRepo.findByName(name).get();
         if(storageConfig.deleteMedia(name, StorageConfig.SubDir.AVATAR))
             avatarRepo.delete(avatar);
+        return "success";
     }
 
     // ================================== API User ========================================
 
-    @GetMapping(value = "/user/v1/data/image/{name}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/user/v1/data/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER','FARMER','EXPERTS','DISTRIBUTOR','SALES')")
     @Tag(name = "Get Image User", description = "getting data image user")
     @Cacheable("userDataImageCache")
     public byte[] getDataImage(@PathVariable String name) {
@@ -82,6 +136,7 @@ public class MainController {
     }
 
     @GetMapping("/user/v1/data/get")
+    @PreAuthorize("hasAuthority('EXPERTS')")
     @Tag(name = "Get Data User Experts", description = "getting data that bring information about how many data that have been added from experts information")
     @Cacheable("userDataCache")
     public UserDataDTO getData(@RequestParam Long id) {
@@ -91,13 +146,13 @@ public class MainController {
                         new PlantsResponseMinDTO.Builder().id(item.getCaringPlants().getId()).name(item.getCaringPlants().getName()).build()).
                 collect(Collectors.toList())).diseases(user.getDiseases().stream().map(item ->
                         new PlantAttributeResponseMinDTO.Builder().id(item.getId()).name(item.getName()).
-                                image(item.getImages().get(0)).type(item.getPlantTypeDisease().getType()).build()).
+                                image((!item.getImages().isEmpty())?item.getImages().get(0):null).type(item.getPlantTypeDisease().getType()).build()).
                 collect(Collectors.toList())).pests(user.getPests().stream().map(item ->
                         new PlantAttributeResponseMinDTO.Builder().id(item.getId()).name(item.getName()).
-                                image(item.getImages().get(0)).type(item.getPlantTypePest().getType()).build()).
+                                image((!item.getImages().isEmpty())?item.getImages().get(0):null).type(item.getPlantTypePest().getType()).build()).
                 collect(Collectors.toList())).weeds(user.getWeeds().stream().map(item ->
                         new PlantAttributeResponseMinDTO.Builder().id(item.getId()).name(item.getName()).
-                                image(item.getImages().get(0)).type(item.getPlantTypeWeed().getType()).build()).
+                                image((!item.getImages().isEmpty())?item.getImages().get(0):null).type(item.getPlantTypeWeed().getType()).build()).
                 collect(Collectors.toList())).planting(user.getPlantings().stream().filter(item ->
                         item.getPlantingPlants()!=null).map(item ->
                         new PlantsResponseMinDTO.Builder().id(item.getPlantingPlants().getId()).name(item.getPlantingPlants().getName()).build()).
@@ -116,6 +171,7 @@ public class MainController {
     }
 
     @PostMapping("/user/v1/expert/signup")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Sign Up Expert", description = "user sign up for expert role")
     public String signUpExpert(@ModelAttribute UserDTO userDTO) {
         User user = new User.Builder().email(userDTO.getEmail()).
@@ -156,7 +212,9 @@ public class MainController {
     }
 
     @PutMapping("/user/v1/modify")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER','FARMER','EXPERTS','DISTRIBUTOR','SALES')")
     @Tag(name = "Modify User", description = "modify user data, except password")
+    @Transactional
     public String modify(@ModelAttribute UserDTO userDTO) {
         User user = userRepo.findById(userDTO.getId()).get();
         if (userDTO.getEmail() != null)
@@ -172,19 +230,25 @@ public class MainController {
     }
 
     @PutMapping("/user/v1/password/modify")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER','FARMER','EXPERTS','DISTRIBUTOR','SALES')")
     @Tag(name = "Modify User Password", description = "modify user password")
+    @Transactional
     public String modifyPassword(@RequestParam Long id, @RequestParam String oldPassword, @RequestParam String newPassword) {
         User user = userRepo.findById(id).get();
         if (validatePassword(user.getPassword(), oldPassword)) {
             user.setPassword(new SCryptPasswordEncoder().encode(newPassword));
+            userRepo.save(user);
+            return "success";
+        } else {
+            throw new RuntimeException("This is wrong password, you can't make step further");
         }
-        userRepo.save(user);
-        return "success";
     }
 
     @DeleteMapping("/user/v1/delete")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Delete User", description = "delete user")
     @CacheEvict(value = "userDataCache", key = "#id")
+    @Transactional
     public String delete(@RequestParam Long id) {
         User user = userRepo.findById(id).get();
         if (user.getStatus() != Status.EXPERTS || user.getStatus() != Status.ADMIN) {
@@ -200,26 +264,29 @@ public class MainController {
 
     @GetMapping("/media/v1/animation/data/{type}")
     @Tag(name = "Get Animations", description = "get all animation in the specific type and size")
-    public List<String> getAnimationList(@PathVariable int type,
+    public List<String> getAnimationList(@PathVariable String type,
                                          @RequestParam int page,
                                          @RequestParam int size) {
         return animationServiceUtils.getAnimations(page,size,type);
     }
 
     @GetMapping("/media/v1/animation/types")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Get Animation Types", description = "get all animation types that will use in adding animation")
     public List<AnimationType> getAnimationType() {
         return animationServiceUtils.getAnimationType();
     }
 
-    @PostMapping("/media/v1/animation/add")
+    @PostMapping(value = "/media/v1/animation/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Add Animation", description = "adding new animation to this application")
-    public String addAnimation(@RequestParam MultipartFile animation, @RequestParam int type) throws IOException {
+    public String addAnimation(@RequestParam(value = "animation") MultipartFile animation, @RequestParam String type) throws IOException {
         animationServiceUtils.addAnimation(animation, type);
         return "success";
     }
 
     @DeleteMapping("/media/v1/animation/delete")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "delete animation", description = "delete animation")
     public String deleteAnimation(@RequestParam String name) {
         animationServiceUtils.deleteAnimation(name);

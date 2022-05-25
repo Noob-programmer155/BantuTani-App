@@ -74,15 +74,6 @@ public abstract class PlantsCareService extends TipsNTrickService {
                 author(user).
                 description(plantsCareDTO.getDescription()).build();
         user.getCare().add(plantsCare);
-        if (plantsCareDTO.getTipsNTrickDTOList() != null) {
-            List<TipsNTrick> tipsNTrickList = new LinkedList<>();
-            plantsCareDTO.getTipsNTrickDTOList().forEach(item -> {
-                TipsNTrick tipsNTrick = super.addTipsNTrick(item);
-                tipsNTrick.setPlantsCareTips(plantsCare);
-                tipsNTrickList.add(tipsNTrick);
-            });
-            plantsCare.getTipsNTricks().addAll(tipsNTrickList);
-        }
         if (plantsCareDTO.getAnimation() != null)
             plantsCare.setAnimation(plantsCareDTO.getAnimation());
         if (plantsCareDTO.getImage() != null)

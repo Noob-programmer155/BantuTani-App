@@ -34,14 +34,14 @@ public class AnimationServiceUtils {
     }
 
     @Cacheable(value = "allAnimationTipsNTrick")
-    public List<String> getAnimations(int page, int size, int type) {
-        return animationRepo.findAll(PageRequest.of(page, size)).map(item -> item.getFilename()).getContent();
+    public List<String> getAnimations(int page, int size, String type) {
+        return animationRepo.findAllByAnimationType(AnimationType.valueOf(type),PageRequest.of(page, size)).map(item -> item.getFilename()).getContent();
     }
 
     @Transactional
-    public void addAnimation(MultipartFile file, int type) throws IOException {
+    public void addAnimation(MultipartFile file, String type) throws IOException {
         Animation animation = new Animation();
-        animation.setAnimationType(AnimationType.getFromId(type));
+        animation.setAnimationType(AnimationType.valueOf(type));
         animation.setFilename(storageConfig.addMedia(file, "animation", StorageConfig.SubDir.ANIMATION));
         animationRepo.save(animation);
     }

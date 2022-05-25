@@ -18,11 +18,11 @@ public class News {
     private Long id;
     private String title;
     @Column(length = 5000000)
-    private String description;
-    @Column(length = 20000)
+    private String descriptions;
+    @Column(length = 15000)
     private String descriptionSummary;
-    private Date date;
-    private String source;
+    private Date dates;
+    private String sources;
     @ManyToMany(mappedBy = "newsListTags")
     private Set<NewsTags> keywords = new LinkedHashSet<>();
     @ElementCollection
@@ -34,10 +34,10 @@ public class News {
 
     public News(Builder build) {
         this.title = build.title;
-        this.description = build.description;
+        this.descriptions = build.description;
         this.descriptionSummary = build.descriptionSummary;
-        this.date = build.date;
-        this.source = build.source;
+        this.dates = build.date;
+        this.sources = build.source;
         this.images = build.images;
         this.video = build.video;
     }
@@ -58,12 +58,12 @@ public class News {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDescriptions() {
+        return descriptions;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescriptions(String description) {
+        this.descriptions = description;
     }
 
     public String getDescriptionSummary() {
@@ -74,20 +74,20 @@ public class News {
         this.descriptionSummary = descriptionSummary;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getDates() {
+        return dates;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDates(Date date) {
+        this.dates = date;
     }
 
-    public String getSource() {
-        return source;
+    public String getSources() {
+        return sources;
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public void setSources(String source) {
+        this.sources = source;
     }
 
     public List<String> getImages() {

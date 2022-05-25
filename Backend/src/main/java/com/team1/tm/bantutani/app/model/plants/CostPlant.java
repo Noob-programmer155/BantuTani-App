@@ -10,10 +10,11 @@ public class CostPlant {
     @Id
     @GeneratedValue
     private Long id;
-    private int stableCost; // current cost
-    private int maxCost;
-    private int minCost;
-    private int regionCost; // mean
+    private Integer stableCost; // current cost
+    private Integer maxCost;
+    private Integer minCost;
+    private Integer regionCost; // mean
+    private Integer previousCost;
     private Date dateUpdateCost;
     @OneToOne(mappedBy = "plantsCost", fetch = FetchType.LAZY)
     private Plants plants;
@@ -26,6 +27,7 @@ public class CostPlant {
         this.maxCost = builder.maxCost;
         this.minCost = builder.minCost;
         this.regionCost = builder.regionCost;
+        this.previousCost = builder.previousCost;
         this.dateUpdateCost = builder.dateUpdateCost;
     }
 
@@ -37,36 +39,44 @@ public class CostPlant {
         this.id = id;
     }
 
-    public int getStableCost() {
+    public Integer getStableCost() {
         return stableCost;
     }
 
-    public void setStableCost(int stableCost) {
+    public void setStableCost(Integer stableCost) {
         this.stableCost = stableCost;
     }
 
-    public int getMaxCost() {
+    public Integer getMaxCost() {
         return maxCost;
     }
 
-    public void setMaxCost(int maxCost) {
+    public void setMaxCost(Integer maxCost) {
         this.maxCost = maxCost;
     }
 
-    public int getMinCost() {
+    public Integer getMinCost() {
         return minCost;
     }
 
-    public void setMinCost(int minCost) {
+    public void setMinCost(Integer minCost) {
         this.minCost = minCost;
     }
 
-    public int getRegionCost() {
+    public Integer getRegionCost() {
         return regionCost;
     }
 
-    public void setRegionCost(int regionCost) {
+    public void setRegionCost(Integer regionCost) {
         this.regionCost = regionCost;
+    }
+
+    public Integer getPreviousCost() {
+        return previousCost;
+    }
+
+    public void setPreviousCost(Integer previousCost) {
+        this.previousCost = previousCost;
     }
 
     public Date getDateUpdateCost() {
@@ -86,25 +96,30 @@ public class CostPlant {
     }
 
     public static class Builder {
-        private int stableCost; // current cost
-        private int maxCost;
-        private int minCost;
-        private int regionCost; // mean
+        private Integer stableCost; // current cost
+        private Integer maxCost;
+        private Integer minCost;
+        private Integer regionCost; // mean
+        private Integer previousCost;
         private Date dateUpdateCost;
-        public Builder stableCost(int stableCost) {
+        public Builder stableCost(Integer stableCost) {
             this.stableCost = stableCost;
             return this;
         }
-        public Builder maxCost(int maxCost) {
+        public Builder maxCost(Integer maxCost) {
             this.maxCost = maxCost;
             return this;
         }
-        public Builder minCost(int minCost) {
+        public Builder minCost(Integer minCost) {
             this.minCost = minCost;
             return this;
         }
-        public Builder regionCost(int regionCost) {
+        public Builder regionCost(Integer regionCost) {
             this.regionCost = regionCost;
+            return this;
+        }
+        public Builder previousCost(Integer previousCost) {
+            this.previousCost = previousCost;
             return this;
         }
         public Builder dateUpdateCost(Date dateUpdateCost) {

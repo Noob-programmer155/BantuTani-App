@@ -8,6 +8,7 @@ import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseMinDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantsCareResponseDTO;
 import com.team1.tm.bantutani.app.model.Plants;
+import com.team1.tm.bantutani.app.model.TipsNTrick;
 import com.team1.tm.bantutani.app.model.User;
 import com.team1.tm.bantutani.app.model.plants.PlantTypeDisease;
 import com.team1.tm.bantutani.app.model.plants.PlantsCare;
@@ -55,6 +56,11 @@ public class DiseaseService extends PlantsCareService{
         return plantsDiseaseRepo.findById(id).map(item -> convertPlantDiseaseToDTO(item)).get();
     }
 
+    @Cacheable(value = "plantsTypeDiseaseCache")
+    public List<String> getPlantsTypeDisease(String type, int size) {
+        return plantTypeDiseaseRepo.findAllByTypeContaining(type, PageRequest.of(0, size)).map(item -> item.getType()).getContent();
+    }
+
     public PlantAttributeResponseDTO convertPlantDiseaseToDTO(PlantsDisease plantsDisease) {
         return new PlantAttributeResponseDTO.Builder().id(plantsDisease.getId()).
                 author(plantsDisease.getAuthorPlantsAttribute().getUsername()).
@@ -65,11 +71,13 @@ public class DiseaseService extends PlantsCareService{
                 care(getPlantsCare(plantsDisease.getPlantsCares())).build();
     }
 
-    public PlantAttributeResponseMinDTO convertPlantDiseaseToMinDTO(PlantsDisease plantsPest) {
-        return new PlantAttributeResponseMinDTO.Builder().id(plantsPest.getId()).
-                name(plantsPest.getName()).
-                type(plantsPest.getPlantTypeDisease().getType()).
-                image(plantsPest.getImages().get(0)).build();
+    public PlantAttributeResponseMinDTO convertPlantDiseaseToMinDTO(PlantsDisease plantsDisease) {
+        PlantAttributeResponseMinDTO responseMinDTO = new PlantAttributeResponseMinDTO.Builder().id(plantsDisease.getId()).
+                name(plantsDisease.getName()).
+                type(plantsDisease.getPlantTypeDisease().getType()).build();
+        if(!plantsDisease.getImages().isEmpty())
+            responseMinDTO.setImage(plantsDisease.getImages().get(0));
+        return responseMinDTO;
     }
 
     private List<PlantsCareResponseDTO> getPlantsCare(List<PlantsCare> plantsCares) {
@@ -82,13 +90,11 @@ public class DiseaseService extends PlantsCareService{
     public void updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
         super.updatePlantsCare(plantsCareDTO);
     }
-
     @CacheEvict(value = {"plantsDiseaseByIdCache"}, allEntries = true)
     @Override
     public void deletePlantsCare(Long id) {
         super.deletePlantsCare(id);
     }
-
     @CacheEvict(value = {"plantsDiseaseByIdCache"}, allEntries = true)
     @Override
     public void updateTipsNTrick(TipsNTrickDTO tipsNTrickDTO) {
@@ -104,7 +110,14 @@ public class DiseaseService extends PlantsCareService{
     @Override
     @CacheEvict(value = "userDataCache", key = "#plantAttributeDTO.getAuthorPlantsAttribute", condition = "#plantAttributeDTO.getAuthorPlantsAttribute!=null")
     public void addDataAttribute(PlantAttributeDTO plantAttributeDTO) {
-        PlantTypeDisease plantTypeDisease = plantTypeDiseaseRepo.findById(plantAttributeDTO.getAttributePlantsType()).get();
+        PlantTypeDisease plantTypeDisease = null;
+        if(plantTypeDiseaseRepo.existsByType(plantAttributeDTO.getAttributePlantsType()))
+            plantTypeDisease = plantTypeDiseaseRepo.findByType(plantAttributeDTO.getAttributePlantsType()).get();
+        else {
+            PlantTypeDisease plantTypeDisease1 = new PlantTypeDisease();
+            plantTypeDisease1.setType(plantAttributeDTO.getAttributePlantsType());
+            plantTypeDisease = plantTypeDiseaseRepo.save(plantTypeDisease1);
+        }
         User user = userRepo.findById(plantAttributeDTO.getAuthorPlantsAttribute()).get();
         Plants plants = plantsRepo.findById(plantAttributeDTO.getPlants()).get();
         PlantsDisease plantsDisease = new PlantsDisease.Builder().plantTypeDisease(plantTypeDisease).
@@ -132,13 +145,30 @@ public class DiseaseService extends PlantsCareService{
     }
 
     @Transactional
+    @CacheEvict(value = {"plantsDiseaseByIdCache"}, allEntries = true)
+    public void addTipsNTrickCare(TipsNTrickDTO tipsNTrickDTO, Long idCare) {
+        PlantsCare plantsCare = plantsCareRepo.findById(idCare).get();
+        TipsNTrick tipsNTrick = super.addTipsNTrick(tipsNTrickDTO);
+        plantsCare.getTipsNTricks().add(tipsNTrick);
+        tipsNTrick.setPlantsCareTips(plantsCare);
+        plantsCareRepo.save(plantsCare);
+    }
+
+    @Transactional
     @Override
     @CacheEvict(value = {"plantsAllDiseaseCache","plantsDiseaseByIdCache","userDataCache"}, allEntries = true)
     public void updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
         PlantsDisease plantsDisease = plantsDiseaseRepo.findById(plantAttributeDTO.getId()).get();
         if (plantAttributeDTO.getAttributePlantsType() != null) {
             plantsDisease.getPlantTypeDisease().getPlantsDiseases().remove(plantsDisease);
-            PlantTypeDisease plantTypeDisease = plantTypeDiseaseRepo.findById(plantAttributeDTO.getAttributePlantsType()).get();
+            PlantTypeDisease plantTypeDisease = null;
+            if(plantTypeDiseaseRepo.existsByType(plantAttributeDTO.getAttributePlantsType()))
+                plantTypeDisease = plantTypeDiseaseRepo.findByType(plantAttributeDTO.getAttributePlantsType()).get();
+            else {
+                PlantTypeDisease plantTypeDisease1 = new PlantTypeDisease();
+                plantTypeDisease1.setType(plantAttributeDTO.getAttributePlantsType());
+                plantTypeDisease = plantTypeDiseaseRepo.save(plantTypeDisease1);
+            }
             plantTypeDisease.getPlantsDiseases().add(plantsDisease);
             plantsDisease.setPlantTypeDisease(plantTypeDisease);
         }
@@ -200,5 +230,11 @@ public class DiseaseService extends PlantsCareService{
     private void deleteImage(String filename, StorageConfig.SubDir subDir, String error_message) {
         if (!storageConfig.deleteMedia(filename, subDir))
             throw new RuntimeException(error_message);
+    }
+
+    @Transactional
+    @CacheEvict(value = "plantsTypeDiseaseCache", allEntries = true)
+    public void deleteTypeDisease(String type) {
+        plantTypeDiseaseRepo.deleteByType(type);
     }
 }

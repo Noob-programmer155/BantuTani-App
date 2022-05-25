@@ -1,0 +1,76 @@
+spring:
+  profiles:
+    active: production
+bucket: <bucket name>
+directory: media
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-components: always
+      show-details: always
+      probes:
+        enabled: true
+subdirectory:
+  news: news
+  plants: plants
+  planting: planting
+  diseases: diseases
+  weeds: weeds
+  pests: pests
+  care: care
+  user: user
+filenotfoundicon: notfound.ico
+---
+server:
+  port: 8080
+spring:
+  profiles: development
+  cloud:
+    gcp:
+      datastore:
+        project-id: <location>
+      sql:
+        enabled: false
+      storage:
+        credentials:
+          location: <location>
+  datasource:
+    url: jdbc:mysql://localhost:3306/bantutani
+    username: root
+    password: AmarM124890#
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+---
+spring:
+  profiles: production
+  cloud:
+    gcp:
+      datastore:
+        project-id: <project-id>
+      sql:
+        enabled: true
+        database-name: <db name>
+        instance-connection-name: <connection name>
+        credentials:
+          location: <location>
+      storage:
+        credentials:
+          location: <location>
+  datasource:
+    initialization-mode: always
+    username: <name>
+    password: <pass>
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDB53Dialect
