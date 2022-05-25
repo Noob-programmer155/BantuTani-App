@@ -33,6 +33,7 @@ build/
 .vscode/
 
 ### Data ###
-application.yml
-key.json
-.yml
+!**/src/main/**/application.yml
+*.json
+*.yml
+*.yaml
