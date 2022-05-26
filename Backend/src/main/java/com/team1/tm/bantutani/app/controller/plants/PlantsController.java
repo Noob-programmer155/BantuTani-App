@@ -31,34 +31,34 @@ public class PlantsController  {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true, 10));
     }
 
-    @GetMapping(value = "/plants/v1/care/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/public/plants/v1/care/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
     @Tag(name = "Get Plants Care Image Plants", description = "get image plants care from plants service")
     public byte[] getPlantsCareMedia(@PathVariable String name) {
         return plantsService.getPlantsCareImage(name);
     }
-    @GetMapping(value = "/plants/v1/animation/{name}", produces = MediaType.IMAGE_GIF_VALUE)
+    @GetMapping(value = "/public/plants/v1/animation/{name}", produces = MediaType.IMAGE_GIF_VALUE)
     @Tag(name = "Get Animation", description = "get animation from plants service")
     public byte[] getAnimationMedia(@PathVariable String name) {
         return plantsService.getAnimationData(name);
     }
-    @GetMapping(value = "/plants/v1/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/public/plants/v1/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
     @Tag(name = "Get Plants Image Plants", description = "get plants image from plants service")
     public byte[] getPlantsMedia(@PathVariable String name) {
         return plantsService.getPlantsImage(name);
     }
-    @GetMapping(value = "/plants/v1/planting/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/public/plants/v1/planting/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
     @Tag(name = "Get Plants Planting Image", description = "get planting image from plants service")
     public byte[] getPlantsPlantingMedia(@PathVariable String name) {
         return plantsService.getPlantingPlantsImage(name);
     }
 
-    @GetMapping("/plants/v1/data/all")
+    @GetMapping("/public/plants/v1/data/all")
     @Tag(name = "Get Plants Data All", description = "get all plants data with minimum information")
     public List<PlantsResponseMinDTO> getData(@RequestParam int page, @RequestParam int size) {
         return plantsService.getAllDataPlants(page, size);
     }
 
-    @GetMapping("/plants/v1/data/{id}")
+    @GetMapping("/public/plants/v1/data/{id}")
     @Tag(name = "Get Plants", description = "get details information about plant")
     public PlantsResponseDTO getData(@PathVariable Long id) {
         return plantsService.getDataPlants(id);

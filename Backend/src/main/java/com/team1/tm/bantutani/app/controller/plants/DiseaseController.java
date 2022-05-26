@@ -33,23 +33,23 @@ public class DiseaseController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true, 10));
     }
 
-    @GetMapping(value = "/plants/disease/v1/care/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/public/plants/disease/v1/care/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
     @Tag(name = "Get Plants Care Image Disease", description = "get plants care image from disease service")
     public byte[] getPlantsCareMedia(@PathVariable String name) {
         return diseaseService.getPlantsCareImage(name);
     }
 
-    @GetMapping(value = "/plants/disease/v1/animation/{name}", produces = MediaType.IMAGE_GIF_VALUE)
+    @GetMapping(value = "/public/plants/disease/v1/animation/{name}", produces = MediaType.IMAGE_GIF_VALUE)
     @Tag(name = "Get Animation Disease", description = "get animation from disease service")
     public byte[] getAnimationMedia(@PathVariable String name) {
         return diseaseService.getAnimationData(name);
     }
 
-    @GetMapping(value = "/plants/disease/v1/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/public/plants/disease/v1/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
     @Tag(name = "Get Plants Disease Image", description = "get plants disease image")
     public byte[] getPlantsDiseaseMedia(@PathVariable String name) { return diseaseService.getPlantsDiseaseImage(name); }
 
-    @GetMapping("/plants/disease/v1/data/{plantId}")
+    @GetMapping("/public/plants/disease/v1/data/get/{plantId}")
     @Tag(name = "Get All Plants Disease", description = "get all plants disease data with pagination that have relation to specific plant with minimum information")
     public List<PlantAttributeResponseMinDTO> getDatas(@PathVariable Long plantId,
                                                        @RequestParam int page,
@@ -57,7 +57,7 @@ public class DiseaseController {
         return diseaseService.getPlantsDisease(plantId, page, size);
     }
 
-    @GetMapping("/plants/disease/v1/data/self/{id}")
+    @GetMapping("/public/plants/disease/v1/data/self/{id}")
     @Tag(name = "Get Plants Disease", description = "get plants disease with detailed information")
     public PlantAttributeResponseDTO getData(@PathVariable Long id) {
         return diseaseService.getPlantDisease(id);

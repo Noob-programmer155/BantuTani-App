@@ -12,15 +12,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TokenFilter extends OncePerRequestFilter {
     private TokenManager tokenManager;
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
     private List<String> ignorePath;
-    public TokenFilter(TokenManager tokenManager, List<String> ignorePath) {
-        this.tokenManager = tokenManager;
-        this.ignorePath = ignorePath;
+    public TokenFilter(Builder builder) {
+        this.tokenManager = builder.tokenManager;
+        this.ignorePath = builder.ignorePath;
     }
 
     @Override
@@ -45,5 +46,21 @@ public class TokenFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return ignorePath.stream().anyMatch(item -> antPathMatcher.match(item,request.getRequestURI()));
+    }
+
+    public static class Builder {
+        private List<String> ignorePath = new ArrayList<>();
+        private TokenManager tokenManager;
+        public Builder addPath(List<String> path) {
+            this.ignorePath.addAll(path);
+            return this;
+        }
+        public Builder addTokenManager(TokenManager tokenManager) {
+            this.tokenManager = tokenManager;
+            return this;
+        }
+        public TokenFilter build() {
+            return new TokenFilter(this);
+        }
     }
 }

@@ -11,7 +11,7 @@
 	<groupId>com.team.01.tm</groupId>
 	<artifactId>bantutani.app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>BantuTaniApp</name>
 	<description>Backend Server for BantuTani App</description>
 	<properties>

@@ -35,7 +35,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/user/v1/login","/user/v1/signup");
+        web.ignoring().antMatchers("/public/**");
     }
 
     @Override
@@ -49,7 +49,8 @@ public class Security extends WebSecurityConfigurerAdapter {
                 authorizeRequests().antMatchers("/actuator","/swagger-ui/**","/v3/**").hasAuthority("ADMIN")
                 .antMatchers("/user/**","/plants/**","/media/**","/commodity/**","/news/**").permitAll().
                 anyRequest().authenticated();
-        http.addFilterBefore(new TokenFilter(tokenManager, Arrays.asList("/user/v1/login","/user/v1/signup")), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new TokenFilter.Builder().addTokenManager(tokenManager).
+                addPath(Arrays.asList("/public/**")).build(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

@@ -59,13 +59,13 @@ public class MainController {
 
     // ================================== API Harga Komoditi ==============================
 
-    @GetMapping("/commodity/v1/data/image/{name}")
+    @GetMapping("/public/commodity/v1/data/image/{name}")
     @Tag(name = "Get Image Commodity", description = "get image icon commodity data")
     public byte[] getCommodityImage(@PathVariable String name) {
         return commodityService.getDataImage(name);
     }
 
-    @GetMapping("/commodity/v1/data/all")
+    @GetMapping("/public/commodity/v1/data/all")
     @Tag(name = "Get List Commodity", description = "get list commodity data")
     public List<CommodityResponseDTO> getCommodityList(@RequestParam int page, @RequestParam int size) {
         return commodityService.getCommodityList(page, size);
@@ -97,6 +97,7 @@ public class MainController {
     // ================================== API Avatar ======================================
 
     @GetMapping("/user/v1/avatar/get/all")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER','FARMER','EXPERTS','DISTRIBUTOR','SALES')")
     @Tag(name = "Get Image Avatar", description = "get images Avatar for User")
     public List<String> getAvatar(@RequestParam int page, @RequestParam int size) {
         return avatarRepo.findAll(PageRequest.of(page, size)).map(item -> item.getName()).getContent();
@@ -159,7 +160,7 @@ public class MainController {
                 collect(Collectors.toList())).build();
     }
 
-    @PostMapping("/user/v1/signup")
+    @PostMapping("/public/user/v1/signup")
     @Tag(name = "Sign Up", description = "user sign up, default")
     public String signUp(@ModelAttribute UserDTO userDTO) {
         User user = new User.Builder().email(userDTO.getEmail()).
@@ -182,7 +183,7 @@ public class MainController {
         return "success";
     }
 
-    @PostMapping("/user/v1/login")
+    @PostMapping("/public/user/v1/login")
     @Tag(name = "Login", description = "user login for all users")
     public UserResponseDTO login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
         try {
@@ -262,7 +263,7 @@ public class MainController {
 
     // ==================================
 
-    @GetMapping("/media/v1/animation/data/{type}")
+    @GetMapping("/public/media/v1/animation/data/{type}")
     @Tag(name = "Get Animations", description = "get all animation in the specific type and size")
     public List<String> getAnimationList(@PathVariable String type,
                                          @RequestParam int page,

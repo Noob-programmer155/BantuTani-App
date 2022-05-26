@@ -31,14 +31,14 @@ public class NewsController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true, 10));
     }
 
-    @GetMapping(value = "/news/v1/media/{name}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/public/news/v1/media/{name}", produces = MediaType.IMAGE_PNG_VALUE)
     @Tag(name = "Get News Image", description = "get news image")
     @ResponseBody
     private byte[] getMedia(@PathVariable String name) {
         return newsService.getMedia(name);
     }
 
-    @GetMapping("/news/v1/{start}/{end}/get")
+    @GetMapping("/public/news/v1/data/{start}/{end}/get")
     @Tag(name = "Get News Between 2 Date", description = "get news data between 2 dates with pagination")
     @ResponseBody
     private List<NewsResponseMinDTO> getAllNews(@PathVariable Date start,
@@ -48,7 +48,7 @@ public class NewsController {
         return newsService.getAllNews(start, end, page, size);
     }
 
-    @GetMapping("/news/v1/{mount}/search")
+    @GetMapping("/public/news/v1/data/{mount}/search")
     @Tag(name = "News Search", description = "search suggestion for news with title based response and mount of data to displayed (static)")
     @ResponseBody
     private List<String> search(@RequestParam(value = "q") String quest,
@@ -56,7 +56,7 @@ public class NewsController {
         return newsService.getSearchTitles(quest, mount);
     }
 
-    @GetMapping("/news/v1/search/get")
+    @GetMapping("/public/news/v1/search/get")
     @Tag(name = "News Response Data Search", description = "get data from user search")
     @ResponseBody
     private List<NewsResponseMinDTO> getDataSearch(@RequestParam(value = "q") String quest,
@@ -64,7 +64,7 @@ public class NewsController {
         return newsService.getNews(quest, page, size);
     }
 
-    @GetMapping("/news/v1/get")
+    @GetMapping("/public/news/v1/data/get")
     @Tag(name = "News Response Data", description = "get detailed data from user")
     @ResponseBody
     private NewsResponseDTO getData(@RequestParam Long id) {

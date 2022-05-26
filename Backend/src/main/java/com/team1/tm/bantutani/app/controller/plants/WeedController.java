@@ -32,25 +32,25 @@ public class WeedController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true, 10));
     }
 
-    @GetMapping(value = "/plants/weed/v1/care/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/public/plants/weed/v1/care/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
     @Tag(name = "Get Plants Care Image Weed", description = "get plants care image from weed service")
     public byte[] getPlantsCareMedia(@PathVariable String name) {
         return weedService.getPlantsCareImage(name);
     }
 
-    @GetMapping(value = "/plants/weed/v1/animation/{name}", produces = MediaType.IMAGE_GIF_VALUE)
+    @GetMapping(value = "/public/plants/weed/v1/animation/{name}", produces = MediaType.IMAGE_GIF_VALUE)
     @Tag(name = "Get Animation Weed", description = "get animation from weed service")
     public byte[] getAnimationMedia(@PathVariable String name) {
         return weedService.getAnimationData(name);
     }
 
-    @GetMapping(value = "/plants/weed/v1/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/public/plants/weed/v1/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
     @Tag(name = "Get Plants Weed Image", description = "get plants weed image")
     public byte[] getPlantsWeedMedia(@PathVariable String name) {
         return weedService.getPlantsWeedImage(name);
     }
 
-    @GetMapping("/plants/weed/v1/data/{plantId}")
+    @GetMapping("/public/plants/weed/v1/data/get/{plantId}")
     @Tag(name = "Get All Plants Weed", description = "get all plants weed data with pagination that have relation to specific plant with minimum information")
     public List<PlantAttributeResponseMinDTO> getDatas(@PathVariable Long plantId,
                                                        @RequestParam int page,
@@ -58,7 +58,7 @@ public class WeedController {
         return weedService.getPlantsWeed(plantId, page, size);
     }
 
-    @GetMapping("/plants/weed/v1/data/self/{id}")
+    @GetMapping("/public/plants/weed/v1/data/self/{id}")
     @Tag(name = "Get Plants Weed", description = "get plants weed data with detailed information")
     public PlantAttributeResponseDTO getData(@PathVariable Long id) {
         return weedService.getPlantWeed(id);
