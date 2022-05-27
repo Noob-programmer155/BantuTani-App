@@ -1,5 +1,7 @@
 package com.team1.tm.bantutani.app.configuration;
 
+import com.google.auth.Credentials;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.WriteChannel;
 import com.google.cloud.storage.*;
 import com.team1.tm.bantutani.app.configuration.storage.SubPathConfiguration;
@@ -13,6 +15,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -51,8 +54,10 @@ public class StorageConfig {
         }
     }
 
-    StorageConfig(Storage storage, SubPathConfiguration subPathConfiguration) {
-        this.storage = storage;
+    StorageConfig(SubPathConfiguration subPathConfiguration) throws IOException {
+        Credentials credentials = GoogleCredentials.fromStream(
+                StorageConfig.class.getResourceAsStream("/cred/outstanding-pen-351301-f36460e3ef2d.json"));
+        this.storage = StorageOptions.newBuilder().setCredentials(credentials).setProjectId("outstanding-pen-351301").build().getService();
         subPathConfigurations = subPathConfiguration;
     }
 
