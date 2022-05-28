@@ -51,7 +51,7 @@ public class NewsService {
                 new NewsResponseMinDTO.Builder().
                         id(item.getId()).
                         title(item.getTitle()).
-                        images(item.getImages().get(0)).
+                        images((!item.getImages().isEmpty())?item.getImages().get(0):null).
                         video(item.getVideo()).
                         date(item.getDates()).
                         build()).getContent();
@@ -69,7 +69,7 @@ public class NewsService {
                 new NewsResponseMinDTO.Builder().
                         id(item.getId()).
                         title(item.getTitle()).
-                        images(item.getImages().get(0)).
+                        images((!item.getImages().isEmpty())?item.getImages().get(0):null).
                         video(item.getVideo()).
                         date(item.getDates()).
                         build()).getContent();
