@@ -96,8 +96,7 @@ public class MainController {
 
     // ================================== API Avatar ======================================
 
-    @GetMapping("/user/v1/avatar/get/all")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER','FARMER','EXPERTS','DISTRIBUTOR','SALES')")
+    @GetMapping("/public/user/v1/avatar/get/all")
     @Tag(name = "Get Image Avatar", description = "get images Avatar for User")
     public List<String> getAvatar(@RequestParam int page, @RequestParam int size) {
         return avatarRepo.findAll(PageRequest.of(page, size)).map(item -> item.getName()).getContent();
@@ -252,11 +251,13 @@ public class MainController {
     @Transactional
     public String delete(@RequestParam Long id) {
         User user = userRepo.findById(id).get();
-        if (user.getStatus() != Status.EXPERTS || user.getStatus() != Status.ADMIN) {
-            userRepo.delete(user);
-        } else {
-            user.setDisable(true);
-            userRepo.save(user);
+        if(user.getStatus() != Status.ADMIN) {
+            if (user.getStatus() != Status.EXPERTS) {
+                userRepo.delete(user);
+            } else {
+                user.setDisable(true);
+                userRepo.save(user);
+            }
         }
         return "success";
     }
