@@ -42,7 +42,7 @@ public class CommodityService {
     @Cacheable(value = "listCommodityCache")
     public List<CommodityResponseDTO> getCommodityList(int page, int size) {
         return costPlantsRepo.findAll(PageRequest.of(page, size)).map(item -> {
-            String filename = item.getPlants().getPlantTypeImpl().getType()+".ico";
+            String filename = item.getPlants().getPlantTypeImpl().getType()+".png";
             if(!storageConfig.checkFileExist(filename, StorageConfig.SubDir.ICON))
                 filename = fileNotFound;
             Boolean status = null;
@@ -68,11 +68,12 @@ public class CommodityService {
 
     @Transactional
     @CacheEvict(value = {"listAllPlantsType","listCommodityCache"},allEntries = true)
-    public void addIcon(MultipartFile file, Long id) {
+    public String addIcon(MultipartFile file, Long id) {
         PlantTypeImpl plantType = plantTypeImplRepo.findById(id).get();
         storageConfig.addMediaWithName(file, plantType.getType(), StorageConfig.SubDir.ICON);
         plantType.setIcon(true);
         plantTypeImplRepo.save(plantType);
+        return plantType.getType();
     }
 
     @Transactional

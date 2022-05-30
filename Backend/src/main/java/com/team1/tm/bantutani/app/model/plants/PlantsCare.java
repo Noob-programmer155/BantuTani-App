@@ -16,6 +16,8 @@ public class PlantsCare {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(nullable = false)
+    private Long step;
     @Column(length=5000000)
     private String description;
     @Enumerated
@@ -44,6 +46,7 @@ public class PlantsCare {
     public PlantsCare() {}
 
     public PlantsCare(Builder builder) {
+        this.step = builder.step;
         this.description = builder.description;
         this.careType = builder.careType;
         this.animation = builder.animation;
@@ -62,6 +65,14 @@ public class PlantsCare {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getStep() {
+        return step;
+    }
+
+    public void setStep(Long step) {
+        this.step = step;
     }
 
     public String getDescription() {
@@ -147,6 +158,7 @@ public class PlantsCare {
     }
 
     public static class Builder {
+        private Long step;
         private String description;
         private CareType careType;
         private String animation;
@@ -157,6 +169,10 @@ public class PlantsCare {
         private PlantsWeeds plantsWeedsCare;
         private PlantsPest plantsPestCare;
         private Plants plants;
+        public Builder step(Long step) {
+            this.step = step;
+            return this;
+        }
         public Builder description(String description) {
             this.description = description;
             return this;
@@ -175,18 +191,6 @@ public class PlantsCare {
         }
         public Builder video(String video) {
             this.video = video;
-            return this;
-        }
-        public Builder plantsDiseaseCare(PlantsDisease plantsDisease) {
-            this.plantsDiseaseCare = plantsDisease;
-            return this;
-        }
-        public Builder plantsWeedsCare(PlantsWeeds plantsWeeds) {
-            this.plantsWeedsCare = plantsWeeds;
-            return this;
-        }
-        public Builder plantsPestCare(PlantsPest plantsPest) {
-            this.plantsPestCare = plantsPest;
             return this;
         }
         public Builder author(User author) {

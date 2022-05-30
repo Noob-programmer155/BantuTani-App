@@ -5,6 +5,7 @@ import com.team1.tm.bantutani.app.dto.PlantAttributeDTO;
 import com.team1.tm.bantutani.app.dto.PlantsCareDTO;
 import com.team1.tm.bantutani.app.dto.TipsNTrickDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseDTO;
+import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseDetectionDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseMinDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantsCareResponseDTO;
 import com.team1.tm.bantutani.app.model.Plants;
@@ -47,13 +48,18 @@ public class DiseaseService extends PlantsCareService{
 
     @Cacheable(value = "plantsAllDiseaseCache", key = "#id")
     public List<PlantAttributeResponseMinDTO> getPlantsDisease(Long id, int page, int size) {
-        return plantsDiseaseRepo.findAllByPlantsId(id, PageRequest.of(page, size)).stream().map(item -> convertPlantDiseaseToMinDTO(item)).
+        return plantsDiseaseRepo.findDistinctByPlantsId(id, PageRequest.of(page, size)).stream().map(item -> convertPlantDiseaseToMinDTO(item)).
                 collect(Collectors.toList());
     }
     
     @Cacheable(value = "plantsDiseaseByIdCache", key = "#id")
     public PlantAttributeResponseDTO getPlantDisease(Long id) {
         return plantsDiseaseRepo.findById(id).map(item -> convertPlantDiseaseToDTO(item)).get();
+    }
+
+    @Cacheable(value = "plantsDiseaseDetectionByIdCache")
+    public List<PlantAttributeResponseDetectionDTO> getPlantDiseaseDetection(List<Long> id) {
+        return plantsDiseaseRepo.findAllById(id).stream().map(item -> convertPlantDiseaseToDTODetection(item)).collect(Collectors.toList());
     }
 
     @Cacheable(value = "plantsTypeDiseaseCache")
@@ -71,6 +77,13 @@ public class DiseaseService extends PlantsCareService{
                 care(getPlantsCare(plantsDisease.getPlantsCares())).build();
     }
 
+    public PlantAttributeResponseDetectionDTO convertPlantDiseaseToDTODetection(PlantsDisease plantsDisease) {
+        return new PlantAttributeResponseDetectionDTO.Builder().id(plantsDisease.getId()).
+                description(plantsDisease.getDescription()).
+                image((plantsDisease.getImages().size() > 3)?plantsDisease.getImages().subList(0,3):plantsDisease.getImages()).
+                care(getPlantsCare(plantsDisease.getPlantsCares())).build();
+    }
+
     public PlantAttributeResponseMinDTO convertPlantDiseaseToMinDTO(PlantsDisease plantsDisease) {
         PlantAttributeResponseMinDTO responseMinDTO = new PlantAttributeResponseMinDTO.Builder().id(plantsDisease.getId()).
                 name(plantsDisease.getName()).
@@ -82,25 +95,26 @@ public class DiseaseService extends PlantsCareService{
 
     private List<PlantsCareResponseDTO> getPlantsCare(List<PlantsCare> plantsCares) {
         return plantsCares.stream().map(item -> convertPlantsCareToDTO(item)).
+                sorted((item1,item2) -> item1.getStep().compareTo(item2.getStep())).
                 collect(Collectors.toList());
     }
 
-    @CacheEvict(value = {"plantsDiseaseByIdCache"}, allEntries = true)
+    @CacheEvict(value = {"plantsDiseaseByIdCache","plantsDiseaseDetectionByIdCache"}, allEntries = true)
     @Override
-    public void updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
-        super.updatePlantsCare(plantsCareDTO);
+    public String updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
+        return super.updatePlantsCare(plantsCareDTO);
     }
-    @CacheEvict(value = {"plantsDiseaseByIdCache"}, allEntries = true)
+    @CacheEvict(value = {"plantsDiseaseByIdCache","plantsDiseaseDetectionByIdCache"}, allEntries = true)
     @Override
     public void deletePlantsCare(Long id) {
         super.deletePlantsCare(id);
     }
-    @CacheEvict(value = {"plantsDiseaseByIdCache"}, allEntries = true)
+    @CacheEvict(value = {"plantsDiseaseByIdCache","plantsDiseaseDetectionByIdCache"}, allEntries = true)
     @Override
     public void updateTipsNTrick(TipsNTrickDTO tipsNTrickDTO) {
         super.updateTipsNTrick(tipsNTrickDTO);
     }
-    @CacheEvict(value = {"plantsDiseaseByIdCache"}, allEntries = true)
+    @CacheEvict(value = {"plantsDiseaseByIdCache","plantsDiseaseDetectionByIdCache"}, allEntries = true)
     @Override
     public void deleteTipsNTrick(Long id) {
         super.deleteTipsNTrick(id);
@@ -135,17 +149,18 @@ public class DiseaseService extends PlantsCareService{
     }
 
     @Transactional
-    @CacheEvict(value = {"plantsDiseaseByIdCache"}, allEntries = true)
-    public void addPlantsCare(PlantsCareDTO plantsCareDTO, Long id) {
+    @CacheEvict(value = {"plantsDiseaseByIdCache","plantsDiseaseDetectionByIdCache"}, allEntries = true)
+    public String addPlantsCare(PlantsCareDTO plantsCareDTO, Long id) {
         PlantsDisease plantsDisease = plantsDiseaseRepo.findById(id).get();
         PlantsCare plantsCare = super.addPlantsCare(plantsCareDTO);
         plantsDisease.getPlantsCares().add(plantsCare);
         plantsCare.setPlantsDiseaseCare(plantsDisease);
         plantsDiseaseRepo.save(plantsDisease);
+        return plantsDisease.getName();
     }
 
     @Transactional
-    @CacheEvict(value = {"plantsDiseaseByIdCache"}, allEntries = true)
+    @CacheEvict(value = {"plantsDiseaseByIdCache","plantsDiseaseDetectionByIdCache"}, allEntries = true)
     public void addTipsNTrickCare(TipsNTrickDTO tipsNTrickDTO, Long idCare) {
         PlantsCare plantsCare = plantsCareRepo.findById(idCare).get();
         TipsNTrick tipsNTrick = super.addTipsNTrick(tipsNTrickDTO);
@@ -156,8 +171,8 @@ public class DiseaseService extends PlantsCareService{
 
     @Transactional
     @Override
-    @CacheEvict(value = {"plantsAllDiseaseCache","plantsDiseaseByIdCache","userDataCache"}, allEntries = true)
-    public void updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
+    @CacheEvict(value = {"plantsAllDiseaseCache","plantsDiseaseByIdCache","plantsDiseaseDetectionByIdCache","userDataCache"}, allEntries = true)
+    public String updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
         PlantsDisease plantsDisease = plantsDiseaseRepo.findById(plantAttributeDTO.getId()).get();
         if (plantAttributeDTO.getAttributePlantsType() != null) {
             plantsDisease.getPlantTypeDisease().getPlantsDiseases().remove(plantsDisease);
@@ -178,16 +193,17 @@ public class DiseaseService extends PlantsCareService{
             plantsDisease.setName(plantAttributeDTO.getName());
         if (plantAttributeDTO.getOtherNames() != null)
             plantsDisease.setOtherNames(plantAttributeDTO.getOtherNames());
-        plantsDiseaseRepo.save(plantsDisease);
+        PlantsDisease plantsDisease1 = plantsDiseaseRepo.save(plantsDisease);
+        return plantsDisease1.getName();
     }
 
     @Transactional
     @Override
     @Caching(evict = {
-            @CacheEvict(value = {"plantsAllDiseaseCache"}, allEntries = true),
+            @CacheEvict(value = {"plantsAllDiseaseCache","plantsDiseaseDetectionByIdCache"}, allEntries = true),
             @CacheEvict(value = {"plantsDiseaseByIdCache"}, key = "#id", condition = "#id!=null")
     })
-    public void updateImageDataAttribute(MultipartFile file, String filename, Long id, boolean delete) {
+    public String updateImageDataAttribute(MultipartFile file, String filename, Long id, boolean delete) {
         PlantsDisease plantsDisease = plantsDiseaseRepo.findById(id).get();
         if (delete) {
             deleteImage(filename, plantsDisease);
@@ -195,16 +211,18 @@ public class DiseaseService extends PlantsCareService{
             plantsDisease.getImages().add(storageConfig.addMedia(file,"diseaseImages", StorageConfig.SubDir.DISEASE));
         }
         plantsDiseaseRepo.save(plantsDisease);
+        return plantsDisease.getName();
     }
 
     @Transactional
     @Override
     @Caching(evict = {
-            @CacheEvict(value = {"plantsAllDiseaseCache","userDataCache"}, allEntries = true),
+            @CacheEvict(value = {"plantsAllDiseaseCache","userDataCache","plantsDiseaseDetectionByIdCache"}, allEntries = true),
             @CacheEvict(value = {"plantsDiseaseByIdCache"}, key = "#id", condition = "#id!=null")
     })
-    public void deleteDataAttribute(Long id) {
+    public String deleteDataAttribute(Long id) {
         PlantsDisease plantsDisease = plantsDiseaseRepo.findById(id).get();
+        String name = plantsDisease.getName();
         plantsDisease.getImages().forEach(item -> {
             deleteImage(item, StorageConfig.SubDir.DISEASE, "failed delete disease, something wrong with file images, please try again");
         });
@@ -218,6 +236,7 @@ public class DiseaseService extends PlantsCareService{
         });
         PlantsDisease plantsDisease1 = plantsDiseaseRepo.save(plantsDisease);
         plantsDiseaseRepo.delete(plantsDisease1);
+        return name;
     }
 
     @CacheEvict(value = "plantsDiseaseImageCache", key = "#filename")

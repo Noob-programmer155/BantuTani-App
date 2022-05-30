@@ -79,13 +79,14 @@ public class WeedService extends PlantsCareService{
 
     public List<PlantsCareResponseDTO> getPlantsCare(List<PlantsCare> plantsCare) {
         return plantsCare.stream().map(item -> convertPlantsCareToDTO(item)).
+                sorted((item1,item2) -> item1.getStep().compareTo(item2.getStep())).
                 collect(Collectors.toList());
     }
 
     @CacheEvict(value = {"plantsWeedByIdCache"}, allEntries = true)
     @Override
-    public void updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
-        super.updatePlantsCare(plantsCareDTO);
+    public String updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
+        return super.updatePlantsCare(plantsCareDTO);
     }
     @CacheEvict(value = {"plantsWeedByIdCache"}, allEntries = true)
     @Override
@@ -131,12 +132,13 @@ public class WeedService extends PlantsCareService{
 
     @Transactional
     @CacheEvict(value = {"plantsWeedByIdCache"}, allEntries = true)
-    public void addPlantsCare(PlantsCareDTO plantsCareDTO, Long id) {
+    public String addPlantsCare(PlantsCareDTO plantsCareDTO, Long id) {
         PlantsWeeds plantsWeeds = plantsWeedsRepo.findById(id).get();
         PlantsCare plantsCare = super.addPlantsCare(plantsCareDTO);
         plantsWeeds.getPlantsCares().add(plantsCare);
         plantsCare.setPlantsWeedsCare(plantsWeeds);
         plantsWeedsRepo.save(plantsWeeds);
+        return plantsWeeds.getName();
     }
 
     @Transactional
@@ -152,7 +154,7 @@ public class WeedService extends PlantsCareService{
     @Transactional
     @Override
     @CacheEvict(value = {"plantsAllWeedCache","plantsWeedByIdCache","userDataCache"}, allEntries = true)
-    public void updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
+    public String updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
         PlantsWeeds plantsWeeds = plantsWeedsRepo.findById(plantAttributeDTO.getId()).get();
         if (plantAttributeDTO.getAttributePlantsType() != null) {
             plantsWeeds.getPlantTypeWeed().getPlantsWeeds().remove(plantsWeeds);
@@ -173,7 +175,8 @@ public class WeedService extends PlantsCareService{
             plantsWeeds.setName(plantAttributeDTO.getName());
         if (plantAttributeDTO.getOtherNames() != null)
             plantsWeeds.setOtherNames(plantAttributeDTO.getOtherNames());
-        plantsWeedsRepo.save(plantsWeeds);
+        PlantsWeeds plantsWeeds1 = plantsWeedsRepo.save(plantsWeeds);
+        return plantsWeeds1.getName();
     }
 
     @Transactional
@@ -182,7 +185,7 @@ public class WeedService extends PlantsCareService{
             @CacheEvict(value = {"plantsAllWeedCache"}, allEntries = true),
             @CacheEvict(value = {"plantsWeedByIdCache"}, key = "#id", condition = "#id!=null")
     })
-    public void updateImageDataAttribute(MultipartFile file, String filename, Long id, boolean delete) {
+    public String updateImageDataAttribute(MultipartFile file, String filename, Long id, boolean delete) {
         PlantsWeeds plantsWeeds = plantsWeedsRepo.findById(id).get();
         if (delete) {
             deleteImage(filename, plantsWeeds);
@@ -190,6 +193,7 @@ public class WeedService extends PlantsCareService{
             plantsWeeds.getImages().add(storageConfig.addMedia(file,"weedImages", StorageConfig.SubDir.WEEDS));
         }
         plantsWeedsRepo.save(plantsWeeds);
+        return plantsWeeds.getName();
     }
 
     @Transactional
@@ -198,8 +202,9 @@ public class WeedService extends PlantsCareService{
             @CacheEvict(value = {"plantsAllWeedCache","userDataCache"}, allEntries = true),
             @CacheEvict(value = {"plantsWeedByIdCache"}, key = "#id", condition = "#id!=null")
     })
-    public void deleteDataAttribute(Long id) {
+    public String deleteDataAttribute(Long id) {
         PlantsWeeds plantsWeeds = plantsWeedsRepo.findById(id).get();
+        String name = plantsWeeds.getName();
         plantsWeeds.getImages().forEach(item -> {
             deleteImage(item, StorageConfig.SubDir.WEEDS, "failed delete weed, something wrong with file images, please try again");
         });
@@ -213,6 +218,7 @@ public class WeedService extends PlantsCareService{
         });
         PlantsWeeds plantsWeeds1 = plantsWeedsRepo.save(plantsWeeds);
         plantsWeedsRepo.delete(plantsWeeds1);
+        return name;
     }
 
     @CacheEvict(value = "plantsWeedImageCache", key = "#filename")

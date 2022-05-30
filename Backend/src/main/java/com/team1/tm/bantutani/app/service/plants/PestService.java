@@ -83,13 +83,14 @@ public class PestService extends PlantsCareService{
 
     public List<PlantsCareResponseDTO> getPlantsCare(List<PlantsCare> plantsCares) {
         return plantsCares.stream().map(item -> convertPlantsCareToDTO(item)).
+                sorted((item1,item2) -> item1.getStep().compareTo(item2.getStep())).
                 collect(Collectors.toList());
     }
 
     @CacheEvict(value = {"plantsPestByIdCache"}, allEntries = true)
     @Override
-    public void updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
-        super.updatePlantsCare(plantsCareDTO);
+    public String updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
+        return super.updatePlantsCare(plantsCareDTO);
     }
     @CacheEvict(value = {"plantsPestByIdCache"}, allEntries = true)
     @Override
@@ -135,12 +136,13 @@ public class PestService extends PlantsCareService{
 
     @Transactional
     @CacheEvict(value = {"plantsPestByIdCache"}, allEntries = true)
-    public void addPlantsCare(PlantsCareDTO plantsCareDTO, Long id) {
+    public String addPlantsCare(PlantsCareDTO plantsCareDTO, Long id) {
         PlantsPest plantsPest = plantsPestRepo.findById(id).get();
         PlantsCare plantsCare = super.addPlantsCare(plantsCareDTO);
         plantsPest.getPlantsCares().add(plantsCare);
         plantsCare.setPlantsPestCare(plantsPest);
         plantsPestRepo.save(plantsPest);
+        return plantsPest.getName();
     }
 
     @Transactional
@@ -156,7 +158,7 @@ public class PestService extends PlantsCareService{
     @Transactional
     @Override
     @CacheEvict(value = {"plantsAllPestCache","plantsPestByIdCache","userDataCache"}, allEntries = true)
-    public void updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
+    public String updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
         PlantsPest plantsPest = plantsPestRepo.findById(plantAttributeDTO.getId()).get();
         if (plantAttributeDTO.getAttributePlantsType() != null) {
             plantsPest.getPlantTypePest().getPlantsPests().remove(plantsPest);
@@ -178,7 +180,8 @@ public class PestService extends PlantsCareService{
             plantsPest.setName(plantAttributeDTO.getName());
         if (plantAttributeDTO.getOtherNames() != null)
             plantsPest.setOtherNames(plantAttributeDTO.getOtherNames());
-        plantsPestRepo.save(plantsPest);
+        PlantsPest plantsPest1 = plantsPestRepo.save(plantsPest);
+        return plantsPest1.getName();
     }
 
     @Transactional
@@ -187,7 +190,7 @@ public class PestService extends PlantsCareService{
             @CacheEvict(value = {"plantsAllPestCache"}, allEntries = true),
             @CacheEvict(value = {"plantsPestByIdCache"}, key = "#id", condition = "#id!=null")
     })
-    public void updateImageDataAttribute(MultipartFile file, String filename, Long id, boolean delete) {
+    public String updateImageDataAttribute(MultipartFile file, String filename, Long id, boolean delete) {
         PlantsPest plantsPest = plantsPestRepo.findById(id).get();
         if (delete) {
             deleteImage(filename, plantsPest);
@@ -195,6 +198,7 @@ public class PestService extends PlantsCareService{
             plantsPest.getImages().add(storageConfig.addMedia(file,"pestImages", StorageConfig.SubDir.PEST));
         }
         plantsPestRepo.save(plantsPest);
+        return plantsPest.getName();
     }
 
     @Transactional
@@ -203,8 +207,9 @@ public class PestService extends PlantsCareService{
             @CacheEvict(value = {"plantsAllPestCache","userDataCache"}, allEntries = true),
             @CacheEvict(value = {"plantsPestByIdCache"}, key = "#id", condition = "#id!=null")
     })
-    public void deleteDataAttribute(Long id) {
+    public String deleteDataAttribute(Long id) {
         PlantsPest plantsPest = plantsPestRepo.findById(id).get();
+        String name = plantsPest.getName();
         plantsPest.getImages().forEach(item -> {
             deleteImage(item, StorageConfig.SubDir.PEST, "failed delete pest, something wrong with file images, please try again");
         });
@@ -218,6 +223,7 @@ public class PestService extends PlantsCareService{
         });
         PlantsPest plantsPest1 = plantsPestRepo.save(plantsPest);
         plantsPestRepo.delete(plantsPest1);
+        return name;
     }
 
     @CacheEvict(value = "plantsPestImageCache", key = "#filename")

@@ -18,6 +18,8 @@ public class PlantsPlanting {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(nullable = false)
+    private Long step;
     @Column(length = 5000000)
     private String description;
     private String animation;
@@ -36,6 +38,7 @@ public class PlantsPlanting {
     }
 
     public PlantsPlanting(Builder builder) {
+        this.step = builder.step;
         this.description = builder.description;
         this.animation = builder.animation;
         this.image = builder.image;
@@ -50,6 +53,14 @@ public class PlantsPlanting {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getStep() {
+        return step;
+    }
+
+    public void setStep(Long step) {
+        this.step = step;
     }
 
     public String getDescription() {
@@ -105,12 +116,17 @@ public class PlantsPlanting {
     }
 
     public static class Builder {
+        private Long step;
         private String description;
         private String animation;
         private String image;
         private String video;
         private User authorPlantsPlanting;
         private Plants plants;
+        public Builder step(Long step) {
+            this.step = step;
+            return this;
+        }
         public Builder description(String description) {
             this.description = description;
             return this;

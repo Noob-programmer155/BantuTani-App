@@ -6,11 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface NewsTagsRepo extends JpaRepository<NewsTags, Long> {
     public boolean existsByName(String name);
     public Optional<NewsTags> findByName(String name);
-    public Page<NewsTags> findByNameContaining(String name, Pageable pageable);
+    public Page<NewsTags> findDistinctByNameContaining(String name, Pageable pageable);
+    public List<NewsTags> findDistinctByNewsListTagsIsNull();
 }

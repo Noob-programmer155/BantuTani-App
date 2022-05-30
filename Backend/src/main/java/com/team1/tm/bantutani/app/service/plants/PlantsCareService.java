@@ -41,9 +41,9 @@ public abstract class PlantsCareService extends TipsNTrickService {
     }
 
     public abstract void addDataAttribute(PlantAttributeDTO plantAttributeDTO);
-    public abstract void updateDataAttribute(PlantAttributeDTO plantAttributeDTO);
-    public abstract void updateImageDataAttribute(MultipartFile file, String filename, Long id, boolean delete);
-    public abstract void deleteDataAttribute(Long id);
+    public abstract String updateDataAttribute(PlantAttributeDTO plantAttributeDTO);
+    public abstract String updateImageDataAttribute(MultipartFile file, String filename, Long id, boolean delete);
+    public abstract String deleteDataAttribute(Long id);
 
     public TipsNTrickResponseDTO convertTipsNTrickToDTO(TipsNTrick item) {
         return new TipsNTrickResponseDTO.Builder().id(item.getId()).
@@ -57,7 +57,7 @@ public abstract class PlantsCareService extends TipsNTrickService {
         return new PlantsCareResponseDTO.Builder().careType(item.getCareType().getLabel()).
                 animation(item.getAnimation()).author(item.getAuthorPlantsCare().getUsername()).
                 description(item.getDescription()).id(item.getId()).image(item.getImage()).
-                video(item.getVideo()).
+                video(item.getVideo()).step(item.getStep()).
                 listTipsNTrick(item.getTipsNTricks().stream().map(it -> convertTipsNTrickToDTO(it)).
                         collect(Collectors.toList())).build();
     }
@@ -71,7 +71,7 @@ public abstract class PlantsCareService extends TipsNTrickService {
     public PlantsCare addPlantsCare(PlantsCareDTO plantsCareDTO) {
         User user = userRepo.findById(plantsCareDTO.getAuthorPlantsCare()).get();
         PlantsCare plantsCare = new PlantsCare.Builder().careType(CareType.getFromLabel(plantsCareDTO.getCareType())).
-                author(user).
+                author(user).step(plantsCareDTO.getStep()).
                 description(plantsCareDTO.getDescription()).build();
         user.getCare().add(plantsCare);
         if (plantsCareDTO.getAnimation() != null)
@@ -90,8 +90,10 @@ public abstract class PlantsCareService extends TipsNTrickService {
 
     @Transactional
     @CacheEvict(value = "plantsCareImageCache", key = "#plantsCareDTO.getImage")
-    public void updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
+    public String updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
         PlantsCare plantsCare = plantsCareRepo.findById(plantsCareDTO.getId()).get();
+        if (plantsCareDTO.getStep() != null)
+            plantsCare.setStep(plantsCareDTO.getStep());
         if (plantsCareDTO.getCareType() != null)
             plantsCare.setCareType(CareType.getFromLabel(plantsCareDTO.getCareType()));
         if (plantsCareDTO.getDescription() != null)
@@ -114,6 +116,10 @@ public abstract class PlantsCareService extends TipsNTrickService {
             plantsCare.setAnimation(null);
         }
         plantsCareRepo.save(plantsCare);
+        return (plantsCare.getCaringPlants() != null)?plantsCare.getCaringPlants().getName():
+                (plantsCare.getPlantsDiseaseCare() != null)?String.valueOf(plantsCare.getPlantsDiseaseCare().getId()):
+                        (plantsCare.getPlantsPestCare() != null)?String.valueOf(plantsCare.getPlantsPestCare().getId()):
+                                String.valueOf(plantsCare.getPlantsWeedsCare().getId());
     }
 
     @Transactional

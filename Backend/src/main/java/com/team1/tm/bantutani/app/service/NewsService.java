@@ -87,12 +87,22 @@ public class NewsService {
 
     @Cacheable(value = "tagsCache", key = "#name")
     public List<TagsDTO> getTags(String name, int size) {
-        return newsTagsRepo.findByNameContaining(name,PageRequest.of(0,size)).map(item -> {
+        return newsTagsRepo.findDistinctByNameContaining(name,PageRequest.of(0,size)).map(item -> {
             TagsDTO tagsDTO =  new TagsDTO();
             tagsDTO.setId(item.getId());
             tagsDTO.setName(item.getName());
             return tagsDTO;
         }).getContent();
+    }
+
+    @Cacheable(value = "tagsUnusedCache")
+    public List<TagsDTO> getUnusedTags() {
+        return newsTagsRepo.findDistinctByNewsListTagsIsNull().stream().map(item -> {
+            TagsDTO tagsDTO =  new TagsDTO();
+            tagsDTO.setId(item.getId());
+            tagsDTO.setName(item.getName());
+            return tagsDTO;
+        }).collect(Collectors.toList());
     }
 
     @Transactional
@@ -137,7 +147,7 @@ public class NewsService {
     @Caching(evict = {
             @CacheEvict(value = "mainNewsCache", key = "#newsDTO.getId", condition = "#newsDTO.getId!=null"),
             @CacheEvict(value = {"searchTitle"}, allEntries = true),
-            @CacheEvict(value = {"newsCache","allNews","tagsCache"},allEntries = true)
+            @CacheEvict(value = {"newsCache","allNews","tagsCache","tagsUnusedCache"},allEntries = true)
     })
     public void updateNews(NewsDTO newsDTO, List<String> newTags) {
         News news = newsRepo.findById(newsDTO.getId()).get();
@@ -198,7 +208,7 @@ public class NewsService {
     }
 
     @Transactional
-    @CacheEvict(value = {"tagsCache","mainNewsCache"}, allEntries = true)
+    @CacheEvict(value = {"tagsCache","mainNewsCache","tagsUnusedCache"}, allEntries = true)
     public void deleteTags(Long id) {
         newsTagsRepo.deleteById(id);
     }
@@ -206,7 +216,7 @@ public class NewsService {
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = "mainNewsCache", key = "#id", condition = "#id!=null"),
-            @CacheEvict(value = {"allNews","newsCache","searchTitle","tagsCache"},allEntries = true)
+            @CacheEvict(value = {"allNews","newsCache","searchTitle","tagsCache","tagsUnusedCache"},allEntries = true)
     })
     public void deleteNews(Long id) {
         News news = newsRepo.findById(id).get();

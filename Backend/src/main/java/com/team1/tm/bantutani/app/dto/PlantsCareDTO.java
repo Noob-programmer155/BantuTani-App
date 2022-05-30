@@ -6,6 +6,7 @@ import java.util.List;
 
 public class PlantsCareDTO {
     private Long id;
+    private Long step;
     private String description;
     private String careType;
     private String animation;
@@ -26,6 +27,14 @@ public class PlantsCareDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getStep() {
+        return step;
+    }
+
+    public void setStep(Long step) {
+        this.step = step;
     }
 
     public String getDescription() {

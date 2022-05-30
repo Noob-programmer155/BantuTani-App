@@ -7,6 +7,7 @@ import java.util.List;
 
 public class PlantsPlantingDTO {
     private Long id;
+    private Long step;
     private String description;
     private String animation;
     private MultipartFile image;
@@ -23,6 +24,14 @@ public class PlantsPlantingDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getStep() {
+        return step;
+    }
+
+    public void setStep(Long step) {
+        this.step = step;
     }
 
     public String getDescription() {

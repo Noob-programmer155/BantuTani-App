@@ -112,6 +112,7 @@ public class PlantsService extends PlantsCareService{
 
     public List<PlantsCareResponseDTO> getPlantsCare(List<PlantsCare> plantsCares) {
         return plantsCares.stream().map(item -> convertPlantsCareToDTO(item)).
+                sorted((item1,item2) -> item1.getStep().compareTo(item2.getStep())).
                 collect(Collectors.toList());
     }
 
@@ -121,7 +122,7 @@ public class PlantsService extends PlantsCareService{
                     author(item.getAuthorPlantsPlanting().getUsername()).video(item.getVideo()).
                     image(item.getImage()).description(item.getDescription()).
                     tipsNTricks(getTipsNTrick(item.getTipsNTricks())).build();
-        }).collect(Collectors.toList());
+        }).sorted((item1, item2) -> item1.getStep().compareTo(item2.getStep())).collect(Collectors.toList());
     }
 
     public List<TipsNTrickResponseDTO> getTipsNTrick(List<TipsNTrick> tipsNTricks) {
@@ -165,22 +166,24 @@ public class PlantsService extends PlantsCareService{
             @CacheEvict(value = {"plantsCache"}, key = "#id", condition = "#id!=null"),
             @CacheEvict(value = {"userDataCache"}, key = "#plantsCareDTO.getAuthorPlantsCare", condition = "#plantsCareDTO.getAuthorPlantsCare!=null")
     })
-    public void addPlantsCare(PlantsCareDTO plantsCareDTO, Long id) {
+    public String addPlantsCare(PlantsCareDTO plantsCareDTO, Long id) {
         Plants plants = plantsRepo.findById(id).get();
         PlantsCare plantsCare = super.addPlantsCare(plantsCareDTO);
         plants.getCares().add(plantsCare);
         plantsCare.setCaringPlants(plants);
         plantsRepo.save(plants);
+        return plants.getName();
     }
 
     @Transactional
     @CacheEvict(value = {"plantsCache"}, allEntries = true)
-    public void addTipsNTrickCare(TipsNTrickDTO tipsNTrickDTO, Long idCare) {
+    public Long addTipsNTrickCare(TipsNTrickDTO tipsNTrickDTO, Long idCare) {
         PlantsCare plantsCare = plantsCareRepo.findById(idCare).get();
         TipsNTrick tipsNTrick = super.addTipsNTrick(tipsNTrickDTO);
         plantsCare.getTipsNTricks().add(tipsNTrick);
         tipsNTrick.setPlantsCareTips(plantsCare);
         plantsCareRepo.save(plantsCare);
+        return plantsCare.getId();
     }
 
     @Transactional
@@ -198,11 +201,11 @@ public class PlantsService extends PlantsCareService{
             @CacheEvict(value = {"plantsCache"}, key = "#plantsPlantingDTO.getPlantingPlants", condition = "#plantsPlantingDTO.getPlantingPlants!=null"),
             @CacheEvict(value = {"userDataCache"}, key = "#plantsPlantingDTO.getAuthorPlantsPlanting", condition = "#plantsPlantingDTO.getAuthorPlantsPlanting!=null")
     })
-    public void addPlantsPlanting(PlantsPlantingDTO plantsPlantingDTO) {
+    public String addPlantsPlanting(PlantsPlantingDTO plantsPlantingDTO) {
         Plants plants = plantsRepo.findById(plantsPlantingDTO.getPlantingPlants()).get();
         User user = userRepo.findById(plantsPlantingDTO.getAuthorPlantsPlanting()).get();
         PlantsPlanting planting  = new PlantsPlanting.Builder().description(plantsPlantingDTO.getDescription()).
-                plants(plants).author(user).build();
+                plants(plants).author(user).step(plantsPlantingDTO.getStep()).build();
         user.getPlantings().add(planting);
         if (plantsPlantingDTO.getAnimation() != null)
             planting.setAnimation(plantsPlantingDTO.getAnimation());
@@ -211,6 +214,7 @@ public class PlantsService extends PlantsCareService{
         if (plantsPlantingDTO.getImage() != null)
             planting.setImage(storageConfig.addMedia(plantsPlantingDTO.getImage(), "plantingImages", StorageConfig.SubDir.PLANTING));
         plantsPlantingRepo.save(planting);
+        return plants.getName();
     }
 
     @Transactional
@@ -250,7 +254,7 @@ public class PlantsService extends PlantsCareService{
             @CacheEvict(value = {"plantsCache"}, key = "#id", condition = "#id!=null"),
             @CacheEvict(value = {"plantsAllCache"}, allEntries = true)
     })
-    public void updateImage(MultipartFile file, String filename, Long id, boolean delete) {
+    public String updateImage(MultipartFile file, String filename, Long id, boolean delete) {
         Plants plants = plantsRepo.findById(id).get();
         if (delete) {
             deleteImage(filename, plants);
@@ -258,6 +262,7 @@ public class PlantsService extends PlantsCareService{
             plants.getImage().add(storageConfig.addMedia(file, "plantImages", StorageConfig.SubDir.PLANTS));
         }
         plantsRepo.save(plants);
+        return plants.getName();
     }
 
     @CacheEvict(value = "plantsImageCache", key = "#filename")
@@ -307,30 +312,32 @@ public class PlantsService extends PlantsCareService{
     }
 
     @Override
-    public void updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
-
+    public String updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
+        return null;
     }
 
     @Override
-    public void updateImageDataAttribute(MultipartFile file, String filename, Long id, boolean delete) {
-
+    public String updateImageDataAttribute(MultipartFile file, String filename, Long id, boolean delete) {
+        return null;
     }
 
     @Override
-    public void deleteDataAttribute(Long id) {
-
+    public String deleteDataAttribute(Long id) {
+        return null;
     }
 
     @Transactional
     @CacheEvict(value = {"plantsCache","userDataCache"}, allEntries = true)
-    public void updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
-        super.updatePlantsCare(plantsCareDTO);
+    public String updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
+        return super.updatePlantsCare(plantsCareDTO);
     }
 
     @Transactional
     @CacheEvict(value = {"plantsCache","userDataCache"}, allEntries = true)
-    public void updatePlantsPlanting(PlantsPlantingDTO plantsPlantingDTO) {
+    public String updatePlantsPlanting(PlantsPlantingDTO plantsPlantingDTO) {
         PlantsPlanting planting = plantsPlantingRepo.findById(plantsPlantingDTO.getId()).get();
+        if (plantsPlantingDTO.getStep() != null)
+            planting.setStep(plantsPlantingDTO.getStep());
         if (plantsPlantingDTO.getDescription() != null)
             planting.setDescription(plantsPlantingDTO.getDescription());
         if (plantsPlantingDTO.getAnimation() != null) {
@@ -347,6 +354,7 @@ public class PlantsService extends PlantsCareService{
             planting.setImage(storageConfig.addMedia(plantsPlantingDTO.getImage(), "plantingImages", StorageConfig.SubDir.PLANTING));
         }
         plantsPlantingRepo.save(planting);
+        return planting.getPlantingPlants().getName();
     }
 
     @Transactional
@@ -361,8 +369,9 @@ public class PlantsService extends PlantsCareService{
             @CacheEvict(value = {"plantsImageCache","plantingPlantsImageCache",
                     "plantsAllCache","costPlantsCache","userDataCache"}, allEntries = true)
     })
-    public void deletePlants(Long id) {
+    public String deletePlants(Long id) {
         Plants plants = plantsRepo.findById(id).get();
+        String name = plants.getName();
         plants.getImage().forEach(item -> {
             if (!storageConfig.deleteMedia(item, StorageConfig.SubDir.PLANTS))
                 throw new RuntimeException("failed delete plants, something wrong with file images, please try again");
@@ -381,6 +390,7 @@ public class PlantsService extends PlantsCareService{
         plants.getPlanting().clear();
         Plants plants1 = plantsRepo.save(plants);
         plantsRepo.delete(plants1);
+        return name;
     }
 
     @Transactional

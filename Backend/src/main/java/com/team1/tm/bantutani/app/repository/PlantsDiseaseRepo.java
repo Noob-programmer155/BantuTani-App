@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface PlantsDiseaseRepo extends JpaRepository<PlantsDisease, Long> {
-    public Page<PlantsDisease> findAllByPlantsId(Long id, Pageable pageable);
+    public Page<PlantsDisease> findDistinctByPlantsId(Long id, Pageable pageable);
 }

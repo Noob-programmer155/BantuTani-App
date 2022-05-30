@@ -6,15 +6,9 @@ import com.team1.tm.bantutani.app.model.TipsNTrick;
 import com.team1.tm.bantutani.app.model.User;
 import com.team1.tm.bantutani.app.model.other.TypeActivity;
 import com.team1.tm.bantutani.app.model.other.TypeStep;
-import com.team1.tm.bantutani.app.model.plants.PlantsCare;
-import com.team1.tm.bantutani.app.model.plants.PlantsPlanting;
 import com.team1.tm.bantutani.app.repository.*;
 import com.team1.tm.bantutani.app.service.utils.AnimationServiceUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 public class TipsNTrickService extends AnimationServiceUtils {
     protected TipsNTrickRepo tipsNTrickRepo;

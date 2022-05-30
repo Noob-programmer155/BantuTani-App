@@ -81,17 +81,17 @@ public class MainController {
     @PostMapping(value = "/commodity/v1/data/image/add/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Add Image Icon Commodity", description = "adding new image icon commodity")
-    public String addCommodity(@RequestParam(value = "file") MultipartFile file, @PathVariable Long id) {
-        commodityService.addIcon(file, id);
-        return "success";
+    public StringResponse addCommodity(@RequestParam(value = "file") MultipartFile file, @PathVariable Long id) {
+        String name = commodityService.addIcon(file, id);
+        return new StringResponse.Builder().status("success").message("Success add new image icon commodity "+name).build();
     }
 
     @DeleteMapping("/commodity/v1/data/image/delete/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Delete Image Icon Commodity", description = "delete image icon commodity")
-    public String deleteCommodity(@PathVariable Long id, @RequestParam String filename) {
+    public StringResponse deleteCommodity(@PathVariable Long id, @RequestParam String filename) {
         commodityService.deleteIcon(filename, id);
-        return "success";
+        return new StringResponse.Builder().status("success").message("Success delete image icon "+filename).build();
     }
 
     // ================================== API Avatar ======================================
@@ -106,11 +106,11 @@ public class MainController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Add Image Avatar", description = "adding new images Avatar for User")
     @Transactional
-    public String addAvatar(@RequestParam(value = "avatar") MultipartFile avatarFile) {
+    public StringResponse addAvatar(@RequestParam(value = "avatar") MultipartFile avatarFile) {
         Avatar avatar = new Avatar();
         avatar.setName(storageConfig.addMedia(avatarFile, "avatar", StorageConfig.SubDir.AVATAR));
-        avatarRepo.save(avatar);
-        return "success";
+        Avatar avatar1 = avatarRepo.save(avatar);
+        return new StringResponse.Builder().status("success").message("Success add new image avatar "+avatar1.getName()).build();
     }
 
     @DeleteMapping("/user/v1/avatar/delete/{name}")
@@ -118,11 +118,11 @@ public class MainController {
     @Tag(name = "Delete Image Avatar", description = "delete image avatar from database and storage")
     @CacheEvict(value = "userDataImageCache", key = "#name")
     @Transactional
-    public String deleteAvatar(@PathVariable String name) {
+    public StringResponse deleteAvatar(@PathVariable String name) {
         Avatar avatar = avatarRepo.findByName(name).get();
         if(storageConfig.deleteMedia(name, StorageConfig.SubDir.AVATAR))
             avatarRepo.delete(avatar);
-        return "success";
+        return new StringResponse.Builder().status("success").message("Success delete image avatar "+name).build();
     }
 
     // ================================== API User ========================================
@@ -161,25 +161,25 @@ public class MainController {
 
     @PostMapping("/public/user/v1/signup")
     @Tag(name = "Sign Up", description = "user sign up, default")
-    public String signUp(@ModelAttribute UserDTO userDTO) {
+    public StringResponse signUp(@ModelAttribute UserDTO userDTO) {
         User user = new User.Builder().email(userDTO.getEmail()).
                 image(userDTO.getImage()).password(new SCryptPasswordEncoder().encode(userDTO.getPassword())).
                 username(userDTO.getUsername()).status(Status.getFromLabel(userDTO.getStatus())).build();
         user.setDisable(false);
-        userRepo.save(user);
-        return "success";
+        User user1 = userRepo.save(user);
+        return new StringResponse.Builder().status("success").message("Success to signup "+user1.getUsername()+" ready to make new discover, good luck").build();
     }
 
     @PostMapping("/user/v1/expert/signup")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Sign Up Expert", description = "user sign up for expert role")
-    public String signUpExpert(@ModelAttribute UserDTO userDTO) {
+    public StringResponse signUpExpert(@ModelAttribute UserDTO userDTO) {
         User user = new User.Builder().email(userDTO.getEmail()).
                 image(userDTO.getImage()).password(new SCryptPasswordEncoder().encode(userDTO.getPassword())).
                 username(userDTO.getUsername()).status(Status.EXPERTS).build();
         user.setDisable(false);
-        userRepo.save(user);
-        return "success";
+        User user1 = userRepo.save(user);
+        return new StringResponse.Builder().status("success").message("Success add new user expert "+user1.getUsername()+", please be careful and pay attention to this user").build();
     }
 
     @PostMapping("/public/user/v1/login")
@@ -215,7 +215,7 @@ public class MainController {
     @PreAuthorize("hasAnyAuthority('ADMIN','USER','FARMER','EXPERTS','DISTRIBUTOR','SALES')")
     @Tag(name = "Modify User", description = "modify user data, except password")
     @Transactional
-    public String modify(@ModelAttribute UserDTO userDTO) {
+    public StringResponse modify(@ModelAttribute UserDTO userDTO) {
         User user = userRepo.findById(userDTO.getId()).get();
         if (userDTO.getEmail() != null)
             user.setEmail(userDTO.getEmail());
@@ -226,21 +226,21 @@ public class MainController {
         if (userDTO.getImage() != null)
             user.setImage(userDTO.getImage());
         userRepo.save(user);
-        return "success";
+        return new StringResponse.Builder().status("success").message("Success, Your user account has been updated").build();
     }
 
     @PutMapping("/user/v1/password/modify")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER','FARMER','EXPERTS','DISTRIBUTOR','SALES')")
     @Tag(name = "Modify User Password", description = "modify user password")
     @Transactional
-    public String modifyPassword(@RequestParam Long id, @RequestParam String oldPassword, @RequestParam String newPassword) {
+    public StringResponse modifyPassword(@RequestParam Long id, @RequestParam String oldPassword, @RequestParam String newPassword) {
         User user = userRepo.findById(id).get();
         if (validatePassword(user.getPassword(), oldPassword)) {
             user.setPassword(new SCryptPasswordEncoder().encode(newPassword));
             userRepo.save(user);
-            return "success";
+            return new StringResponse.Builder().status("success").message("Success, Your password has been updated").build();
         } else {
-            throw new RuntimeException("This is wrong password, you can't make step further");
+            throw new RuntimeException("This is wrong password, you can't make steps further");
         }
     }
 
@@ -249,17 +249,20 @@ public class MainController {
     @Tag(name = "Delete User", description = "delete user")
     @CacheEvict(value = "userDataCache", key = "#id")
     @Transactional
-    public String delete(@RequestParam Long id) {
+    public StringResponse delete(@RequestParam Long id) {
         User user = userRepo.findById(id).get();
         if(user.getStatus() != Status.ADMIN) {
             if (user.getStatus() != Status.EXPERTS) {
                 userRepo.delete(user);
+                return new StringResponse.Builder().status("success").message("Success to delete user "+user.getUsername()).build();
             } else {
                 user.setDisable(true);
                 userRepo.save(user);
+                return new StringResponse.Builder().status("success").message("Success to disable experts user "+user.getUsername()).build();
             }
+        } else {
+            return new StringResponse.Builder().status("failure").message("you can't delete admin").build();
         }
-        return "success";
     }
 
     // ==================================
@@ -282,16 +285,16 @@ public class MainController {
     @PostMapping(value = "/media/v1/animation/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Add Animation", description = "adding new animation to this application")
-    public String addAnimation(@RequestParam(value = "animation") MultipartFile animation, @RequestParam String type) throws IOException {
+    public StringResponse addAnimation(@RequestParam(value = "animation") MultipartFile animation, @RequestParam String type) throws IOException {
         animationServiceUtils.addAnimation(animation, type);
-        return "success";
+        return new StringResponse.Builder().status("success").message("Success add new animation").build();
     }
 
     @DeleteMapping("/media/v1/animation/delete")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "delete animation", description = "delete animation")
-    public String deleteAnimation(@RequestParam String name) {
+    public StringResponse deleteAnimation(@RequestParam String name) {
         animationServiceUtils.deleteAnimation(name);
-        return "success";
+        return new StringResponse.Builder().status("success").message("Success delete animation "+name).build();
     }
 }

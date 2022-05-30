@@ -8,6 +8,7 @@ import java.util.List;
 
 public class PlantsPlantingResponseDTO {
     private Long id;
+    private Long step;
     private String description;
     private String animation;
     private String image;
@@ -20,6 +21,7 @@ public class PlantsPlantingResponseDTO {
 
     public PlantsPlantingResponseDTO(Builder builder) {
         this.id = builder.id;
+        this.step = builder.step;
         this.description = builder.description;
         this.animation = builder.animation;
         this.image = builder.image;
@@ -34,6 +36,14 @@ public class PlantsPlantingResponseDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getStep() {
+        return step;
+    }
+
+    public void setStep(Long step) {
+        this.step = step;
     }
 
     public String getDescription() {
@@ -86,6 +96,7 @@ public class PlantsPlantingResponseDTO {
 
     public static class Builder {
         private Long id;
+        private Long step;
         private String description;
         private String animation;
         private String image;
@@ -94,6 +105,10 @@ public class PlantsPlantingResponseDTO {
         private List<TipsNTrickResponseDTO> tipsNTricks;
         public Builder id(Long id) {
             this.id = id;
+            return this;
+        }
+        public Builder step(Long step) {
+            this.step = step;
             return this;
         }
         public Builder description(String description) {

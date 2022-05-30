@@ -34,7 +34,7 @@ public class Security extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/public/**");
     }
 
@@ -46,7 +46,7 @@ public class Security extends WebSecurityConfigurerAdapter {
                 requiresChannel().anyRequest().
                 requiresInsecure().
                 and().
-                authorizeRequests().antMatchers("/actuator","/swagger-ui/**","/v3/**").hasAuthority("ADMIN")
+                authorizeRequests().antMatchers("/actuator","/v3/**","/swagger-ui/**").hasAuthority("ADMIN")
                 .antMatchers("/user/**","/plants/**","/media/**","/commodity/**","/news/**").permitAll().
                 anyRequest().authenticated();
         http.addFilterBefore(new TokenFilter.Builder().addTokenManager(tokenManager).

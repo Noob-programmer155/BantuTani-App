@@ -4,7 +4,9 @@ import com.team1.tm.bantutani.app.dto.PlantAttributeDTO;
 import com.team1.tm.bantutani.app.dto.PlantsCareDTO;
 import com.team1.tm.bantutani.app.dto.TipsNTrickDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseDTO;
+import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseDetectionDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseMinDTO;
+import com.team1.tm.bantutani.app.dto.response.StringResponse;
 import com.team1.tm.bantutani.app.service.plants.PestService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -64,6 +66,12 @@ public class PestController {
         return pestService.getPlantPest(id);
     }
 
+//    @GetMapping("/public/plants/pest/v1/data/detection/{id}")
+//    @Tag(name = "Get Plants Pest", description = "get plants pest data with detailed information")
+//    public List<PlantAttributeResponseDetectionDTO> getDataDetection(@PathVariable List<Long> id) {
+//        return pestService.getPlantPestDetection(id);
+//    }
+
     @GetMapping("/plants/pest/v1/type/data/{mount}")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Get Type Pest", description = "get type pest data suggestion with specific mount to displayed (static)")
@@ -74,96 +82,96 @@ public class PestController {
     @PostMapping("/plants/pest/v1/data/add")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Add Plants Pest", description = "adding new data plants pest")
-    public String addData(@ModelAttribute PlantAttributeDTO plantAttributeDTO) {
+    public StringResponse addData(@ModelAttribute PlantAttributeDTO plantAttributeDTO) {
         pestService.addDataAttribute(plantAttributeDTO);
-        return "success";
+        return new StringResponse.Builder().status("success").message("Success add new plants pest").build();
     }
 
     @PostMapping("/plants/pest/v1/care/data/add")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Add Plants Care Pest", description = "adding new plants care in specific plants pest")
-    public String addData(@ModelAttribute PlantsCareDTO plantsCareDTO) {
-        pestService.addPlantsCare(plantsCareDTO, plantsCareDTO.getPlantsPestCare());
-        return "success";
+    public StringResponse addData(@ModelAttribute PlantsCareDTO plantsCareDTO) {
+        String name = pestService.addPlantsCare(plantsCareDTO, plantsCareDTO.getPlantsPestCare());
+        return new StringResponse.Builder().status("success").message("Success add new plants care in plants pest "+name).build();
     }
 
     @PostMapping("/plants/pest/v1/care/data/tipsntrick/add/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Add Tips & Trick Plants Care Pest", description = "adding new tips & trick in specific plants care pest")
-    public String addData(@ModelAttribute TipsNTrickDTO tipsNTrickDTO, @PathVariable Long id) {
+    public StringResponse addData(@ModelAttribute TipsNTrickDTO tipsNTrickDTO, @PathVariable Long id) {
         pestService.addTipsNTrickCare(tipsNTrickDTO, id);
-        return "success";
+        return new StringResponse.Builder().status("success").message("Success add new tips & trick in plants care pest with id "+id).build();
     }
 
     @PostMapping(value = "/plants/pest/v1/data/image/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Add Plants Pest Image", description = "adding image to plants pest (not replace another images)")
-    public String addData(@RequestParam(value = "image") MultipartFile image, @RequestParam Long id) {
-        pestService.updateImageDataAttribute(image, null, id, false);
-        return "success";
+    public StringResponse addData(@RequestParam(value = "image") MultipartFile image, @RequestParam Long id) {
+        String name = pestService.updateImageDataAttribute(image, null, id, false);
+        return new StringResponse.Builder().status("success").message("Success add new image to plants pest "+name).build();
     }
 
     @PutMapping("/plants/pest/v1/data/modify")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Modify Plants Pest", description = "modify plants pest main data")
-    public String updateData(@ModelAttribute PlantAttributeDTO attributeDTO) {
-        pestService.updateDataAttribute(attributeDTO);
-        return "success";
+    public StringResponse updateData(@ModelAttribute PlantAttributeDTO attributeDTO) {
+        String name = pestService.updateDataAttribute(attributeDTO);
+        return new StringResponse.Builder().status("success").message("Success update plants pest "+name).build();
     }
 
     @PutMapping("/plants/pest/v1/care/data/modify")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Modify Plants Care Pest", description = "modify plants care in specific plants pest")
-    public String updateData(@ModelAttribute PlantsCareDTO plantsCareDTO) throws IOException {
-        pestService.updatePlantsCare(plantsCareDTO);
-        return "success";
+    public StringResponse updateData(@ModelAttribute PlantsCareDTO plantsCareDTO) throws IOException {
+        String name = pestService.updatePlantsCare(plantsCareDTO);
+        return new StringResponse.Builder().status("success").message("Success update plants care in plants pest "+name).build();
     }
 
     @PutMapping("/plants/pest/v1/tipsntrick/data/modify")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Modify Tips & Trick Pest", description = "modify tips & trick specific plants care in plants pest")
-    public String updateData(@ModelAttribute TipsNTrickDTO tipsNTrickDTO) throws IOException {
+    public StringResponse updateData(@ModelAttribute TipsNTrickDTO tipsNTrickDTO) throws IOException {
         pestService.updateTipsNTrick(tipsNTrickDTO);
-        return "success";
+        return new StringResponse.Builder().status("success").message("Success update tips & trick in plants care pest with id "+tipsNTrickDTO.getPlantsCareTips()).build();
     }
 
     @DeleteMapping("/plants/pest/v1/data/delete")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Delete Plants Pest", description = "delete plants pest")
-    public String deleteData(@RequestParam Long id) {
-        pestService.deleteDataAttribute(id);
-        return "success";
+    public StringResponse deleteData(@RequestParam Long id) {
+        String name = pestService.deleteDataAttribute(id);
+        return new StringResponse.Builder().status("success").message("Success delete plants pest "+name).build();
     }
 
     @DeleteMapping("/plants/pest/v1/data/image/delete")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Delete Plants Pest Image", description = "delete plants pest image")
-    public String deleteData(@RequestParam String imageName, @RequestParam Long id) {
-        pestService.updateImageDataAttribute(null, imageName, id, true);
-        return "success";
+    public StringResponse deleteData(@RequestParam String imageName, @RequestParam Long id) {
+        String name = pestService.updateImageDataAttribute(null, imageName, id, true);
+        return new StringResponse.Builder().status("success").message("Success delete image in plants pest "+name).build();
     }
 
     @DeleteMapping("/plants/pest/v1/care/data/delete")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Delete Plants Care Pest", description = "delete plants care in plants pest")
-    public String deleteDataCare(@RequestParam Long id) {
+    public StringResponse deleteDataCare(@RequestParam Long id) {
         pestService.deletePlantsCare(id);
-        return "success";
+        return new StringResponse.Builder().status("success").message("Success delete plants care with id "+id).build();
     }
 
     @DeleteMapping("/plants/pest/v1/tipsntrick/data/delete")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Delete Tips & Trick Pest", description = "delete tips & trick specific plants care in plants pest")
-    public String deleteDataTipsNTrick(@RequestParam Long id) {
+    public StringResponse deleteDataTipsNTrick(@RequestParam Long id) {
         pestService.deleteTipsNTrick(id);
-        return "success";
+        return new StringResponse.Builder().status("success").message("Success delete tips & trick with id "+id).build();
     }
 
     @DeleteMapping("/plants/pest/v1/type/data/delete")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Delete Type Pest", description = "delete type of plants pest")
-    public String deleteTypePest(@RequestParam String type) {
+    public StringResponse deleteTypePest(@RequestParam String type) {
         pestService.deletePlantsTypePest(type);
-        return "success";
+        return new StringResponse.Builder().status("success").message("Success delete type plants pest "+type).build();
     }
 }
