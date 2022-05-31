@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.ParseException;
+import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class ExceptionHandlerConfig {
@@ -60,6 +62,13 @@ public class ExceptionHandlerConfig {
         return new StringResponse.Builder().status("error").message(e.getMessage()).build();
     }
 
+    @ExceptionHandler(NoSuchElementException.class)
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public StringResponse handleValidationNoElementError(NoSuchElementException e) {
+        return new StringResponse.Builder().status("error").message(e.getMessage()).build();
+    }
+
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
     @ResponseBody
@@ -88,10 +97,10 @@ public class ExceptionHandlerConfig {
         return new StringResponse.Builder().status("error").message(e.getMessage()).build();
     }
 
-    @ExceptionHandler(AuthenticationException.class)
+    @ExceptionHandler({AuthenticationException.class, javax.security.sasl.AuthenticationException.class})
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
     @ResponseBody
-    public StringResponse handleValidationAuthError(AuthenticationException e) {
+    public StringResponse handleValidationAuthError(Exception e) {
         return new StringResponse.Builder().status("error").message(e.getMessage()).build();
     }
 
@@ -109,6 +118,13 @@ public class ExceptionHandlerConfig {
         return new StringResponse.Builder().status("error").message(e.getMessage()).build();
     }
 
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public StringResponse handleValidationDataSQLError(SQLIntegrityConstraintViolationException e) {
+        return new StringResponse.Builder().status("error").message(e.getMessage()).build();
+    }
+
     @ExceptionHandler(DataException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -117,7 +133,7 @@ public class ExceptionHandlerConfig {
     }
 
     @ExceptionHandler({ConstraintViolationException.class, javax.validation.ConstraintViolationException.class})
-    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ResponseBody
     public StringResponse handleValidationDataConstraintError(JDBCException e) {
         return new StringResponse.Builder().status("error").message(e.getMessage()).build();

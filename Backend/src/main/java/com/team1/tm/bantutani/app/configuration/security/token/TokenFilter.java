@@ -2,7 +2,6 @@ package com.team1.tm.bantutani.app.configuration.security.token;
 
 import io.jsonwebtoken.JwtException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -29,18 +28,34 @@ public class TokenFilter extends OncePerRequestFilter {
         try {
             String token = tokenManager.resolveToken(request);
             if(tokenManager.validateToken(token)) {
-                Authentication auth = tokenManager.getAuth(token);
+                Authentication auth = tokenManager.getAuth(token,request);
                 SecurityContextHolder.getContext().setAuthentication(auth);
-            }}
+                filterChain.doFilter(request, response);
+                return;
+            }
+            SecurityContextHolder.clearContext();
+            response.setStatus(403);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":\"error\",\"message\":\"wrong token value\"}");
+        }
         catch(NullPointerException | IllegalArgumentException e) {
             SecurityContextHolder.clearContext();
-            response.sendError(400, e.getMessage());
+            response.setStatus(403);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":\"error\",\"message\":\""+e.getMessage()+"\"}");
         }
         catch(JwtException e) {
             SecurityContextHolder.clearContext();
-            response.sendError(403, e.getMessage());
+            response.setStatus(403);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":\"error\",\"message\":\""+e.getMessage()+"\"}");
         }
-        filterChain.doFilter(request, response);
+        catch (Exception e) {
+            SecurityContextHolder.clearContext();
+            response.setStatus(500);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":\"error\",\"message\":\""+e.getMessage()+"\"}");
+        }
     }
 
     @Override
