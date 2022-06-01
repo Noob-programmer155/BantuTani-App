@@ -19,6 +19,7 @@ public class PlantsResponseDTO {
     private int minCost;
     private int regionCost; // mean
     private Date dateUpdateCost;
+    private Date dateUpdate;
     private List<PlantsCareResponseDTO> cares;
     private List<PlantsPlantingResponseDTO> planting;
 
@@ -38,6 +39,7 @@ public class PlantsResponseDTO {
         this.minCost = builder.minCost;
         this.regionCost = builder.regionCost;
         this.dateUpdateCost = builder.dateUpdateCost;
+        this.dateUpdate = builder.dateUpdate;
         this.cares = builder.cares;
         this.planting = builder.planting;
     }
@@ -138,6 +140,14 @@ public class PlantsResponseDTO {
         this.dateUpdateCost = dateUpdateCost;
     }
 
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
+    }
+
     public List<PlantsCareResponseDTO> getCares() {
         return cares;
     }
@@ -167,6 +177,7 @@ public class PlantsResponseDTO {
         private int minCost;
         private int regionCost; // current cost
         private Date dateUpdateCost;
+        private Date dateUpdate;
         private List<PlantsCareResponseDTO> cares;
         private List<PlantsPlantingResponseDTO> planting;
         public Builder id(Long id) {
@@ -215,6 +226,10 @@ public class PlantsResponseDTO {
         }
         public Builder date(Date date) {
             this.dateUpdateCost = date;
+            return this;
+        }
+        public Builder dateUpdate(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public Builder cares(List<PlantsCareResponseDTO> cares) {

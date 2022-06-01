@@ -6,6 +6,7 @@ import java.util.List;
 public class NewsResponseMinDTO {
     private Long id;
     private String title;
+    private Date dateUpdate;
     private Date date;
     private String image;
     private String video;
@@ -16,6 +17,7 @@ public class NewsResponseMinDTO {
     public NewsResponseMinDTO(Builder builder) {
         this.id = builder.id;
         this.title = builder.title;
+        this.dateUpdate = builder.dateUpdate;
         this.date = builder.date;
         this.image = builder.image;
         this.video = builder.video;
@@ -35,6 +37,14 @@ public class NewsResponseMinDTO {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 
     public Date getDate() {
@@ -64,6 +74,7 @@ public class NewsResponseMinDTO {
     public static class Builder {
         private Long id;
         private String title;
+        private Date dateUpdate;
         private Date date;
         private String image;
         private String video;
@@ -73,6 +84,10 @@ public class NewsResponseMinDTO {
         }
         public Builder title(String title) {
             this.title = title;
+            return this;
+        }
+        public Builder dateUpdate(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public Builder date(Date date) {

@@ -6,6 +6,7 @@ import com.team1.tm.bantutani.app.model.Plants;
 import com.team1.tm.bantutani.app.model.User;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class PlantsWeeds {
     @GeneratedValue
     private Long id;
     private String name;
+    private Date dateUpdate;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable(name = "PlantTypeWeedTable")
     private PlantTypeWeed plantTypeWeed;
@@ -40,6 +42,7 @@ public class PlantsWeeds {
 
     public PlantsWeeds(Builder builder) {
         this.name = builder.name;
+        this.dateUpdate = builder.dateUpdate;
         this.plantTypeWeed = builder.plantTypeWeed;
         this.otherNames = builder.otherNames;
         this.description = builder.description;
@@ -62,6 +65,14 @@ public class PlantsWeeds {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 
     public PlantTypeWeed getPlantTypeWeed() {
@@ -129,6 +140,7 @@ public class PlantsWeeds {
 
     public static class Builder {
         private String name;
+        private Date dateUpdate;
         private PlantTypeWeed plantTypeWeed;
         private List<String> otherNames;
         private String description;
@@ -137,6 +149,10 @@ public class PlantsWeeds {
         private List<PlantsCare> plantsCares = new LinkedList<>();
         public Builder name(String name) {
             this.name = name;
+            return this;
+        }
+        public Builder dateUpdate(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public Builder plantTypeWeed(PlantTypeWeed plantTypeWeed) {

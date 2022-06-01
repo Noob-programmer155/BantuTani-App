@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.team1.tm.bantutani.app.model.plants.*;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.util.*;
 
 @Entity
@@ -14,6 +15,7 @@ public class Plants {
     @GeneratedValue
     private Long id;
     private String name;
+    private Date dateUpdate;
     @ElementCollection
     private List<String> otherNames;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -46,6 +48,7 @@ public class Plants {
 
     public Plants(Builder builder) {
         this.name = builder.name;
+        this.dateUpdate = builder.dateUpdate;
         this.otherNames = builder.otherNames;
         this.plantTypeImpl = builder.plantTypeImpl;
         this.shortDescription = builder.shortDescription;
@@ -67,6 +70,14 @@ public class Plants {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 
     public List<String> getOtherNames() { return otherNames; }
@@ -172,6 +183,7 @@ public class Plants {
 
     public static class Builder {
         private String name;
+        private Date dateUpdate;
         private List<String> otherNames;
         private PlantTypeImpl plantTypeImpl;
         private List<String> image;
@@ -179,6 +191,10 @@ public class Plants {
         private String characteristic;
         public Builder name(String name) {
             this.name = name;
+            return this;
+        }
+        public Builder dateUpdate(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public Builder otherNames(List<String> otherNames) {

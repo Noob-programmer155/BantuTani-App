@@ -4,10 +4,7 @@ import com.team1.tm.bantutani.app.configuration.StorageConfig;
 import com.team1.tm.bantutani.app.dto.PlantAttributeDTO;
 import com.team1.tm.bantutani.app.dto.PlantsCareDTO;
 import com.team1.tm.bantutani.app.dto.TipsNTrickDTO;
-import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseDTO;
-import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseDetectionDTO;
-import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseMinDTO;
-import com.team1.tm.bantutani.app.dto.response.PlantsCareResponseDTO;
+import com.team1.tm.bantutani.app.dto.response.*;
 import com.team1.tm.bantutani.app.model.Plants;
 import com.team1.tm.bantutani.app.model.TipsNTrick;
 import com.team1.tm.bantutani.app.model.User;
@@ -25,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,6 +60,13 @@ public class DiseaseService extends PlantsCareService{
         return plantsDiseaseRepo.findAllById(id).stream().map(item -> convertPlantDiseaseToDTODetection(item)).collect(Collectors.toList());
     }
 
+    @Cacheable(value = "plantsDiseaseDetectionPreDataCache")
+    public List<PlantAttributeResponseDetectionIDDTO> getAllDataDisease() {
+        return plantsDiseaseRepo.findDistinctProjectedBy().stream().map(item ->
+                new PlantAttributeResponseDetectionIDDTO.Builder().id(item.getId()).name(item.getName()).build()).
+                collect(Collectors.toList());
+    }
+
     @Cacheable(value = "plantsTypeDiseaseCache")
     public List<String> getPlantsTypeDisease(String type, int size) {
         return plantTypeDiseaseRepo.findAllByTypeContaining(type, PageRequest.of(0, size)).map(item -> item.getType()).getContent();
@@ -73,20 +78,20 @@ public class DiseaseService extends PlantsCareService{
                 description(plantsDisease.getDescription()).
                 otherNames(plantsDisease.getOtherNames()).name(plantsDisease.getName()).
                 type(plantsDisease.getPlantTypeDisease().getType()).
-                image(plantsDisease.getImages()).
+                image(plantsDisease.getImages()).dateUpdate(plantsDisease.getDateUpdate()).
                 care(getPlantsCare(plantsDisease.getPlantsCares())).build();
     }
 
     public PlantAttributeResponseDetectionDTO convertPlantDiseaseToDTODetection(PlantsDisease plantsDisease) {
         return new PlantAttributeResponseDetectionDTO.Builder().id(plantsDisease.getId()).
-                description(plantsDisease.getDescription()).
+                description(plantsDisease.getDescription()).dateUpdate(plantsDisease.getDateUpdate()).
                 image((plantsDisease.getImages().size() > 3)?plantsDisease.getImages().subList(0,3):plantsDisease.getImages()).
                 care(getPlantsCare(plantsDisease.getPlantsCares())).build();
     }
 
     public PlantAttributeResponseMinDTO convertPlantDiseaseToMinDTO(PlantsDisease plantsDisease) {
         PlantAttributeResponseMinDTO responseMinDTO = new PlantAttributeResponseMinDTO.Builder().id(plantsDisease.getId()).
-                name(plantsDisease.getName()).
+                name(plantsDisease.getName()).dateUpdate(plantsDisease.getDateUpdate()).
                 type(plantsDisease.getPlantTypeDisease().getType()).build();
         if(!plantsDisease.getImages().isEmpty())
             responseMinDTO.setImage(plantsDisease.getImages().get(0));
@@ -145,6 +150,7 @@ public class DiseaseService extends PlantsCareService{
                 plantsDisease.getImages().add(storageConfig.addMedia(item,"diseaseImages", StorageConfig.SubDir.DISEASE));
             });
         }
+        plantsDisease.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsDiseaseRepo.save(plantsDisease);
     }
 
@@ -155,6 +161,7 @@ public class DiseaseService extends PlantsCareService{
         PlantsCare plantsCare = super.addPlantsCare(plantsCareDTO);
         plantsDisease.getPlantsCares().add(plantsCare);
         plantsCare.setPlantsDiseaseCare(plantsDisease);
+        plantsDisease.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsDiseaseRepo.save(plantsDisease);
         return plantsDisease.getName();
     }
@@ -166,12 +173,17 @@ public class DiseaseService extends PlantsCareService{
         TipsNTrick tipsNTrick = super.addTipsNTrick(tipsNTrickDTO);
         plantsCare.getTipsNTricks().add(tipsNTrick);
         tipsNTrick.setPlantsCareTips(plantsCare);
+        if (plantsCare.getPlantsDiseaseCare() != null)
+            plantsCare.getPlantsDiseaseCare().setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsCareRepo.save(plantsCare);
     }
 
     @Transactional
     @Override
-    @CacheEvict(value = {"plantsAllDiseaseCache","plantsDiseaseByIdCache","plantsDiseaseDetectionByIdCache","userDataCache"}, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = {"plantsAllDiseaseCache","plantsDiseaseByIdCache","plantsDiseaseDetectionByIdCache","userDataCache"}, allEntries = true),
+            @CacheEvict(value = "plantsDiseaseDetectionPreDataCache",allEntries = true, condition = "#plantAttributeDTO.getName!=null")
+    })
     public String updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
         PlantsDisease plantsDisease = plantsDiseaseRepo.findById(plantAttributeDTO.getId()).get();
         if (plantAttributeDTO.getAttributePlantsType() != null) {
@@ -193,6 +205,7 @@ public class DiseaseService extends PlantsCareService{
             plantsDisease.setName(plantAttributeDTO.getName());
         if (plantAttributeDTO.getOtherNames() != null)
             plantsDisease.setOtherNames(plantAttributeDTO.getOtherNames());
+        plantsDisease.setDateUpdate(new Date(new java.util.Date().getTime()));
         PlantsDisease plantsDisease1 = plantsDiseaseRepo.save(plantsDisease);
         return plantsDisease1.getName();
     }
@@ -210,6 +223,7 @@ public class DiseaseService extends PlantsCareService{
         } else {
             plantsDisease.getImages().add(storageConfig.addMedia(file,"diseaseImages", StorageConfig.SubDir.DISEASE));
         }
+        plantsDisease.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsDiseaseRepo.save(plantsDisease);
         return plantsDisease.getName();
     }
@@ -217,7 +231,7 @@ public class DiseaseService extends PlantsCareService{
     @Transactional
     @Override
     @Caching(evict = {
-            @CacheEvict(value = {"plantsAllDiseaseCache","userDataCache","plantsDiseaseDetectionByIdCache"}, allEntries = true),
+            @CacheEvict(value = {"plantsAllDiseaseCache","userDataCache","plantsDiseaseDetectionByIdCache","plantsDiseaseDetectionPreDataCache"}, allEntries = true),
             @CacheEvict(value = {"plantsDiseaseByIdCache"}, key = "#id", condition = "#id!=null")
     })
     public String deleteDataAttribute(Long id) {

@@ -11,6 +11,7 @@ public class NewsResponseDTO {
     private String title;
     private String description;
     private String descriptionSummary;
+    private Date dateUpdate;
     private Date date;
     private String source;
     private List<String> keywords;
@@ -25,6 +26,7 @@ public class NewsResponseDTO {
         this.title = builder.title;
         this.description = builder.description;
         this.descriptionSummary = builder.descriptionSummary;
+        this.dateUpdate = builder.dateUpdate;
         this.date = builder.date;
         this.source = builder.source;
         this.keywords = builder.keywords;
@@ -62,6 +64,14 @@ public class NewsResponseDTO {
 
     public void setDescriptionSummary(String descriptionSummary) {
         this.descriptionSummary = descriptionSummary;
+    }
+
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 
     public Date getDate() {
@@ -109,6 +119,7 @@ public class NewsResponseDTO {
         private String title;
         private String description;
         private String descriptionSummary;
+        private Date dateUpdate;
         private Date date;
         private String source;
         private List<String> keywords;
@@ -128,6 +139,10 @@ public class NewsResponseDTO {
         }
         public Builder descriptionSummary(String descriptionSummary) {
             this.descriptionSummary = descriptionSummary;
+            return this;
+        }
+        public Builder dateUpdate(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public Builder date(Date date) {

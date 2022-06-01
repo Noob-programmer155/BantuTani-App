@@ -54,6 +54,7 @@ public class NewsService {
                         images((!item.getImages().isEmpty())?item.getImages().get(0):null).
                         video(item.getVideo()).
                         date(item.getDates()).
+                        dateUpdate(item.getDateUpdate()).
                         build()).getContent();
     }
 
@@ -72,6 +73,7 @@ public class NewsService {
                         images((!item.getImages().isEmpty())?item.getImages().get(0):null).
                         video(item.getVideo()).
                         date(item.getDates()).
+                        dateUpdate(item.getDateUpdate()).
                         build()).getContent();
     }
 
@@ -80,7 +82,7 @@ public class NewsService {
         return newsRepo.findById(id).map(item ->
                 new NewsResponseDTO.Builder().id(item.getId()).description(item.getDescriptions()).
                         descriptionSummary(item.getDescriptionSummary()).source(item.getSources()).
-                        date(item.getDates()).images(item.getImages()).
+                        date(item.getDates()).images(item.getImages()).dateUpdate(item.getDateUpdate()).
                         keywords(item.getKeywords().stream().map(it -> it.getName()).collect(Collectors.toList())).
                         title(item.getTitle()).video(item.getVideo()).build()).get();
     }
@@ -106,9 +108,11 @@ public class NewsService {
     }
 
     @Transactional
+    @CacheEvict(value = "newsCache", allEntries = true)
     public void addNews(NewsDTO newsDTO, List<String> newTags) {
-        News news = new News.Builder().date(new Date(new java.util.Date().getTime())).
-                title(newsDTO.getTitle()).
+        Date date = new Date(new java.util.Date().getTime());
+        News news = new News.Builder().date(date).
+                title(newsDTO.getTitle()).dateUpdate(date).
                 description(newsDTO.getDescription()).
                 descriptionSummary(newsDTO.getDescriptionSummary()).
                 source(newsDTO.getSource()).build();
@@ -146,8 +150,7 @@ public class NewsService {
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = "mainNewsCache", key = "#newsDTO.getId", condition = "#newsDTO.getId!=null"),
-            @CacheEvict(value = {"searchTitle"}, allEntries = true),
-            @CacheEvict(value = {"newsCache","allNews","tagsCache","tagsUnusedCache"},allEntries = true)
+            @CacheEvict(value = {"searchTitle","newsCache","allNews","tagsCache","tagsUnusedCache"},allEntries = true)
     })
     public void updateNews(NewsDTO newsDTO, List<String> newTags) {
         News news = newsRepo.findById(newsDTO.getId()).get();
@@ -182,6 +185,7 @@ public class NewsService {
         if (newsDTO.getVideo() != null && !newsDTO.getVideo().isEmpty()) {
             news.setVideo(newsDTO.getVideo());
         }
+        news.setDateUpdate(new Date(new java.util.Date().getTime()));
         newsRepo.save(news);
     }
 
@@ -198,6 +202,7 @@ public class NewsService {
 //            news.getImages().add("example"+ UUID.randomUUID().toString()+".jpg");
             news.getImages().add(storageConfig.addMedia(image, "newsImages", StorageConfig.SubDir.NEWS));
         }
+        news.setDateUpdate(new Date(new java.util.Date().getTime()));
         newsRepo.save(news);
     }
 

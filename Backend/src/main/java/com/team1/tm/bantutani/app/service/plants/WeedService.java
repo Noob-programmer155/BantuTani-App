@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,7 +62,7 @@ public class WeedService extends PlantsCareService{
     public PlantAttributeResponseDTO convertPlantWeedToDTO(PlantsWeeds plantsWeeds) {
         return new PlantAttributeResponseDTO.Builder().id(plantsWeeds.getId()).
                 author(plantsWeeds.getAuthorPlantsWeeds().getUsername()).
-                description(plantsWeeds.getDescription()).
+                description(plantsWeeds.getDescription()).dateUpdate(plantsWeeds.getDateUpdate()).
                 otherNames(plantsWeeds.getOtherNames()).name(plantsWeeds.getName()).
                 type(plantsWeeds.getPlantTypeWeed().getType()).
                 image(plantsWeeds.getImages()).
@@ -70,7 +71,7 @@ public class WeedService extends PlantsCareService{
 
     public PlantAttributeResponseMinDTO convertPlantWeedToMinDTO(PlantsWeeds plantsWeed) {
         PlantAttributeResponseMinDTO responseMinDTO = new PlantAttributeResponseMinDTO.Builder().id(plantsWeed.getId()).
-                name(plantsWeed.getName()).
+                name(plantsWeed.getName()).dateUpdate(plantsWeed.getDateUpdate()).
                 type(plantsWeed.getPlantTypeWeed().getType()).build();
         if(!plantsWeed.getImages().isEmpty())
             responseMinDTO.setImage(plantsWeed.getImages().get(0));
@@ -127,6 +128,7 @@ public class WeedService extends PlantsCareService{
                 plantsWeeds.getImages().add(storageConfig.addMedia(item,"weedImages", StorageConfig.SubDir.WEEDS));
             });
         }
+        plantsWeeds.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsWeedsRepo.save(plantsWeeds);
     }
 
@@ -137,6 +139,7 @@ public class WeedService extends PlantsCareService{
         PlantsCare plantsCare = super.addPlantsCare(plantsCareDTO);
         plantsWeeds.getPlantsCares().add(plantsCare);
         plantsCare.setPlantsWeedsCare(plantsWeeds);
+        plantsWeeds.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsWeedsRepo.save(plantsWeeds);
         return plantsWeeds.getName();
     }
@@ -148,6 +151,8 @@ public class WeedService extends PlantsCareService{
         TipsNTrick tipsNTrick = super.addTipsNTrick(tipsNTrickDTO);
         plantsCare.getTipsNTricks().add(tipsNTrick);
         tipsNTrick.setPlantsCareTips(plantsCare);
+        if (plantsCare.getPlantsWeedsCare() != null)
+            plantsCare.getPlantsWeedsCare().setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsCareRepo.save(plantsCare);
     }
 
@@ -175,6 +180,7 @@ public class WeedService extends PlantsCareService{
             plantsWeeds.setName(plantAttributeDTO.getName());
         if (plantAttributeDTO.getOtherNames() != null)
             plantsWeeds.setOtherNames(plantAttributeDTO.getOtherNames());
+        plantsWeeds.setDateUpdate(new Date(new java.util.Date().getTime()));
         PlantsWeeds plantsWeeds1 = plantsWeedsRepo.save(plantsWeeds);
         return plantsWeeds1.getName();
     }
@@ -192,6 +198,7 @@ public class WeedService extends PlantsCareService{
         } else {
             plantsWeeds.getImages().add(storageConfig.addMedia(file,"weedImages", StorageConfig.SubDir.WEEDS));
         }
+        plantsWeeds.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsWeedsRepo.save(plantsWeeds);
         return plantsWeeds.getName();
     }

@@ -6,6 +6,7 @@ import com.team1.tm.bantutani.app.model.Plants;
 import com.team1.tm.bantutani.app.model.TipsNTrick;
 import com.team1.tm.bantutani.app.model.User;
 
+import java.sql.Date;
 import javax.persistence.*;
 import java.util.*;
 
@@ -16,6 +17,7 @@ public class PlantsDisease {
     @GeneratedValue
     private Long id;
     private String name;
+    private Date dateUpdate;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable(name = "PlantTypeDiseaseTable")
     private PlantTypeDisease plantTypeDisease;
@@ -38,6 +40,7 @@ public class PlantsDisease {
 
     public PlantsDisease(Builder builder) {
         this.name = builder.name;
+        this.dateUpdate = builder.dateUpdate;
         this.plantTypeDisease = builder.plantTypeDisease;
         this.otherNames = builder.otherNames;
         this.description = builder.description;
@@ -60,6 +63,14 @@ public class PlantsDisease {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 
     public PlantTypeDisease getPlantTypeDisease() {
@@ -96,7 +107,7 @@ public class PlantsDisease {
         return authorPlantsAttribute;
     }
 
-    public void setAuthorPlantsDisease(User authorPlantsAttribute) {
+    public void setAuthorPlantsAttribute(User authorPlantsAttribute) {
         this.authorPlantsAttribute = authorPlantsAttribute;
     }
 
@@ -125,6 +136,7 @@ public class PlantsDisease {
 
     public static class Builder {
         private String name;
+        private Date dateUpdate;
         private PlantTypeDisease plantTypeDisease;
         private List<String> otherNames;
         private String description;
@@ -133,6 +145,10 @@ public class PlantsDisease {
         private List<PlantsCare> plantsCares = new LinkedList<>();
         public Builder name(String name) {
             this.name = name;
+            return this;
+        }
+        public Builder dateUpdate(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public Builder plantTypeDisease(PlantTypeDisease plantTypeDisease) {

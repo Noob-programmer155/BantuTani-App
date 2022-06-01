@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -115,11 +116,19 @@ public abstract class PlantsCareService extends TipsNTrickService {
             plantsCare.setVideo(plantsCareDTO.getVideo());
             plantsCare.setAnimation(null);
         }
-        plantsCareRepo.save(plantsCare);
-        return (plantsCare.getCaringPlants() != null)?plantsCare.getCaringPlants().getName():
-                (plantsCare.getPlantsDiseaseCare() != null)?String.valueOf(plantsCare.getPlantsDiseaseCare().getId()):
-                        (plantsCare.getPlantsPestCare() != null)?String.valueOf(plantsCare.getPlantsPestCare().getId()):
-                                String.valueOf(plantsCare.getPlantsWeedsCare().getId());
+        if (plantsCare.getCaringPlants() != null)
+            plantsCare.getCaringPlants().setDateUpdate(new Date(new java.util.Date().getTime()));
+        if (plantsCare.getPlantsDiseaseCare() != null)
+            plantsCare.getPlantsDiseaseCare().setDateUpdate(new Date(new java.util.Date().getTime()));
+        if (plantsCare.getPlantsWeedsCare() != null)
+            plantsCare.getPlantsWeedsCare().setDateUpdate(new Date(new java.util.Date().getTime()));
+        if (plantsCare.getPlantsPestCare() != null)
+            plantsCare.getPlantsPestCare().setDateUpdate(new Date(new java.util.Date().getTime()));
+        PlantsCare plantsCare1 = plantsCareRepo.save(plantsCare);
+        return (plantsCare.getCaringPlants() != null)?plantsCare1.getCaringPlants().getName():
+                (plantsCare.getPlantsDiseaseCare() != null)?String.valueOf(plantsCare1.getPlantsDiseaseCare().getId()):
+                        (plantsCare.getPlantsPestCare() != null)?String.valueOf(plantsCare1.getPlantsPestCare().getId()):
+                                String.valueOf(plantsCare1.getPlantsWeedsCare().getId());
     }
 
     @Transactional
@@ -130,6 +139,14 @@ public abstract class PlantsCareService extends TipsNTrickService {
             if(!storageConfig.deleteMedia(plantsCare.getImage(), StorageConfig.SubDir.CARE))
                 throw new RuntimeException("failed delete plants care, something wrong with file images, please try again");
         plantsCare.getTipsNTricks().clear();
+        if (plantsCare.getCaringPlants() != null)
+            plantsCare.getCaringPlants().setDateUpdate(new Date(new java.util.Date().getTime()));
+        if (plantsCare.getPlantsDiseaseCare() != null)
+            plantsCare.getPlantsDiseaseCare().setDateUpdate(new Date(new java.util.Date().getTime()));
+        if (plantsCare.getPlantsWeedsCare() != null)
+            plantsCare.getPlantsWeedsCare().setDateUpdate(new Date(new java.util.Date().getTime()));
+        if (plantsCare.getPlantsPestCare() != null)
+            plantsCare.getPlantsPestCare().setDateUpdate(new Date(new java.util.Date().getTime()));
         PlantsCare plantsCare1 = plantsCareRepo.save(plantsCare);
         plantsCareRepo.delete(plantsCare1);
     }

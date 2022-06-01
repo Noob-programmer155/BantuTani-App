@@ -56,7 +56,6 @@ public class NewsController {
 
     @GetMapping("/public/news/v1/search/get")
     @Tag(name = "News Response Data Search", description = "get data from user search")
-
     private List<NewsResponseMinDTO> getDataSearch(@RequestParam(value = "q") String quest,
                                         @RequestParam int page, @RequestParam int size) {
         return newsService.getNews(quest, page, size);
@@ -64,7 +63,6 @@ public class NewsController {
 
     @GetMapping("/public/news/v1/data/get")
     @Tag(name = "News Response Data", description = "get detailed data from user")
-
     private NewsResponseDTO getData(@RequestParam Long id) {
         return newsService.getNews(id);
     }
@@ -111,8 +109,7 @@ public class NewsController {
     @DeleteMapping("/news/v1/delete/image/{name}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Delete News Image", description = "delete news image")
-    public StringResponse deleteImageNews(@RequestParam Long newsId,
-                              @PathVariable String name) {
+    public StringResponse deleteImageNews(@RequestParam Long newsId, @PathVariable String name) {
         newsService.updateImage(null, name, newsId, true);
         return new StringResponse.Builder().status("success").message("Success delete news image with news id "+newsId).build();
     }

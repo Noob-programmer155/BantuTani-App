@@ -55,9 +55,20 @@ public class PlantsService extends PlantsCareService{
         return bindPlantsWithCost(plants, getCostPlants(plants.getId()));
     }
 
+    @Cacheable(value = "plantsSearch", key = "#name")
+    public List<String> getSearchPlants(String name, int size) {
+        return plantsRepo.findDistinctByNameContaining(name, PageRequest.of(0,size, Sort.by("name"))).stream().map(item -> item.getName()).collect(Collectors.toList());
+    }
+
+    @Cacheable(value = "getPlantsSearch")
+    public List<PlantsResponseMinDTO> getSearchPlants(String name, int page, int size) {
+        return plantsRepo.findAllDistinctByNameContaining(name, PageRequest.of(page,size, Sort.by("name"))).
+                map(item -> convertPlantsToMinDTO(item)).getContent();
+    }
+
     @Cacheable(value = "plantsAllCache", key = "{#page,#size}")
     public List<PlantsResponseMinDTO> getAllDataPlants(int page, int size) {
-        Page<PlantsResponseMin> plants = plantsRepo.findAllProjectedBy(PageRequest.of(page,size,Sort.by(Sort.Direction.ASC, "name")));
+        Page<PlantsResponseMin> plants = plantsRepo.findDistinctProjectedBy(PageRequest.of(page,size,Sort.by(Sort.Direction.ASC, "name")));
         return plants.map(item -> convertPlantsToMinDTO(item)).getContent();
     }
 
@@ -92,12 +103,12 @@ public class PlantsService extends PlantsCareService{
                 id(plants.getId()).cares(getPlantsCare(plants.getCares())).name(plants.getName()).
                 otherNames(plants.getOtherNames()).characteristic(plants.getCharacteristic()).image(plants.getImage()).
                 type(plants.getPlantTypeImpl().getType()).shortDescription(plants.getShortDescription()).
-                build();
+                dateUpdate(plants.getDateUpdate()).build();
     }
 
     public PlantsResponseMinDTO convertPlantsToMinDTO(PlantsResponseMin plantsResponseMin) {
         PlantsResponseMinDTO responseMinDTO = new PlantsResponseMinDTO.Builder().id(plantsResponseMin.getId()).name(plantsResponseMin.getName()).
-                type(plantsResponseMin.getPlantTypeImpl().getType()).build();
+                type(plantsResponseMin.getPlantTypeImpl().getType()).date(plantsResponseMin.getDateUpdate()).build();
         if(!plantsResponseMin.getImage().isEmpty()){
             responseMinDTO.setImage(plantsResponseMin.getImage().get(0));
         }
@@ -132,6 +143,7 @@ public class PlantsService extends PlantsCareService{
     }
 
     @Transactional
+    @CacheEvict(value = "getPlantsSearch", allEntries = true)
     public void addPlants(PlantsDTO plantsDTO) {
         PlantTypeImpl plantType = null;
         if(plantTypeImplRepo.existsByType(plantsDTO.getPlantTypeImpl()))
@@ -143,7 +155,8 @@ public class PlantsService extends PlantsCareService{
         }
         Plants plants = new Plants.Builder().characteristic(plantsDTO.getCharacteristic()).
                 name(plantsDTO.getName()).otherNames(plantsDTO.getOtherNames()).
-                plantType(plantType).shortDescription(plantsDTO.getShortDescription()).build();
+                plantType(plantType).shortDescription(plantsDTO.getShortDescription())
+                .dateUpdate(new Date(new java.util.Date().getTime())).build();
         plantType.getPlants().add(plants);
 
         CostPlant costPlant = new CostPlant.Builder().dateUpdateCost(plantsDTO.getDateUpdateCost()).
@@ -164,13 +177,14 @@ public class PlantsService extends PlantsCareService{
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = {"plantsCache"}, key = "#id", condition = "#id!=null"),
-            @CacheEvict(value = {"userDataCache"}, key = "#plantsCareDTO.getAuthorPlantsCare", condition = "#plantsCareDTO.getAuthorPlantsCare!=null")
+            @CacheEvict(value = {"userDataCache"}, key = "#plantsCareDTO.getAuthorPlantsCare", condition = "#plantsCareDTO.getAuthorPlantsCare!=null"),
     })
     public String addPlantsCare(PlantsCareDTO plantsCareDTO, Long id) {
         Plants plants = plantsRepo.findById(id).get();
         PlantsCare plantsCare = super.addPlantsCare(plantsCareDTO);
         plants.getCares().add(plantsCare);
         plantsCare.setCaringPlants(plants);
+        plants.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsRepo.save(plants);
         return plants.getName();
     }
@@ -182,6 +196,8 @@ public class PlantsService extends PlantsCareService{
         TipsNTrick tipsNTrick = super.addTipsNTrick(tipsNTrickDTO);
         plantsCare.getTipsNTricks().add(tipsNTrick);
         tipsNTrick.setPlantsCareTips(plantsCare);
+        if (plantsCare.getCaringPlants() != null)
+            plantsCare.getCaringPlants().setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsCareRepo.save(plantsCare);
         return plantsCare.getId();
     }
@@ -193,6 +209,7 @@ public class PlantsService extends PlantsCareService{
         TipsNTrick tipsNTrick = super.addTipsNTrick(tipsNTrickDTO);
         planting.getTipsNTricks().add(tipsNTrick);
         tipsNTrick.setPlantsPlantingTips(planting);
+        planting.getPlantingPlants().setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsPlantingRepo.save(planting);
     }
 
@@ -203,6 +220,7 @@ public class PlantsService extends PlantsCareService{
     })
     public String addPlantsPlanting(PlantsPlantingDTO plantsPlantingDTO) {
         Plants plants = plantsRepo.findById(plantsPlantingDTO.getPlantingPlants()).get();
+        plants.setDateUpdate(new Date(new java.util.Date().getTime()));
         User user = userRepo.findById(plantsPlantingDTO.getAuthorPlantsPlanting()).get();
         PlantsPlanting planting  = new PlantsPlanting.Builder().description(plantsPlantingDTO.getDescription()).
                 plants(plants).author(user).step(plantsPlantingDTO.getStep()).build();
@@ -220,8 +238,8 @@ public class PlantsService extends PlantsCareService{
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = {"plantsCache"}, key = "#plantsDTO.getId", condition = "#plantsDTO.getId!=null"),
-            @CacheEvict(value = {"plantsAllCache"}, allEntries = true),
-            @CacheEvict(value = "userDataCache", condition = "#plantsDTO.getName!=null")
+            @CacheEvict(value = {"plantsAllCache","getPlantsSearch"}, allEntries = true),
+            @CacheEvict(value = {"userDataCache","plantsSearch"}, allEntries = true, condition = "#plantsDTO.getName!=null")
     })
     public void updatePlants(PlantsDTO plantsDTO) {
         Plants plants = plantsRepo.findById(plantsDTO.getId()).get();
@@ -246,13 +264,14 @@ public class PlantsService extends PlantsCareService{
         }
         if (plantsDTO.getShortDescription() != null)
             plants.setShortDescription(plantsDTO.getShortDescription());
+        plants.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsRepo.save(plants);
     }
 
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = {"plantsCache"}, key = "#id", condition = "#id!=null"),
-            @CacheEvict(value = {"plantsAllCache"}, allEntries = true)
+            @CacheEvict(value = {"plantsAllCache","getPlantsSearch"}, allEntries = true)
     })
     public String updateImage(MultipartFile file, String filename, Long id, boolean delete) {
         Plants plants = plantsRepo.findById(id).get();
@@ -261,6 +280,7 @@ public class PlantsService extends PlantsCareService{
         } else {
             plants.getImage().add(storageConfig.addMedia(file, "plantImages", StorageConfig.SubDir.PLANTS));
         }
+        plants.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsRepo.save(plants);
         return plants.getName();
     }
@@ -307,9 +327,7 @@ public class PlantsService extends PlantsCareService{
     }
 
     @Override
-    public void addDataAttribute(PlantAttributeDTO plantAttributeDTO) {
-
-    }
+    public void addDataAttribute(PlantAttributeDTO plantAttributeDTO) {}
 
     @Override
     public String updateDataAttribute(PlantAttributeDTO plantAttributeDTO) {
@@ -353,6 +371,7 @@ public class PlantsService extends PlantsCareService{
             planting.setVideo(null);
             planting.setImage(storageConfig.addMedia(plantsPlantingDTO.getImage(), "plantingImages", StorageConfig.SubDir.PLANTING));
         }
+        planting.getPlantingPlants().setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsPlantingRepo.save(planting);
         return planting.getPlantingPlants().getName();
     }
@@ -366,8 +385,8 @@ public class PlantsService extends PlantsCareService{
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = {"plantsCache"}, key = "#id"),
-            @CacheEvict(value = {"plantsImageCache","plantingPlantsImageCache",
-                    "plantsAllCache","costPlantsCache","userDataCache"}, allEntries = true)
+            @CacheEvict(value = {"plantsImageCache","plantingPlantsImageCache","plantsSearch",
+                    "plantsAllCache","costPlantsCache","userDataCache","getPlantsSearch"}, allEntries = true)
     })
     public String deletePlants(Long id) {
         Plants plants = plantsRepo.findById(id).get();
@@ -407,6 +426,7 @@ public class PlantsService extends PlantsCareService{
             if(!storageConfig.deleteMedia(plantsPlanting.getImage(), StorageConfig.SubDir.PLANTING))
                 throw new RuntimeException("failed delete plants planting, something wrong with file images, please try again");
         plantsPlanting.getTipsNTricks().clear();
+        plantsPlanting.getPlantingPlants().setDateUpdate(new Date(new java.util.Date().getTime()));
         PlantsPlanting planting = plantsPlantingRepo.save(plantsPlanting);
         plantsPlantingRepo.delete(planting);
     }

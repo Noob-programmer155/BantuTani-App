@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,7 +66,7 @@ public class PestService extends PlantsCareService{
     public PlantAttributeResponseDTO convertPlantPestToDTO(PlantsPest plantsPest) {
         return new PlantAttributeResponseDTO.Builder().id(plantsPest.getId()).
                 author(plantsPest.getAuthorPlantsPest().getUsername()).
-                description(plantsPest.getDescription()).
+                description(plantsPest.getDescription()).dateUpdate(plantsPest.getDateUpdate()).
                 otherNames(plantsPest.getOtherNames()).name(plantsPest.getName()).
                 type(plantsPest.getPlantTypePest().getType()).
                 image(plantsPest.getImages()).
@@ -74,7 +75,7 @@ public class PestService extends PlantsCareService{
 
     public PlantAttributeResponseMinDTO convertPlantPestToMinDTO(PlantsPest plantsPest) {
         PlantAttributeResponseMinDTO responseMinDTO = new PlantAttributeResponseMinDTO.Builder().id(plantsPest.getId()).
-                name(plantsPest.getName()).
+                name(plantsPest.getName()).dateUpdate(plantsPest.getDateUpdate()).
                 type(plantsPest.getPlantTypePest().getType()).build();
         if(!plantsPest.getImages().isEmpty())
             responseMinDTO.setImage(plantsPest.getImages().get(0));
@@ -131,6 +132,7 @@ public class PestService extends PlantsCareService{
                 plantsPest.getImages().add(storageConfig.addMedia(item,"pestImages", StorageConfig.SubDir.PEST));
             });
         }
+        plantsPest.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsPestRepo.save(plantsPest);
     }
 
@@ -141,6 +143,7 @@ public class PestService extends PlantsCareService{
         PlantsCare plantsCare = super.addPlantsCare(plantsCareDTO);
         plantsPest.getPlantsCares().add(plantsCare);
         plantsCare.setPlantsPestCare(plantsPest);
+        plantsPest.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsPestRepo.save(plantsPest);
         return plantsPest.getName();
     }
@@ -152,6 +155,8 @@ public class PestService extends PlantsCareService{
         TipsNTrick tipsNTrick = super.addTipsNTrick(tipsNTrickDTO);
         plantsCare.getTipsNTricks().add(tipsNTrick);
         tipsNTrick.setPlantsCareTips(plantsCare);
+        if (plantsCare.getPlantsPestCare() != null)
+            plantsCare.getPlantsPestCare().setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsCareRepo.save(plantsCare);
     }
 
@@ -180,6 +185,7 @@ public class PestService extends PlantsCareService{
             plantsPest.setName(plantAttributeDTO.getName());
         if (plantAttributeDTO.getOtherNames() != null)
             plantsPest.setOtherNames(plantAttributeDTO.getOtherNames());
+        plantsPest.setDateUpdate(new Date(new java.util.Date().getTime()));
         PlantsPest plantsPest1 = plantsPestRepo.save(plantsPest);
         return plantsPest1.getName();
     }
@@ -197,6 +203,7 @@ public class PestService extends PlantsCareService{
         } else {
             plantsPest.getImages().add(storageConfig.addMedia(file,"pestImages", StorageConfig.SubDir.PEST));
         }
+        plantsPest.setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsPestRepo.save(plantsPest);
         return plantsPest.getName();
     }

@@ -11,6 +11,7 @@ import java.util.List;
 public interface PlantsResponse {
     public Long getId();
     public String getName();
+    public Date getDateUpdate();
     public List<String> getOtherNames();
     public PlantTypeImpl getPlantTypeImpl();
     public String getShortDescription();

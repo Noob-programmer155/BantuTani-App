@@ -6,6 +6,7 @@ import com.team1.tm.bantutani.app.model.Plants;
 import com.team1.tm.bantutani.app.model.User;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class PlantsPest {
     @GeneratedValue
     private Long id;
     private String name;
+    private Date dateUpdate;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable(name = "PlantTypePestTable")
     private PlantTypePest plantTypePest;
@@ -40,6 +42,7 @@ public class PlantsPest {
 
     public PlantsPest(Builder builder) {
         this.name = builder.name;
+        this.dateUpdate = builder.dateUpdate;
         this.plantTypePest = builder.plantTypePest;
         this.otherNames = builder.otherNames;
         this.description = builder.description;
@@ -62,6 +65,14 @@ public class PlantsPest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 
     public PlantTypePest getPlantTypePest() {
@@ -129,6 +140,7 @@ public class PlantsPest {
 
     public static class Builder {
         private String name;
+        private Date dateUpdate;
         private PlantTypePest plantTypePest;
         private List<String> otherNames;
         private String description;
@@ -137,6 +149,10 @@ public class PlantsPest {
         private List<PlantsCare> plantsCares = new LinkedList<>();
         public Builder name(String name) {
             this.name = name;
+            return this;
+        }
+        public Builder dateUpdate(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public Builder plantTypePest(PlantTypePest plantTypePest) {

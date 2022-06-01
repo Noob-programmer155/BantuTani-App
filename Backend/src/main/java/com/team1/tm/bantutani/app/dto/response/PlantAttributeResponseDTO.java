@@ -4,6 +4,7 @@ import com.team1.tm.bantutani.app.dto.PlantAttributeDTO;
 import com.team1.tm.bantutani.app.dto.PlantsCareDTO;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
 import java.util.List;
 
 public class PlantAttributeResponseDTO {
@@ -14,6 +15,7 @@ public class PlantAttributeResponseDTO {
     private String description;
     private List<String> image;
     private String authorPlantsAttribute;
+    private Date dateUpdate;
     private List<PlantsCareResponseDTO> plantsCares;
 
     public PlantAttributeResponseDTO() {
@@ -28,6 +30,7 @@ public class PlantAttributeResponseDTO {
         this.image = builder.image;
         this.authorPlantsAttribute = builder.authorPlantsAttributeResponse;
         this.plantsCares = builder.plantsCares;
+        this.dateUpdate = builder.dateUpdate;
     }
 
     public Long getId() {
@@ -94,6 +97,14 @@ public class PlantAttributeResponseDTO {
         this.authorPlantsAttribute = authorPlantsAttribute;
     }
 
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
+    }
+
     public static class Builder {
         private Long id;
         private String name;
@@ -103,6 +114,7 @@ public class PlantAttributeResponseDTO {
         private List<String> image;
         private String authorPlantsAttributeResponse;
         private List<PlantsCareResponseDTO> plantsCares;
+        private Date dateUpdate;
         public Builder id(Long id) {
             this.id = id;
             return this;
@@ -121,6 +133,10 @@ public class PlantAttributeResponseDTO {
         }
         public Builder description(String description) {
             this.description = description;
+            return this;
+        }
+        public Builder dateUpdate(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public Builder image(List<String> image) {

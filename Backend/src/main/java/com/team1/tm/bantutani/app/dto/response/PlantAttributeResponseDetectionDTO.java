@@ -1,5 +1,6 @@
 package com.team1.tm.bantutani.app.dto.response;
 
+import java.sql.Date;
 import java.util.List;
 
 public class PlantAttributeResponseDetectionDTO {
@@ -7,6 +8,7 @@ public class PlantAttributeResponseDetectionDTO {
     private String name;
     private String description;
     private List<String> image;
+    private Date dateUpdate;
     private List<PlantsCareResponseDTO> plantsCares;
 
     public PlantAttributeResponseDetectionDTO() {
@@ -16,6 +18,7 @@ public class PlantAttributeResponseDetectionDTO {
         this.id = builder.id;
         this.name = builder.name;
         this.description = builder.description;
+        this.dateUpdate = builder.dateUpdate;
         this.image = builder.image;
         this.plantsCares = builder.plantsCares;
     }
@@ -60,11 +63,20 @@ public class PlantAttributeResponseDetectionDTO {
         this.image = image;
     }
 
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
+    }
+
     public static class Builder {
         private Long id;
         private String name;
         private String description;
         private List<String> image;
+        private Date dateUpdate;
         private List<PlantsCareResponseDTO> plantsCares;
         public Builder id(Long id) {
             this.id = id;
@@ -76,6 +88,10 @@ public class PlantAttributeResponseDetectionDTO {
         }
         public Builder description(String description) {
             this.description = description;
+            return this;
+        }
+        public Builder dateUpdate(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public Builder image(List<String> image) {

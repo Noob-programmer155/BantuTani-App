@@ -59,6 +59,19 @@ public class PlantsController  {
         return plantsService.getAllDataPlants(page, size);
     }
 
+    @GetMapping("/public/plants/v1/data/{mount}/search")
+    @Tag(name = "Get Search Plants", description = "get plants dynamic search data")
+    public List<String> getDataSearch(@RequestParam(value = "q") String name, @PathVariable int mount) {
+        return plantsService.getSearchPlants(name, mount);
+    }
+
+    @GetMapping("/public/plants/v1/data/search/get")
+    @Tag(name = "Get Plants Data Search", description = "get data from dynamic search")
+    public List<PlantsResponseMinDTO> getData(@RequestParam(value = "q") String name,
+                                              @RequestParam int page, @RequestParam int size) {
+        return plantsService.getSearchPlants(name, page, size);
+    }
+
     @GetMapping("/public/plants/v1/data/{id}")
     @Tag(name = "Get Plants", description = "get details information about plant")
     public PlantsResponseDTO getData(@PathVariable Long id) {

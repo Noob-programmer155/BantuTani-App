@@ -1,10 +1,13 @@
 package com.team1.tm.bantutani.app.dto.response;
 
+import java.sql.Date;
+
 public class PlantsResponseMinDTO {
     private Long id;
     private String name;
     private String plantTypeImpl;
     private String image;
+    private Date dateUpdate;
 
     public PlantsResponseMinDTO() {
     }
@@ -14,6 +17,7 @@ public class PlantsResponseMinDTO {
         this.name = builder.name;
         this.plantTypeImpl = builder.plantTypeImpl;
         this.image = builder.image;
+        this.dateUpdate = builder.dateUpdate;
     }
 
     public Long getId() {
@@ -48,11 +52,20 @@ public class PlantsResponseMinDTO {
         this.image = image;
     }
 
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
+    }
+
     public static class Builder {
         private Long id;
         private String name;
         private String plantTypeImpl;
         private String image;
+        private Date dateUpdate;
         public Builder id(Long id) {
             this.id = id;
             return this;
@@ -67,6 +80,10 @@ public class PlantsResponseMinDTO {
         }
         public Builder image(String image) {
             this.image = image;
+            return this;
+        }
+        public Builder date(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public PlantsResponseMinDTO build() {

@@ -1,5 +1,6 @@
 package com.team1.tm.bantutani.app.dto.response;
 
+import java.sql.Date;
 import java.util.List;
 
 public class PlantAttributeResponseMinDTO {
@@ -7,6 +8,7 @@ public class PlantAttributeResponseMinDTO {
     private String name;
     private String attributePlantsType;
     private String image;
+    private Date dateUpdate;
 
     public PlantAttributeResponseMinDTO() {
     }
@@ -16,6 +18,7 @@ public class PlantAttributeResponseMinDTO {
         this.name = builder.name;
         this.attributePlantsType = builder.plantType;
         this.image = builder.image;
+        this.dateUpdate = builder.dateUpdate;
     }
 
     public Long getId() {
@@ -50,11 +53,20 @@ public class PlantAttributeResponseMinDTO {
         this.image = image;
     }
 
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
+    }
+
     public static class Builder {
         private Long id;
         private String name;
         private String plantType;
         private String image;
+        private Date dateUpdate;
         public Builder id(Long id) {
             this.id = id;
             return this;
@@ -69,6 +81,10 @@ public class PlantAttributeResponseMinDTO {
         }
         public Builder image(String image) {
             this.image = image;
+            return this;
+        }
+        public Builder dateUpdate(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public PlantAttributeResponseMinDTO build() {

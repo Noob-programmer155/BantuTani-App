@@ -22,6 +22,7 @@ public class News {
     @Column(length = 15000)
     private String descriptionSummary;
     private Date dates;
+    private Date dateUpdate;
     private String sources;
     @ManyToMany(mappedBy = "newsListTags")
     private Set<NewsTags> keywords = new LinkedHashSet<>();
@@ -37,6 +38,7 @@ public class News {
         this.descriptions = build.description;
         this.descriptionSummary = build.descriptionSummary;
         this.dates = build.date;
+        this.dateUpdate = build.dateUpdate;
         this.sources = build.source;
         this.images = build.images;
         this.video = build.video;
@@ -80,6 +82,14 @@ public class News {
 
     public void setDates(Date date) {
         this.dates = date;
+    }
+
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 
     public String getSources() {
@@ -126,6 +136,7 @@ public class News {
         private String description;
         private String descriptionSummary;
         private Date date;
+        private Date dateUpdate;
         private String source;
         private List<String> images = new LinkedList<>();
         private String video;
@@ -143,6 +154,10 @@ public class News {
         }
         public Builder descriptionSummary(String descriptionSummary) {
             this.descriptionSummary = descriptionSummary;
+            return this;
+        }
+        public Builder dateUpdate(Date date) {
+            this.dateUpdate = date;
             return this;
         }
         public Builder date(Date date) {

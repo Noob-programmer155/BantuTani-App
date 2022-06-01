@@ -3,10 +3,7 @@ package com.team1.tm.bantutani.app.controller.plants;
 import com.team1.tm.bantutani.app.dto.PlantAttributeDTO;
 import com.team1.tm.bantutani.app.dto.PlantsCareDTO;
 import com.team1.tm.bantutani.app.dto.TipsNTrickDTO;
-import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseDTO;
-import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseDetectionDTO;
-import com.team1.tm.bantutani.app.dto.response.PlantAttributeResponseMinDTO;
-import com.team1.tm.bantutani.app.dto.response.StringResponse;
+import com.team1.tm.bantutani.app.dto.response.*;
 import com.team1.tm.bantutani.app.service.plants.DiseaseService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -69,6 +66,12 @@ public class DiseaseController {
     @Tag(name = "Get Plants Disease Detection", description = "get plants disease for detection")
     public List<PlantAttributeResponseDetectionDTO> getDataDetection(@RequestParam List<Long> id) {
         return diseaseService.getPlantDiseaseDetection(id);
+    }
+
+    @GetMapping("/public/plants/disease/v1/pre/data/detection")
+    @Tag(name = "Get Plants Disease Pre Data Train", description = "get plants disease data for pre train model")
+    public List<PlantAttributeResponseDetectionIDDTO> getDataDetectionID() {
+        return diseaseService.getAllDataDisease();
     }
 
     @GetMapping("/plants/disease/v1/type/data/{mount}")
