@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -40,11 +41,12 @@ public class NewsController {
 
     @GetMapping("/public/news/v1/data/{start}/{end}/get")
     @Tag(name = "Get News Between 2 Date", description = "get news data between 2 dates with pagination")
-    private List<NewsResponseMinDTO> getAllNews(@PathVariable Date start,
-                                                @PathVariable Date end,
+    private List<NewsResponseMinDTO> getAllNews(@PathVariable String start,
+                                                @PathVariable String end,
                                                 @RequestParam int page,
-                                                @RequestParam int size) {
-        return newsService.getAllNews(start, end, page, size);
+                                                @RequestParam int size) throws ParseException {
+        return newsService.getAllNews(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(start).getTime()),
+                new Date(new SimpleDateFormat("yyyy-MM-dd").parse(end).getTime()), page, size);
     }
 
     @GetMapping("/public/news/v1/data/{mount}/search")

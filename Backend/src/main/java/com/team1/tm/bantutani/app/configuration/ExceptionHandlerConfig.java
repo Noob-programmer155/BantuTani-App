@@ -10,6 +10,7 @@ import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.security.auth.login.CredentialException;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -129,6 +131,13 @@ public class ExceptionHandlerConfig {
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ResponseBody
     public StringResponse handleValidationDataDBError(JDBCException e) {
+        return new StringResponse.Builder().status("error").message(e.getMessage()).build();
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public StringResponse handleValidationPasswordDBError(BadCredentialsException e) {
         return new StringResponse.Builder().status("error").message(e.getMessage()).build();
     }
 

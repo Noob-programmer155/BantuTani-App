@@ -185,26 +185,16 @@ public class MainController {
     @PostMapping("/public/user/v1/login")
     @Tag(name = "Login", description = "user login for all users")
     public UserResponseDTO login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
-        try {
-            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            Optional<User> user = userRepo.findByUsername(auth.getName());
-            if(user.isPresent()) {
-                User usr = user.get();
-                TokenManager.bindToken(usr.getUsername(),usr.getId(), usr.getEmail(),
-                        usr.getStatus(), response);
-                return new UserResponseDTO.Builder().id(usr.getId()).email(usr.getEmail()).image(usr.getImage()).
-                        status(usr.getStatus().getLabel()).username(usr.getUsername()).build();
-            }
-            throw new NullPointerException(username);
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        Optional<User> user = userRepo.findByUsername(auth.getName());
+        if(user.isPresent()) {
+            User usr = user.get();
+            TokenManager.bindToken(usr.getUsername(),usr.getId(), usr.getEmail(),
+                    usr.getStatus(), response);
+            return new UserResponseDTO.Builder().id(usr.getId()).email(usr.getEmail()).image(usr.getImage()).
+                    status(usr.getStatus().getLabel()).username(usr.getUsername()).build();
         }
-        catch(AuthenticationException | NullPointerException e) {
-            response.sendError(401, "Invalid credential`s, please check your credential");
-            return null;
-        }
-        catch(Exception e) {
-            response.sendError(500, "There`s some error when connect to the server, try to connect again");
-            return null;
-        }
+        throw new NullPointerException(username);
     }
 
     private boolean validatePassword(String encryptedPassword, String password) {
