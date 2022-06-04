@@ -46,9 +46,8 @@ public class NewsService {
 
     @Cacheable(value = "allNews", key = "{#start,#end}")
     public List<NewsResponseMinDTO> getAllNews (Date start, Date end,int page, int size) {
-        return newsRepo.getAllNews(start, end, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date")))
-                .map(item ->
-                new NewsResponseMinDTO.Builder().
+        return newsRepo.findByDatesBetween(start, end, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dates")))
+                .map(item -> new NewsResponseMinDTO.Builder().
                         id(item.getId()).
                         title(item.getTitle()).
                         images((!item.getImages().isEmpty())?item.getImages().get(0):null).

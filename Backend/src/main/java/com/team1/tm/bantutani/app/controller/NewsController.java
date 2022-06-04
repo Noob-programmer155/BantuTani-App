@@ -35,51 +35,50 @@ public class NewsController {
 
     @GetMapping(value = "/public/news/v1/media/{name}", produces = MediaType.IMAGE_PNG_VALUE)
     @Tag(name = "Get News Image", description = "get news image")
-    private byte[] getMedia(@PathVariable String name) {
+    public byte[] getMedia(@PathVariable String name) {
         return newsService.getMedia(name);
     }
 
     @GetMapping("/public/news/v1/data/{start}/{end}/get")
     @Tag(name = "Get News Between 2 Date", description = "get news data between 2 dates with pagination")
-    private List<NewsResponseMinDTO> getAllNews(@PathVariable String start,
-                                                @PathVariable String end,
+    public List<NewsResponseMinDTO> getAllNews(@PathVariable Date start,
+                                                @PathVariable Date end,
                                                 @RequestParam int page,
-                                                @RequestParam int size) throws ParseException {
-        return newsService.getAllNews(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(start).getTime()),
-                new Date(new SimpleDateFormat("yyyy-MM-dd").parse(end).getTime()), page, size);
+                                                @RequestParam int size) {
+        return newsService.getAllNews(start, end, page, size);
     }
 
     @GetMapping("/public/news/v1/data/{mount}/search")
     @Tag(name = "News Search", description = "search suggestion for news with title based response and mount of data to displayed (static)")
-    private List<String> search(@RequestParam(value = "q") String quest,
+    public List<String> search(@RequestParam(value = "q") String quest,
                                 @PathVariable int mount) {
         return newsService.getSearchTitles(quest, mount);
     }
 
     @GetMapping("/public/news/v1/search/get")
     @Tag(name = "News Response Data Search", description = "get data from user search")
-    private List<NewsResponseMinDTO> getDataSearch(@RequestParam(value = "q") String quest,
+    public List<NewsResponseMinDTO> getDataSearch(@RequestParam(value = "q") String quest,
                                         @RequestParam int page, @RequestParam int size) {
         return newsService.getNews(quest, page, size);
     }
 
     @GetMapping("/public/news/v1/data/get")
     @Tag(name = "News Response Data", description = "get detailed data from user")
-    private NewsResponseDTO getData(@RequestParam Long id) {
+    public NewsResponseDTO getData(@RequestParam Long id) {
         return newsService.getNews(id);
     }
 
     @GetMapping("/news/v1/search/tags/get")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Get Tags", description = "get tags data suggestion with specific size data that displayed")
-    private List<TagsDTO> getTagsData(@RequestParam String name, @RequestParam int size) {
+    public List<TagsDTO> getTagsData(@RequestParam String name, @RequestParam int size) {
         return newsService.getTags(name, size);
     }
 
     @GetMapping("/news/v1/unused/tags/get")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Tag(name = "Get Unused Tags", description = "get all tags data that unused")
-    private List<TagsDTO> getTagsData() {
+    public List<TagsDTO> getTagsData() {
         return newsService.getUnusedTags();
     }
 

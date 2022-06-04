@@ -12,8 +12,7 @@ import java.sql.Date;
 
 @Repository
 public interface NewsRepo extends JpaRepository<News, Long> {
-    @Query(value = "select c from News c where c.dates between :start and :end")
-    public Page<News> getAllNews(Date start, Date end,Pageable pageable);
+    public Page<News> findByDatesBetween(Date start, Date end,Pageable pageable);
     public Page<News> findDistinctByTitleContainingOrKeywordsName(String title, String keywordsName, Pageable pageable);
     public Page<NewsTitle> findAllDistinctByTitleContainingOrKeywordsName(String title, String keywordsName, Pageable pageable);
 }
