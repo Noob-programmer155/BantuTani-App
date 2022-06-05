@@ -131,9 +131,15 @@ public class PlantsService extends PlantsCareService{
         return plantsPlantings.stream().map(item -> {
             return new PlantsPlantingResponseDTO.Builder().id(item.getId()).animation(item.getAnimation()).
                     author(item.getAuthorPlantsPlanting().getUsername()).video(item.getVideo()).
-                    image(item.getImage()).description(item.getDescription()).
-                    tipsNTricks(getTipsNTrick(item.getTipsNTricks())).build();
-        }).sorted((item1, item2) -> item1.getStep().compareTo(item2.getStep())).collect(Collectors.toList());
+                    image(item.getImage()).description(item.getDescription()).step(item.getStep()).
+                    title(item.getTitle()).tipsNTricks(getTipsNTrick(item.getTipsNTricks())).build();
+        }).sorted((item1, item2) -> {
+            int i = item1.getTitle().compareTo(item2.getTitle());
+            if(i == 0)
+                return item1.getStep().compareTo(item2.getStep());
+            else
+                return i;
+        }).collect(Collectors.toList());
     }
 
     public List<TipsNTrickResponseDTO> getTipsNTrick(List<TipsNTrick> tipsNTricks) {
@@ -223,7 +229,8 @@ public class PlantsService extends PlantsCareService{
         plants.setDateUpdate(new Date(new java.util.Date().getTime()));
         User user = userRepo.findById(plantsPlantingDTO.getAuthorPlantsPlanting()).get();
         PlantsPlanting planting  = new PlantsPlanting.Builder().description(plantsPlantingDTO.getDescription()).
-                plants(plants).author(user).step(plantsPlantingDTO.getStep()).build();
+                plants(plants).author(user).step(plantsPlantingDTO.getStep()).title(plantsPlantingDTO.getTitle()).
+                build();
         user.getPlantings().add(planting);
         if (plantsPlantingDTO.getAnimation() != null)
             planting.setAnimation(plantsPlantingDTO.getAnimation());

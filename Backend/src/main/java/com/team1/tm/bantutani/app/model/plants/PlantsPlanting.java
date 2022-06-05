@@ -20,6 +20,8 @@ public class PlantsPlanting {
     private Long id;
     @Column(nullable = false)
     private Long step;
+    @Column(nullable = false)
+    private String title;
     @Column(length = 5000000)
     private String description;
     private String animation;
@@ -39,6 +41,7 @@ public class PlantsPlanting {
 
     public PlantsPlanting(Builder builder) {
         this.step = builder.step;
+        this.title = builder.title;
         this.description = builder.description;
         this.animation = builder.animation;
         this.image = builder.image;
@@ -61,6 +64,14 @@ public class PlantsPlanting {
 
     public void setStep(Long step) {
         this.step = step;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
@@ -117,6 +128,7 @@ public class PlantsPlanting {
 
     public static class Builder {
         private Long step;
+        private String title;
         private String description;
         private String animation;
         private String image;
@@ -125,6 +137,10 @@ public class PlantsPlanting {
         private Plants plants;
         public Builder step(Long step) {
             this.step = step;
+            return this;
+        }
+        public Builder title(String title) {
+            this.title = title;
             return this;
         }
         public Builder description(String description) {
