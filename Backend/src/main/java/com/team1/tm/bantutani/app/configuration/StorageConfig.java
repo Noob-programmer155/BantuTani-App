@@ -62,7 +62,11 @@ public class StorageConfig {
     }
 
     public boolean checkFileExist(String filename, SubDir subDir) {
-        return storage.get(BlobId.of(bucket, directory+"/"+subDir.getDirname()+"/"+filename)).exists();
+        try {
+            return storage.get(BlobId.of(bucket, directory+"/"+subDir.getDirname()+"/"+filename)).exists();
+        }catch(NullPointerException e) {
+            return false;
+        }
     }
 
     public String addMedia(MultipartFile file, String prefixName, SubDir subDir) {

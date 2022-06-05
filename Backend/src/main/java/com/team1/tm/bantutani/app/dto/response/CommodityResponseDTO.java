@@ -65,11 +65,11 @@ public class CommodityResponseDTO {
         private String icon;
         private Boolean costIncrease;
         public Builder currentCost(int cost) {
-            this.currentCost = currentCost;
+            this.currentCost = cost;
             return this;
         }
         public Builder previousCost(int cost) {
-            this.previousCost = previousCost;
+            this.previousCost = cost;
             return this;
         }
         public Builder name(String name) {

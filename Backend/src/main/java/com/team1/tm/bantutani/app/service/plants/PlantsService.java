@@ -143,7 +143,7 @@ public class PlantsService extends PlantsCareService{
     }
 
     @Transactional
-    @CacheEvict(value = "getPlantsSearch", allEntries = true)
+    @CacheEvict(value = {"getPlantsSearch","listAllPlantsType","listCommodityCache"}, allEntries = true)
     public void addPlants(PlantsDTO plantsDTO) {
         PlantTypeImpl plantType = null;
         if(plantTypeImplRepo.existsByType(plantsDTO.getPlantTypeImpl()))
@@ -166,7 +166,7 @@ public class PlantsService extends PlantsCareService{
         costPlant1.setPlants(plants);
         plants.setPlantsCost(costPlant1);
 
-        if (plantsDTO.getImage() != null) {
+        if (plantsDTO.getImage() != null && !plantsDTO.getImage().isEmpty()) {
             plantsDTO.getImage().forEach(item -> {
                 plants.getImage().add(storageConfig.addMedia(item, "plantImages", StorageConfig.SubDir.PLANTS));
             });
@@ -238,6 +238,7 @@ public class PlantsService extends PlantsCareService{
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = {"plantsCache"}, key = "#plantsDTO.getId", condition = "#plantsDTO.getId!=null"),
+            @CacheEvict(value = "listAllPlantsType", condition = "#plantsDTO.getPlantTypeImpl", allEntries = true),
             @CacheEvict(value = {"plantsAllCache","getPlantsSearch"}, allEntries = true),
             @CacheEvict(value = {"userDataCache","plantsSearch"}, allEntries = true, condition = "#plantsDTO.getName!=null")
     })
@@ -293,7 +294,10 @@ public class PlantsService extends PlantsCareService{
 
     // id pake plants id
     @Transactional
-    @CacheEvict(value = {"costPlantsCache"}, key = "#id", condition = "#id!=null")
+    @Caching(evict = {
+            @CacheEvict(value = "listCommodityCache", allEntries = true),
+            @CacheEvict(value = {"costPlantsCache"}, key = "#id", condition = "#id!=null")
+    })
     public void updateCost(Long id, int regionCost, int stableCost, int maxCost, int minCost, Date dateUpdate) {
         CostPlant costPlant = costPlantsRepo.findByPlantsId(id).get();
         costPlant.setPreviousCost(costPlant.getRegionCost());
@@ -307,7 +311,10 @@ public class PlantsService extends PlantsCareService{
 
     // id pake plants id
     @Transactional
-    @CacheEvict(value = {"costPlantsCache"}, key = "#id", condition = "#id!=null")
+    @Caching(evict = {
+            @CacheEvict(value = "listCommodityCache", allEntries = true),
+            @CacheEvict(value = {"costPlantsCache"}, key = "#id", condition = "#id!=null")
+    })
     public void updateCost(Long id, int regionCost, int stableCost, int maxCost, int minCost) {
         CostPlant costPlant = costPlantsRepo.findByPlantsId(id).get();
         costPlant.setPreviousCost(costPlant.getRegionCost());
@@ -321,7 +328,10 @@ public class PlantsService extends PlantsCareService{
 
     @Transactional
     @Scheduled(fixedRate = 86400000)
-    @CacheEvict(value = {"costPlantsCache"})
+    @Caching(evict = {
+            @CacheEvict(value = "listCommodityCache", allEntries = true),
+            @CacheEvict(value = {"costPlantsCache"}, key = "#id", condition = "#id!=null")
+    })
     public void updateAllCostAutomatic() {
         // using scrapper
     }
@@ -385,7 +395,7 @@ public class PlantsService extends PlantsCareService{
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = {"plantsCache"}, key = "#id"),
-            @CacheEvict(value = {"plantsImageCache","plantingPlantsImageCache","plantsSearch",
+            @CacheEvict(value = {"plantsImageCache","listCommodityCache","plantingPlantsImageCache","plantsSearch","listAllPlantsType",
                     "plantsAllCache","costPlantsCache","userDataCache","getPlantsSearch"}, allEntries = true)
     })
     public String deletePlants(Long id) {

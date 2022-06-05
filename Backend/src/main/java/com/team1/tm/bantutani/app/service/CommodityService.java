@@ -6,6 +6,7 @@ import com.team1.tm.bantutani.app.dto.response.PlantTypeResponseDTO;
 import com.team1.tm.bantutani.app.model.plants.PlantTypeImpl;
 import com.team1.tm.bantutani.app.repository.CostPlantsRepo;
 import com.team1.tm.bantutani.app.repository.PlantTypeImplRepo;
+import com.team1.tm.bantutani.app.repository.PlantsRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -53,7 +54,7 @@ public class CommodityService {
                     status = false;
             }
             return new CommodityResponseDTO.Builder().icon(filename).currentCost(item.getRegionCost()).
-                    previousCost(item.getPreviousCost()).name(item.getPlants().getName()).
+                    previousCost((item.getPreviousCost()!=null)?item.getPreviousCost():-1).name(item.getPlants().getName()).
                     isIncrease(status).
                     build();
         }).getContent();
