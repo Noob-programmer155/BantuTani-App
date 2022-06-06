@@ -161,7 +161,7 @@ public class PlantsController  {
     @PutMapping("/plants/v1/planting/data/modify")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Modify Plant Planting Plants", description = "modify plant planting in specific plant")
-    public StringResponse modifyData(@ModelAttribute PlantsPlantingDTO plantsPlantingDTO) {
+    public StringResponse modifyData(@ModelAttribute PlantsPlantingDTO plantsPlantingDTO) throws IOException {
         String name = plantsService.updatePlantsPlanting(plantsPlantingDTO);
         return new StringResponse.Builder().status("success").message("Success update plants planting in plants "+name).build();
     }
