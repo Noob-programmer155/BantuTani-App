@@ -118,42 +118,41 @@ public class StorageConfig {
     private DataFile validateFile(MultipartFile file, SubDir subDir) throws IOException {
         List<String> exts = Arrays.asList("jpg","jpeg","png","gif","ico");
         String ext = FilenameUtils.getExtension(file.getOriginalFilename());
-        if(!subDir.equals(SubDir.ICON) && !subDir.equals(SubDir.AVATAR)){
-            if(exts.contains(ext)) {
-                if(ext.equalsIgnoreCase("gif")){
-                    return new DataFile(file.getOriginalFilename(), ext, file.getBytes());
-                } else {
-                    BufferedImage bf = ImageIO.read(file.getInputStream());
-                    if(bf.getWidth() > 800 || bf.getHeight() > 480){
-                        Image image = bf.getScaledInstance(800, 480, Image.SCALE_SMOOTH);
-                        BufferedImage img = new BufferedImage(800, 480, BufferedImage.TYPE_INT_ARGB);
-                        img.createGraphics().drawImage(image, 0, 0, null);
-                        ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
-                        ImageIO.write(img, "png", inputStream);
-                        return new DataFile(file.getOriginalFilename(), "png", inputStream.toByteArray());
-                    } else {
-                        ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
-                        ImageIO.write(bf, "png", inputStream);
-                        return new DataFile(file.getOriginalFilename(), "png", inputStream.toByteArray());
-                    }
-                }
+        int width = 800;
+        int height = 480;
+        if  (!subDir.equals(SubDir.AVATAR)) {
+            width = 128;
+            height = 128;
+        } else if (!subDir.equals(SubDir.CARE) && !subDir.equals(SubDir.PLANTING)) {
+            width = 32;
+            height = 32;
+        } else if (!subDir.equals(SubDir.ICON)) {
+            width = 64;
+            height = 64;
+        } else {
+            width = 800;
+            height = 480;
+        }
+        if(exts.contains(ext)) {
+            if(ext.equalsIgnoreCase("gif")){
+                return new DataFile(file.getOriginalFilename(), ext, file.getBytes());
             } else {
-                throw new RuntimeException("File not Allowed !!!");
+                BufferedImage bf = ImageIO.read(file.getInputStream());
+                if(bf.getWidth() > width || bf.getHeight() > height){
+                    Image image = bf.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                    BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                    img.createGraphics().drawImage(image, 0, 0, null);
+                    ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
+                    ImageIO.write(img, "png", inputStream);
+                    return new DataFile(file.getOriginalFilename(), "png", inputStream.toByteArray());
+                } else {
+                    ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
+                    ImageIO.write(bf, "png", inputStream);
+                    return new DataFile(file.getOriginalFilename(), "png", inputStream.toByteArray());
+                }
             }
         } else {
-            BufferedImage bf = ImageIO.read(file.getInputStream());
-            if(bf.getWidth() > 128 && bf.getHeight() > 128){
-                Image image = bf.getScaledInstance(128, 128, Image.SCALE_SMOOTH);
-                BufferedImage img = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
-                img.createGraphics().drawImage(image, 0, 0, null);
-                ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
-                ImageIO.write(img, "png", inputStream);
-                return new DataFile(file.getOriginalFilename(), "png", inputStream.toByteArray());
-            } else {
-                ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
-                ImageIO.write(bf, "png", inputStream);
-                return new DataFile(file.getOriginalFilename(), "png", inputStream.toByteArray());
-            }
+            throw new RuntimeException("File not Allowed !!!");
         }
     }
 
