@@ -120,13 +120,13 @@ public class StorageConfig {
         String ext = FilenameUtils.getExtension(file.getOriginalFilename());
         int width = 800;
         int height = 480;
-        if  (!subDir.equals(SubDir.AVATAR)) {
+        if (subDir.equals(SubDir.AVATAR)) {
             width = 128;
             height = 128;
-        } else if (!subDir.equals(SubDir.CARE) && !subDir.equals(SubDir.PLANTING)) {
+        } else if (subDir.equals(SubDir.CARE) || subDir.equals(SubDir.PLANTING)) {
             width = 32;
             height = 32;
-        } else if (!subDir.equals(SubDir.ICON)) {
+        } else if (subDir.equals(SubDir.ICON)) {
             width = 64;
             height = 64;
         } else {
