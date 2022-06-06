@@ -1,0 +1,122 @@
+<annotation>
+	<folder>bc</folder>
+	<filename>cercospora-6-10-6.jpg</filename>
+	<path>C:\Users\DEFINA\Documents\OD\bc\cercospora-6-10-6.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>2016</width>
+		<height>2689</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>964</xmin>
+			<ymin>1021</ymin>
+			<xmax>1160</xmax>
+			<ymax>1488</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>773</xmin>
+			<ymin>1871</ymin>
+			<xmax>885</xmax>
+			<ymax>2138</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>598</xmin>
+			<ymin>688</ymin>
+			<xmax>714</xmax>
+			<ymax>996</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>106</xmin>
+			<ymin>571</ymin>
+			<xmax>273</xmax>
+			<ymax>788</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>843</xmin>
+			<ymin>755</ymin>
+			<xmax>948</xmax>
+			<ymax>1026</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>235</xmin>
+			<ymin>2063</ymin>
+			<xmax>331</xmax>
+			<ymax>2451</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>389</xmin>
+			<ymin>2321</ymin>
+			<xmax>514</xmax>
+			<ymax>2584</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1360</xmin>
+			<ymin>1992</ymin>
+			<xmax>1510</xmax>
+			<ymax>2276</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1210</xmin>
+			<ymin>1446</ymin>
+			<xmax>1298</xmax>
+			<ymax>1742</ymax>
+		</bndbox>
+	</object>
+</annotation>

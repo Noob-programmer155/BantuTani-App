@@ -1,0 +1,50 @@
+<annotation>
+	<folder>bc</folder>
+	<filename>brown-spot-of-rice-rice-1.jpg</filename>
+	<path>C:\Users\DEFINA\Documents\OD\bc\brown-spot-of-rice-rice-1.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>400</width>
+		<height>600</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>210</xmin>
+			<ymin>368</ymin>
+			<xmax>246</xmax>
+			<ymax>393</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>167</xmin>
+			<ymin>501</ymin>
+			<xmax>198</xmax>
+			<ymax>524</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>317</xmin>
+			<ymin>161</ymin>
+			<xmax>354</xmax>
+			<ymax>194</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,38 @@
+<annotation>
+	<folder>bc</folder>
+	<filename>brownspot_sym1.jpg</filename>
+	<path>C:\Users\DEFINA\Documents\OD\bc\brownspot_sym1.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>150</width>
+		<height>150</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>58</xmin>
+			<ymin>48</ymin>
+			<xmax>69</xmax>
+			<ymax>60</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>78</xmin>
+			<ymin>98</ymin>
+			<xmax>86</xmax>
+			<ymax>109</ymax>
+		</bndbox>
+	</object>
+</annotation>
