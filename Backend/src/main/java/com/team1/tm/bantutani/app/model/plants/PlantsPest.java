@@ -25,7 +25,7 @@ public class PlantsPest {
     private PlantTypePest plantTypePest;
     @ElementCollection
     private List<String> otherNames = new LinkedList<>();
-    @Column(length = 500)
+    @Column(length = 2000)
     private String description;
     @ElementCollection
     private List<String> images = new LinkedList<>();
