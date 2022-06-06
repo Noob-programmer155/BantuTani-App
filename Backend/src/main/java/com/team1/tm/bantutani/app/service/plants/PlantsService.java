@@ -385,7 +385,7 @@ public class PlantsService extends PlantsCareService{
         }
         if (plantsPlantingDTO.getImage() != null) {
             if (planting.getImage() != null)
-                storageConfig.updateMedia(plantsPlantingDTO.getImage(), planting.getImage(), StorageConfig.SubDir.CARE);
+                storageConfig.updateMedia(plantsPlantingDTO.getImage(), planting.getImage(), StorageConfig.SubDir.PLANTING);
             else{
                 planting.setAnimation(null);
                 planting.setVideo(null);
