@@ -1,0 +1,26 @@
+<annotation>
+	<folder>bercak coklat</folder>
+	<filename>brownspot_orig_027.jpg</filename>
+	<path>C:\Users\DEFINA\Documents\OD\bercak coklat\brownspot_orig_027.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>300</width>
+		<height>300</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>117</xmin>
+			<ymin>182</ymin>
+			<xmax>194</xmax>
+			<ymax>246</ymax>
+		</bndbox>
+	</object>
+</annotation>
