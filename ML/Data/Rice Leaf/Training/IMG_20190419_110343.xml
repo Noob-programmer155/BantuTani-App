@@ -1,0 +1,38 @@
+<annotation>
+	<folder>LeafBlast</folder>
+	<filename>IMG_20190419_110343.jpg</filename>
+	<path>C:\Users\USER\Downloads\archive (2)\train\LeafBlast\IMG_20190419_110343.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>500</width>
+		<height>500</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Busuk Leher</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>71</xmin>
+			<ymin>244</ymin>
+			<xmax>93</xmax>
+			<ymax>266</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Busuk Leher</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>152</xmin>
+			<ymin>203</ymin>
+			<xmax>181</xmax>
+			<ymax>222</ymax>
+		</bndbox>
+	</object>
+</annotation>
