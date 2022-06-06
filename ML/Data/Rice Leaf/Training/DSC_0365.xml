@@ -1,0 +1,38 @@
+<annotation>
+	<folder>hawar daun</folder>
+	<filename>DSC_0365.JPG</filename>
+	<path>E:\UNJ\Kuliah\Semester 8\Bangkit 2021\2022\Assignment\label\hawar daun\DSC_0365.JPG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>3081</width>
+		<height>897</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Hawar Daun</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1319</xmin>
+			<ymin>348</ymin>
+			<xmax>1835</xmax>
+			<ymax>442</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Hawar Daun</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1679</xmin>
+			<ymin>492</ymin>
+			<xmax>1929</xmax>
+			<ymax>598</ymax>
+		</bndbox>
+	</object>
+</annotation>
