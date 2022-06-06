@@ -1,0 +1,38 @@
+<annotation>
+	<folder>bc2</folder>
+	<filename>IMG_4831.jpg</filename>
+	<path>C:\Users\DEFINA\Documents\OD\bc2\IMG_4831.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>500</width>
+		<height>500</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>32</xmin>
+			<ymin>241</ymin>
+			<xmax>82</xmax>
+			<ymax>264</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>329</xmin>
+			<ymin>238</ymin>
+			<xmax>385</xmax>
+			<ymax>266</ymax>
+		</bndbox>
+	</object>
+</annotation>
