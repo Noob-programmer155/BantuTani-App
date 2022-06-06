@@ -118,8 +118,8 @@ public class StorageConfig {
     private DataFile validateFile(MultipartFile file, SubDir subDir) throws IOException {
         List<String> exts = Arrays.asList("jpg","jpeg","png","gif","ico");
         String ext = FilenameUtils.getExtension(file.getOriginalFilename());
-        int width = 800;
-        int height = 480;
+        int width = 480;
+        int height = 320;
         if (subDir.equals(SubDir.AVATAR)) {
             width = 128;
             height = 128;
@@ -130,8 +130,8 @@ public class StorageConfig {
             width = 64;
             height = 64;
         } else {
-            width = 800;
-            height = 480;
+            width = 480;
+            height = 320;
         }
         if(exts.contains(ext)) {
             if(ext.equalsIgnoreCase("gif")){
