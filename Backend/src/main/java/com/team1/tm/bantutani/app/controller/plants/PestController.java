@@ -132,7 +132,7 @@ public class PestController {
     @Tag(name = "Modify Tips & Trick Pest", description = "modify tips & trick specific plants care in plants pest")
     public StringResponse updateData(@ModelAttribute TipsNTrickDTO tipsNTrickDTO) throws IOException {
         pestService.updateTipsNTrick(tipsNTrickDTO);
-        return new StringResponse.Builder().status("success").message("Success update tips & trick in plants care pest with id "+tipsNTrickDTO.getPlantsCareTips()).build();
+        return new StringResponse.Builder().status("success").message("Success update tips & trick with id "+tipsNTrickDTO.getId()).build();
     }
 
     @DeleteMapping("/plants/pest/v1/data/delete")

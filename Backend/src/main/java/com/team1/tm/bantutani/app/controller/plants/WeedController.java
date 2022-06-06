@@ -131,7 +131,7 @@ public class WeedController {
     @Tag(name = "Modify Tips & Trick Weed", description = "modify tips & trick specific plants care in plants weed")
     public StringResponse updateData(@ModelAttribute TipsNTrickDTO tipsNTrickDTO) throws IOException {
         weedService.updateTipsNTrick(tipsNTrickDTO);
-        return new StringResponse.Builder().status("success").message("Success update tips & trick in plants care weed with id "+tipsNTrickDTO.getPlantsCareTips()).build();
+        return new StringResponse.Builder().status("success").message("Success update tips & trick with id "+tipsNTrickDTO.getId()).build();
     }
 
     @DeleteMapping("/plants/weed/v1/data/delete")

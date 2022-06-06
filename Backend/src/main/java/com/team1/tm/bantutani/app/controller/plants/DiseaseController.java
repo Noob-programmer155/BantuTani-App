@@ -134,7 +134,7 @@ public class DiseaseController {
     @Tag(name = "Modify Tips & Trick Disease", description = "modify tips & trick specific plants care in plants disease")
     public StringResponse updateData(@ModelAttribute TipsNTrickDTO tipsNTrickDTO) throws IOException {
         diseaseService.updateTipsNTrick(tipsNTrickDTO);
-        return new StringResponse.Builder().status("success").message("Success update tips & trick in plants care disease with id "+tipsNTrickDTO.getPlantsCareTips()).build();
+        return new StringResponse.Builder().status("success").message("Success update tips & trick with id "+tipsNTrickDTO.getId()).build();
     }
 
     @DeleteMapping("/plants/disease/v1/data/delete")
