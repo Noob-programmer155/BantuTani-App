@@ -8,9 +8,6 @@ public class TipsNTrickDTO {
     private String typeStep;
     private String typeActivity;
     private Long authorTipsNTrick;
-    private Long plantsCareTips;
-    private Long plantsPlantingTips;
-
     public TipsNTrickDTO() {
     }
 
@@ -68,21 +65,5 @@ public class TipsNTrickDTO {
 
     public void setAuthorTipsNTrick(Long authorTipsNTrick) {
         this.authorTipsNTrick = authorTipsNTrick;
-    }
-
-    public Long getPlantsCareTips() {
-        return plantsCareTips;
-    }
-
-    public void setPlantsCareTips(Long plantsCareTips) {
-        this.plantsCareTips = plantsCareTips;
-    }
-
-    public Long getPlantsPlantingTips() {
-        return plantsPlantingTips;
-    }
-
-    public void setPlantsPlantingTips(Long plantsPlantingTips) {
-        this.plantsPlantingTips = plantsPlantingTips;
     }
 }

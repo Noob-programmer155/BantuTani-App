@@ -369,7 +369,7 @@ public class PlantsService extends PlantsCareService{
 
     @Transactional
     @CacheEvict(value = {"plantsCache","userDataCache"}, allEntries = true)
-    public String updatePlantsPlanting(PlantsPlantingDTO plantsPlantingDTO) {
+    public String updatePlantsPlanting(PlantsPlantingDTO plantsPlantingDTO) throws IOException {
         PlantsPlanting planting = plantsPlantingRepo.findById(plantsPlantingDTO.getId()).get();
         if (plantsPlantingDTO.getStep() != null)
             planting.setStep(plantsPlantingDTO.getStep());
@@ -384,9 +384,13 @@ public class PlantsService extends PlantsCareService{
             planting.setVideo(plantsPlantingDTO.getVideo());
         }
         if (plantsPlantingDTO.getImage() != null) {
-            planting.setAnimation(null);
-            planting.setVideo(null);
-            planting.setImage(storageConfig.addMedia(plantsPlantingDTO.getImage(), "plantingImages", StorageConfig.SubDir.PLANTING));
+            if (planting.getImage() != null)
+                storageConfig.updateMedia(plantsPlantingDTO.getImage(), planting.getImage(), StorageConfig.SubDir.CARE);
+            else{
+                planting.setAnimation(null);
+                planting.setVideo(null);
+                planting.setImage(storageConfig.addMedia(plantsPlantingDTO.getImage(), "plantingImages", StorageConfig.SubDir.PLANTING));
+            }
         }
         planting.getPlantingPlants().setDateUpdate(new Date(new java.util.Date().getTime()));
         plantsPlantingRepo.save(planting);
