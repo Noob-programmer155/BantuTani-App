@@ -1,0 +1,38 @@
+<annotation>
+	<folder>bc</folder>
+	<filename>57618298_352134365652759_156113415440433152_n.jpg</filename>
+	<path>C:\Users\DEFINA\Documents\OD\bc\57618298_352134365652759_156113415440433152_n.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>720</width>
+		<height>960</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>390</xmin>
+			<ymin>478</ymin>
+			<xmax>442</xmax>
+			<ymax>578</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>426</xmin>
+			<ymin>775</ymin>
+			<xmax>472</xmax>
+			<ymax>819</ymax>
+		</bndbox>
+	</object>
+</annotation>

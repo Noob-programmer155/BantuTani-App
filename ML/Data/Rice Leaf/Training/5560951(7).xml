@@ -1,0 +1,38 @@
+<annotation>
+	<folder>bc</folder>
+	<filename>5560951(7).jpg</filename>
+	<path>C:\Users\DEFINA\Documents\OD\bc\5560951(7).jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>105</width>
+		<height>329</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>24</xmin>
+			<ymin>272</ymin>
+			<xmax>41</xmax>
+			<ymax>293</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Bercak Coklat</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>59</xmin>
+			<ymin>289</ymin>
+			<xmax>74</xmax>
+			<ymax>312</ymax>
+		</bndbox>
+	</object>
+</annotation>
