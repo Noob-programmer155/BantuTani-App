@@ -1,0 +1,38 @@
+<annotation>
+	<folder>hawar daun</folder>
+	<filename>BACTERAILBLIGHT3_032.jpg</filename>
+	<path>E:\UNJ\Kuliah\Semester 8\Bangkit 2021\2022\Assignment\label\hawar daun\BACTERAILBLIGHT3_032.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>300</width>
+		<height>300</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Hawar Daun</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>148</xmin>
+			<ymin>161</ymin>
+			<xmax>235</xmax>
+			<ymax>198</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Hawar Daun</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>62</xmin>
+			<ymin>145</ymin>
+			<xmax>128</xmax>
+			<ymax>189</ymax>
+		</bndbox>
+	</object>
+</annotation>
