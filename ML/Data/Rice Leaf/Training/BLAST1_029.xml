@@ -1,0 +1,38 @@
+<annotation>
+	<folder>busuk leher</folder>
+	<filename>BLAST1_029.jpg</filename>
+	<path>C:\Users\USER\Downloads\busuk leher-20220601T073456Z-001\busuk leher\BLAST1_029.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>300</width>
+		<height>300</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Busuk Leher</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>134</xmin>
+			<ymin>62</ymin>
+			<xmax>159</xmax>
+			<ymax>114</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Busuk Leher</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>142</xmin>
+			<ymin>174</ymin>
+			<xmax>169</xmax>
+			<ymax>237</ymax>
+		</bndbox>
+	</object>
+</annotation>

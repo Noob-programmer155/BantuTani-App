@@ -1,0 +1,26 @@
+<annotation>
+	<folder>busuk leher</folder>
+	<filename>BLAST1_110.jpg</filename>
+	<path>C:\Users\USER\Downloads\busuk leher-20220601T073456Z-001\busuk leher\BLAST1_110.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>300</width>
+		<height>300</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Busuk Leher</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>124</xmin>
+			<ymin>66</ymin>
+			<xmax>190</xmax>
+			<ymax>174</ymax>
+		</bndbox>
+	</object>
+</annotation>
