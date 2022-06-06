@@ -90,7 +90,7 @@ public abstract class PlantsCareService extends TipsNTrickService {
     }
 
     @Transactional
-    @CacheEvict(value = "plantsCareImageCache", key = "#plantsCareDTO.getImage")
+    @CacheEvict(value = "plantsCareImageCache", key = "#plantsCareDTO.getImage", condition = "#plantsCareDTO.getImage!=null")
     public String updatePlantsCare(PlantsCareDTO plantsCareDTO) throws IOException {
         PlantsCare plantsCare = plantsCareRepo.findById(plantsCareDTO.getId()).get();
         if (plantsCareDTO.getStep() != null)
