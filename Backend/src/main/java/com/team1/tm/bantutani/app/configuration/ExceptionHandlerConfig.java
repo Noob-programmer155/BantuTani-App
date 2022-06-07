@@ -37,7 +37,7 @@ public class ExceptionHandlerConfig {
         return new StringResponse.Builder().status("error").message(e.getMessage()).build();
     }
 
-    @ExceptionHandler(NullPointerException.class)
+    @ExceptionHandler({NullPointerException.class, HttpMediaTypeNotAcceptableException.class})
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ResponseBody
     public StringResponse handleValidationNullError(NullPointerException e) {
@@ -104,13 +104,6 @@ public class ExceptionHandlerConfig {
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ResponseBody
     public StringResponse handleValidationHttpTokenAuthError(HttpMediaTypeException e) {
-        return new StringResponse.Builder().status("error").message(e.getMessage()).build();
-    }
-
-    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
-    @ResponseStatus(code = HttpStatus.NOT_ACCEPTABLE)
-    @ResponseBody
-    public StringResponse handleValidationHttpAcceptTokenAuthError(HttpMediaTypeNotAcceptableException e) {
         return new StringResponse.Builder().status("error").message(e.getMessage()).build();
     }
 
