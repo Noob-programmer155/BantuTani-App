@@ -98,8 +98,12 @@ public class StorageConfig {
     }
 
     public byte[] getMedia(String filename, SubDir subDir) {
-        Blob blob = storage.get(BlobId.of(bucket, directory+"/"+subDir.getDirname()+"/"+filename));
-        return blob.getContent();
+        try {
+            Blob blob = storage.get(BlobId.of(bucket, directory+"/"+subDir.getDirname()+"/"+filename));
+            return blob.getContent();
+        }catch (Exception e) {
+            return new byte[]{};
+        }
     }
 
     public void updateMedia(MultipartFile file, String filename, SubDir subDir) throws IOException {
