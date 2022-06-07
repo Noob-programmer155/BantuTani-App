@@ -99,8 +99,7 @@ public class StorageConfig {
 
     public byte[] getMedia(String filename, SubDir subDir) {
         Blob blob = storage.get(BlobId.of(bucket, directory+"/"+subDir.getDirname()+"/"+filename));
-        if (blob != null) return blob.getContent();
-        else throw new NullPointerException("Could`nt find Media");
+        return blob.getContent();
     }
 
     public void updateMedia(MultipartFile file, String filename, SubDir subDir) throws IOException {
