@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.HttpMediaTypeException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -95,6 +97,20 @@ public class ExceptionHandlerConfig {
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public StringResponse handleValidationTokenAuthError(NoSuchAlgorithmException e) {
+        return new StringResponse.Builder().status("error").message(e.getMessage()).build();
+    }
+
+    @ExceptionHandler(HttpMediaTypeException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public StringResponse handleValidationHttpTokenAuthError(HttpMediaTypeException e) {
+        return new StringResponse.Builder().status("error").message(e.getMessage()).build();
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    @ResponseStatus(code = HttpStatus.NOT_ACCEPTABLE)
+    @ResponseBody
+    public StringResponse handleValidationHttpAcceptTokenAuthError(HttpMediaTypeNotAcceptableException e) {
         return new StringResponse.Builder().status("error").message(e.getMessage()).build();
     }
 
