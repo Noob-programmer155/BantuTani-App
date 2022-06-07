@@ -127,7 +127,10 @@ public class DiseaseService extends PlantsCareService{
 
     @Transactional
     @Override
-    @CacheEvict(value = "userDataCache", key = "#plantAttributeDTO.getAuthorPlantsAttribute", condition = "#plantAttributeDTO.getAuthorPlantsAttribute!=null")
+    @Caching(evict = {
+            @CacheEvict(value = "plantsDiseaseDetectionPreDataCache", allEntries = true),
+            @CacheEvict(value = "userDataCache", key = "#plantAttributeDTO.getAuthorPlantsAttribute", condition = "#plantAttributeDTO.getAuthorPlantsAttribute!=null")
+    })
     public void addDataAttribute(PlantAttributeDTO plantAttributeDTO) {
         PlantTypeDisease plantTypeDisease = null;
         if(plantTypeDiseaseRepo.existsByType(plantAttributeDTO.getAttributePlantsType()))
