@@ -35,10 +35,11 @@ public class AnimationServiceUtils {
 
     @Cacheable(value = "allAnimationTipsNTrick")
     public List<String> getAnimations(int page, int size, String type) {
-        return animationRepo.findAllByAnimationType(AnimationType.valueOf(type),PageRequest.of(page, size)).map(item -> item.getFilename()).getContent();
+        return animationRepo.findByAnimationType(AnimationType.valueOf(type),PageRequest.of(page, size)).map(item -> item.getFilename()).getContent();
     }
 
     @Transactional
+    @CacheEvict(value = {"allAnimationTipsNTrick"}, allEntries = true)
     public void addAnimation(MultipartFile file, String type) throws IOException {
         Animation animation = new Animation();
         animation.setAnimationType(AnimationType.valueOf(type));

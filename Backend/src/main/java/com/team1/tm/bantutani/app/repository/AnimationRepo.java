@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface AnimationRepo extends JpaRepository<Animation,Long> {
     public Optional<Animation> findByFilename(String filename);
-    public Page<Animation> findAllByAnimationType(AnimationType animationType, Pageable pageable);
+    public Page<Animation> findByAnimationType(AnimationType animationType, Pageable pageable);
 }
