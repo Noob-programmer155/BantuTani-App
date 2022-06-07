@@ -129,7 +129,7 @@ public class WeedController {
     @PutMapping("/plants/weed/v1/tipsntrick/data/modify")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Modify Tips & Trick Weed", description = "modify tips & trick specific plants care in plants weed")
-    public StringResponse updateData(@ModelAttribute TipsNTrickDTO tipsNTrickDTO) throws IOException {
+    public StringResponse updateData(@ModelAttribute TipsNTrickDTO tipsNTrickDTO) {
         weedService.updateTipsNTrick(tipsNTrickDTO);
         return new StringResponse.Builder().status("success").message("Success update tips & trick with id "+tipsNTrickDTO.getId()).build();
     }

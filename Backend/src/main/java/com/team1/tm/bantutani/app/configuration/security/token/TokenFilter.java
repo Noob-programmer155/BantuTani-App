@@ -24,7 +24,7 @@ public class TokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException {
         try {
             String token = tokenManager.resolveToken(request);
             if(tokenManager.validateToken(token)) {
@@ -59,7 +59,7 @@ public class TokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         return ignorePath.stream().anyMatch(item -> antPathMatcher.match(item,request.getRequestURI()));
     }
 

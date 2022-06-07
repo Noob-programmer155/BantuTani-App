@@ -184,7 +184,7 @@ public class MainController {
 
     @PostMapping("/public/user/v1/login")
     @Tag(name = "Login", description = "user login for all users")
-    public UserResponseDTO login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) throws IOException {
+    public UserResponseDTO login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         Optional<User> user = userRepo.findByUsername(auth.getName());
         if(user.isPresent()) {

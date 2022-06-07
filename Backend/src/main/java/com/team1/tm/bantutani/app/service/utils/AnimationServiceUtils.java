@@ -40,7 +40,7 @@ public class AnimationServiceUtils {
 
     @Transactional
     @CacheEvict(value = {"allAnimationTipsNTrick"}, allEntries = true)
-    public void addAnimation(MultipartFile file, String type) throws IOException {
+    public void addAnimation(MultipartFile file, String type) {
         Animation animation = new Animation();
         animation.setAnimationType(AnimationType.valueOf(type));
         animation.setFilename(storageConfig.addMedia(file, "animation", StorageConfig.SubDir.ANIMATION));

@@ -149,7 +149,7 @@ public class PlantsController  {
                              @RequestParam int stableCost,
                              @RequestParam int maxCost,
                              @RequestParam int minCost,
-                             @RequestParam(required = false) Date dateUpdate) throws ParseException {
+                             @RequestParam(required = false) Date dateUpdate) {
         if (dateUpdate != null){
             plantsService.updateCost(plantId, regionCost, stableCost, maxCost, minCost, dateUpdate);
         } else {

@@ -132,7 +132,7 @@ public class DiseaseController {
     @PutMapping("/plants/disease/v1/tipsntrick/data/modify")
     @PreAuthorize("hasAnyAuthority('ADMIN','EXPERTS')")
     @Tag(name = "Modify Tips & Trick Disease", description = "modify tips & trick specific plants care in plants disease")
-    public StringResponse updateData(@ModelAttribute TipsNTrickDTO tipsNTrickDTO) throws IOException {
+    public StringResponse updateData(@ModelAttribute TipsNTrickDTO tipsNTrickDTO) {
         diseaseService.updateTipsNTrick(tipsNTrickDTO);
         return new StringResponse.Builder().status("success").message("Success update tips & trick with id "+tipsNTrickDTO.getId()).build();
     }
