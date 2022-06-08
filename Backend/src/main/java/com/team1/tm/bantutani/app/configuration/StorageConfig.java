@@ -143,15 +143,15 @@ public class StorageConfig {
                 BufferedImage bf = ImageIO.read(file.getInputStream());
                 if(bf.getWidth() > width || bf.getHeight() > height){
                     Image image = bf.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-                    BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                    BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
                     img.createGraphics().drawImage(image, 0, 0, null);
                     ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
-                    ImageIO.write(img, "png", inputStream);
-                    return new DataFile(file.getOriginalFilename(), "png", inputStream.toByteArray());
+                    ImageIO.write(img, "jpg", inputStream);
+                    return new DataFile(file.getOriginalFilename(), "jpg", inputStream.toByteArray());
                 } else {
                     ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
-                    ImageIO.write(bf, "png", inputStream);
-                    return new DataFile(file.getOriginalFilename(), "png", inputStream.toByteArray());
+                    ImageIO.write(bf, "jpg", inputStream);
+                    return new DataFile(file.getOriginalFilename(), "jpg", inputStream.toByteArray());
                 }
             }
         } else {
