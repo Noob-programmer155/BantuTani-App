@@ -22,3 +22,14 @@ We use [TFLite Image Detection](https://www.tensorflow.org/lite/examples/object_
 
 - `The notebooks that we use in Rice Leaf Disease Image Detection can be accessed in` [![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Naereen/badges)
 - `The notebooks that we use in Corn Leaf Disease Image Detection can be accessed in` [![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Naereen/badges)
+
+### Other Notes
+
+**Cloud Compute Jobs**
+- Make Environment both in development and production.
+- Make Rest API service
+- Provide the need to run the detection model
+
+**Android Jobs**
+- Make UI/UX apps 
+- Configure android environment
