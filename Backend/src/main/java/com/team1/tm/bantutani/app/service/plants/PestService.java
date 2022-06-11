@@ -109,6 +109,10 @@ public class PestService extends PlantsCareService{
 
     @Transactional
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "plantsAllPestCache", key = "#plantAttributeDTO.getPlants"),
+            @CacheEvict(value = "userDataCache", key = "#plantAttributeDTO.getAuthorPlantsAttribute", condition = "#plantAttributeDTO.getAuthorPlantsAttribute!=null")
+    })
     @CacheEvict(value = "userDataCache", key = "#plantAttributeDTO.getAuthorPlantsAttribute", condition = "#plantAttributeDTO.getAuthorPlantsAttribute!=null")
     public void addDataAttribute(PlantAttributeDTO plantAttributeDTO) {
         PlantTypePest plantTypePest = null;

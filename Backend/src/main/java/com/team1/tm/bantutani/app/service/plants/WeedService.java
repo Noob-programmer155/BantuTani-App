@@ -105,7 +105,10 @@ public class WeedService extends PlantsCareService{
 
     @Transactional
     @Override
-    @CacheEvict(value = "userDataCache", key = "#plantAttributeDTO.getAuthorPlantsAttribute", condition = "#plantAttributeDTO.getAuthorPlantsAttribute!=null")
+    @Caching(evict = {
+            @CacheEvict(value = "userDataCache", key = "#plantAttributeDTO.getAuthorPlantsAttribute", condition = "#plantAttributeDTO.getAuthorPlantsAttribute!=null"),
+            @CacheEvict(value = "plantsAllWeedCache", key = "#plantAttributeDTO.getPlants")
+    })
     public void addDataAttribute(PlantAttributeDTO plantAttributeDTO) {
         PlantTypeWeed plantTypeWeed = null;
         if(plantTypeWeedRepo.existsByType(plantAttributeDTO.getAttributePlantsType()))

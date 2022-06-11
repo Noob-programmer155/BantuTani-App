@@ -129,7 +129,8 @@ public class DiseaseService extends PlantsCareService{
     @Override
     @Caching(evict = {
             @CacheEvict(value = "plantsDiseaseDetectionPreDataCache", allEntries = true),
-            @CacheEvict(value = "userDataCache", key = "#plantAttributeDTO.getAuthorPlantsAttribute", condition = "#plantAttributeDTO.getAuthorPlantsAttribute!=null")
+            @CacheEvict(value = "userDataCache", key = "#plantAttributeDTO.getAuthorPlantsAttribute", condition = "#plantAttributeDTO.getAuthorPlantsAttribute!=null"),
+            @CacheEvict(value = "plantsAllDiseaseCache", key = "#plantAttributeDTO.getPlants")
     })
     public void addDataAttribute(PlantAttributeDTO plantAttributeDTO) {
         PlantTypeDisease plantTypeDisease = null;
