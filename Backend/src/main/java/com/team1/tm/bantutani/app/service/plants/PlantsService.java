@@ -149,7 +149,7 @@ public class PlantsService extends PlantsCareService{
     }
 
     @Transactional
-    @CacheEvict(value = {"getPlantsSearch","listAllPlantsType","listCommodityCache"}, allEntries = true)
+    @CacheEvict(value = {"getPlantsSearch","listAllPlantsType","listCommodityCache","plantsAllCache"}, allEntries = true)
     public void addPlants(PlantsDTO plantsDTO) {
         PlantTypeImpl plantType = null;
         if(plantTypeImplRepo.existsByType(plantsDTO.getPlantTypeImpl()))
