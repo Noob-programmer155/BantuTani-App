@@ -7,10 +7,9 @@ Application that use to help farmer or people who want to plant, maintain, and s
 ## Feature
 ### Leaf Disease Image Detection
 **1. Dataset**
-- For Corn Leaf we use data from [![kaggle](https://img.shields.io/badge/Kaggle-blue?logo=kaggle)](https://www.kaggle.com/datasets/abdulhasibuddin/cornplantdocdataset) [![Github](https://img.shields.io/badge/Github-black?logo=github)](./ML/Data/Corn%20Leaf)
 - For Rice Leaf we use data from [![kaggle](https://img.shields.io/badge/Kaggle-blue?logo=kaggle)](https://www.kaggle.com/datasets/gutierrezsoares/rice-leafs-500px) [![Github](https://img.shields.io/badge/Github-black?logo=github)](./ML/Data/Rice%20Leaf)
 
-The data used are **900 for rice leaves** and **192 for corn leaves**. Furthermore, each data will be split with the provisions of **75%** for the training data used to build the model and **25%** for the test data used to validate the model. The results of the data split can be accessed [Corn Leaf](./ML/Data/Corn%20Leaf) and [Rice Leaf](./ML/Data/Rice%20Leaf)
+The data used are **900 for rice leaves**  Furthermore, each data will be split with the provisions of **75%** for the training data used to build the model and **25%** for the test data used to validate the model.
 
 **2. Modelling**
 
