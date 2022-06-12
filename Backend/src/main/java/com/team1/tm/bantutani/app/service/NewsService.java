@@ -14,6 +14,7 @@ import com.team1.tm.bantutani.app.repository.UserRepo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -45,9 +46,10 @@ public class NewsService {
         return storageConfig.getMedia(name, StorageConfig.SubDir.NEWS);
     }
 
-    @Cacheable(value = "allNews", key = "{#start,#end}")
+    @Cacheable(value = "allNews")
     public NewsResponseMinDTOAll getAllNews (Date start, Date end,int page, int size) {
-        return new NewsResponseMinDTOAll(newsRepo.findByDatesBetween(start, end, PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC, "dates")))
+        Page<News> data = newsRepo.findByDatesBetween(start, end, PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "dates")));
+        return new NewsResponseMinDTOAll(data
                 .map(item -> new NewsResponseMinDTO.Builder().
                         id(item.getId()).
                         title(item.getTitle()).
