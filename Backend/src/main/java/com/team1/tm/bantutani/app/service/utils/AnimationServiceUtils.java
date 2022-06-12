@@ -35,7 +35,7 @@ public class AnimationServiceUtils {
 
     @Cacheable(value = "allAnimationTipsNTrick")
     public List<String> getAnimations(int page, int size, String type) {
-        Page<Animation> animations = animationRepo.findByAnimationType(AnimationType.valueOf(type),PageRequest.of(page, size));
+        Page<Animation> animations = animationRepo.findByAnimationType(AnimationType.valueOf(type),PageRequest.of(page-1, size));
 //        return animations.map(item -> new AnimationResponseDTOPageable(item.getFilename(), animations.getTotalPages())).getContent();
         return animations.map(item -> item.getFilename()).getContent();
     }

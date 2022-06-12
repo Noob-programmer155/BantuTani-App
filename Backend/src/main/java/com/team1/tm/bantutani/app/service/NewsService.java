@@ -5,6 +5,7 @@ import com.team1.tm.bantutani.app.dto.NewsDTO;
 import com.team1.tm.bantutani.app.dto.TagsDTO;
 import com.team1.tm.bantutani.app.dto.response.NewsResponseDTO;
 import com.team1.tm.bantutani.app.dto.response.NewsResponseMinDTO;
+import com.team1.tm.bantutani.app.dto.response.NewsResponseMinDTOAll;
 import com.team1.tm.bantutani.app.model.News;
 import com.team1.tm.bantutani.app.model.NewsTags;
 import com.team1.tm.bantutani.app.repository.NewsRepo;
@@ -45,8 +46,8 @@ public class NewsService {
     }
 
     @Cacheable(value = "allNews", key = "{#start,#end}")
-    public List<NewsResponseMinDTO> getAllNews (Date start, Date end,int page, int size) {
-        return newsRepo.findByDatesBetween(start, end, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dates")))
+    public NewsResponseMinDTOAll getAllNews (Date start, Date end,int page, int size) {
+        return new NewsResponseMinDTOAll(newsRepo.findByDatesBetween(start, end, PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC, "dates")))
                 .map(item -> new NewsResponseMinDTO.Builder().
                         id(item.getId()).
                         title(item.getTitle()).
@@ -54,7 +55,7 @@ public class NewsService {
                         video(item.getVideo()).
                         date(item.getDates()).
                         dateUpdate(item.getDateUpdate()).
-                        build()).getContent();
+                        build()).getContent());
     }
 
     @Cacheable(value = "searchTitle", key = "#title")
@@ -65,7 +66,7 @@ public class NewsService {
     @Cacheable(value = "newsCache")
     public List<NewsResponseMinDTO> getNews(String title, int page, int size) {
         return newsRepo.findDistinctByTitleContainingOrKeywordsName(title, title,
-                PageRequest.of(page, size, Sort.by(Sort.Direction.ASC,"title"))).map(item ->
+                PageRequest.of(page-1, size, Sort.by(Sort.Direction.ASC,"title"))).map(item ->
                 new NewsResponseMinDTO.Builder().
                         id(item.getId()).
                         title(item.getTitle()).

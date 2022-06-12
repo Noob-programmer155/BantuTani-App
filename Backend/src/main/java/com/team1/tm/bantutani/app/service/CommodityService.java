@@ -2,6 +2,7 @@ package com.team1.tm.bantutani.app.service;
 
 import com.team1.tm.bantutani.app.configuration.StorageConfig;
 import com.team1.tm.bantutani.app.dto.response.CommodityResponseDTO;
+import com.team1.tm.bantutani.app.dto.response.CommodityResponseDTOAll;
 import com.team1.tm.bantutani.app.dto.response.CommodityResponseDTOPageable;
 import com.team1.tm.bantutani.app.dto.response.PlantTypeResponseDTO;
 import com.team1.tm.bantutani.app.model.plants.CostPlant;
@@ -44,9 +45,9 @@ public class CommodityService {
     }
 
     @Cacheable(value = "listCommodityCache")
-    public List<CommodityResponseDTOPageable> getCommodityList(int page, int size) {
-        Page<CostPlant> data = costPlantsRepo.findAll(PageRequest.of(page, size, Sort.by("plantsName")));
-        return data.map(item -> {
+    public CommodityResponseDTOAll getCommodityList(int page, int size) {
+        Page<CostPlant> data = costPlantsRepo.findAll(PageRequest.of(page-1, size, Sort.by("plantsName")));
+        return new CommodityResponseDTOAll(data.map(item -> {
             String filename = item.getPlants().getPlantTypeImpl().getType()+".png";
             if(!storageConfig.checkFileExist(filename, StorageConfig.SubDir.ICON))
                 filename = fileNotFound;
@@ -57,11 +58,11 @@ public class CommodityService {
                 if(item.getRegionCost() < ((item.getPreviousCost()!=null)?item.getPreviousCost():item.getRegionCost()))
                     status = false;
             }
-            return new CommodityResponseDTOPageable.Builder().icon(filename).currentCost(item.getRegionCost()).
+            return new CommodityResponseDTO.Builder().icon(filename).currentCost(item.getRegionCost()).
                     previousCost((item.getPreviousCost()!=null)?item.getPreviousCost():-1).name(item.getPlants().getName()).
-                    isIncrease(status).pageCount(data.getTotalPages()).
+                    isIncrease(status).
                     build();
-        }).getContent();
+        }).getContent());
     }
 
     @Cacheable(value = "listAllPlantsType")

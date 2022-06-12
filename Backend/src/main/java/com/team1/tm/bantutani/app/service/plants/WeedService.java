@@ -45,7 +45,7 @@ public class WeedService extends PlantsCareService{
 
     @Cacheable(value = "plantsAllWeedCache")
     public List<PlantAttributeResponseMinDTO> getPlantsWeed(Long id, int page, int size) {
-        return plantsWeedsRepo.findAllByPlantsId(id, PageRequest.of(page, size)).map(item -> convertPlantWeedToMinDTO(item)).
+        return plantsWeedsRepo.findAllByPlantsId(id, PageRequest.of(page-1, size)).map(item -> convertPlantWeedToMinDTO(item)).
                 getContent();
     }
 

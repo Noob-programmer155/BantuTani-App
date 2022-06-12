@@ -5,6 +5,7 @@ import com.team1.tm.bantutani.app.dto.NewsDTO;
 import com.team1.tm.bantutani.app.dto.TagsDTO;
 import com.team1.tm.bantutani.app.dto.response.NewsResponseDTO;
 import com.team1.tm.bantutani.app.dto.response.NewsResponseMinDTO;
+import com.team1.tm.bantutani.app.dto.response.NewsResponseMinDTOAll;
 import com.team1.tm.bantutani.app.dto.response.StringResponse;
 import com.team1.tm.bantutani.app.service.NewsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,10 +42,10 @@ public class NewsController {
 
     @GetMapping("/public/news/v1/data/{start}/{end}/get")
     @Tag(name = "Get News Between 2 Date", description = "get news data between 2 dates with pagination")
-    public List<NewsResponseMinDTO> getAllNews(@PathVariable Date start,
-                                                @PathVariable Date end,
-                                                @RequestParam int page,
-                                                @RequestParam int size) {
+    public NewsResponseMinDTOAll getAllNews(@PathVariable Date start,
+                                            @PathVariable Date end,
+                                            @RequestParam int page,
+                                            @RequestParam int size) {
         return newsService.getAllNews(start, end, page, size);
     }
 

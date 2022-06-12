@@ -3,6 +3,7 @@ package com.team1.tm.bantutani.app.controller.plants;
 import com.team1.tm.bantutani.app.dto.*;
 import com.team1.tm.bantutani.app.dto.response.PlantsResponseDTO;
 import com.team1.tm.bantutani.app.dto.response.PlantsResponseMinDTO;
+import com.team1.tm.bantutani.app.dto.response.PlantsResponseMinDTOAll;
 import com.team1.tm.bantutani.app.dto.response.StringResponse;
 import com.team1.tm.bantutani.app.service.plants.PlantsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -55,7 +56,7 @@ public class PlantsController  {
 
     @GetMapping("/public/plants/v1/data/all")
     @Tag(name = "Get Plants Data All", description = "get all plants data with minimum information")
-    public List<PlantsResponseMinDTO> getData(@RequestParam int page, @RequestParam int size) {
+    public PlantsResponseMinDTOAll getData(@RequestParam int page, @RequestParam int size) {
         return plantsService.getAllDataPlants(page, size);
     }
 

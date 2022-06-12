@@ -62,14 +62,14 @@ public class PlantsService extends PlantsCareService{
 
     @Cacheable(value = "getPlantsSearch")
     public List<PlantsResponseMinDTO> getSearchPlants(String name, int page, int size) {
-        return plantsRepo.findAllDistinctByNameContaining(name, PageRequest.of(page,size, Sort.by("name"))).
+        return plantsRepo.findAllDistinctByNameContaining(name, PageRequest.of(page-1,size, Sort.by("name"))).
                 map(item -> convertPlantsToMinDTO(item)).getContent();
     }
 
     @Cacheable(value = "plantsAllCache", key = "{#page,#size}")
-    public List<PlantsResponseMinDTO> getAllDataPlants(int page, int size) {
-        Page<PlantsResponseMin> plants = plantsRepo.findDistinctProjectedBy(PageRequest.of(page,size,Sort.by(Sort.Direction.ASC, "name")));
-        return plants.map(item -> convertPlantsToMinDTO(item)).getContent();
+    public PlantsResponseMinDTOAll getAllDataPlants(int page, int size) {
+        Page<PlantsResponseMin> plants = plantsRepo.findDistinctProjectedBy(PageRequest.of(page-1,size,Sort.by(Sort.Direction.ASC, "name")));
+        return new PlantsResponseMinDTOAll(plants.map(item -> convertPlantsToMinDTO(item)).getContent());
     }
 
     @Cacheable(value = "plantsCache", key = "#id")

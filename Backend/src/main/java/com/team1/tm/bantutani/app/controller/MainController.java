@@ -68,7 +68,7 @@ public class MainController {
 
     @GetMapping("/public/commodity/v1/data/all")
     @Tag(name = "Get List Commodity", description = "get list commodity data")
-    public List<CommodityResponseDTOPageable> getCommodityList(@RequestParam int page, @RequestParam int size) {
+    public CommodityResponseDTOAll getCommodityList(@RequestParam int page, @RequestParam int size) {
         return commodityService.getCommodityList(page, size);
     }
 

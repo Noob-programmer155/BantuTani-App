@@ -49,7 +49,7 @@ public class PestService extends PlantsCareService{
 
     @Cacheable(value = "plantsAllPestCache")
     public List<PlantAttributeResponseMinDTO> getPlantsPest(Long id, int page, int size) {
-        return plantsPestRepo.findAllByPlantsId(id, PageRequest.of(page, size)).map(item -> convertPlantPestToMinDTO(item)).
+        return plantsPestRepo.findAllByPlantsId(id, PageRequest.of(page-1, size)).map(item -> convertPlantPestToMinDTO(item)).
                 getContent();
     }
 

@@ -46,7 +46,7 @@ public class DiseaseService extends PlantsCareService{
 
     @Cacheable(value = "plantsAllDiseaseCache", key = "#id")
     public List<PlantAttributeResponseMinDTO> getPlantsDisease(Long id, int page, int size) {
-        return plantsDiseaseRepo.findDistinctByPlantsId(id, PageRequest.of(page, size)).stream().map(item -> convertPlantDiseaseToMinDTO(item)).
+        return plantsDiseaseRepo.findDistinctByPlantsId(id, PageRequest.of(page-1, size)).stream().map(item -> convertPlantDiseaseToMinDTO(item)).
                 collect(Collectors.toList());
     }
     
