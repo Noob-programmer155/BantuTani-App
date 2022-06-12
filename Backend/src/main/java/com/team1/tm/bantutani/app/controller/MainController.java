@@ -16,6 +16,7 @@ import com.team1.tm.bantutani.app.service.utils.AnimationServiceUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -67,7 +68,7 @@ public class MainController {
 
     @GetMapping("/public/commodity/v1/data/all")
     @Tag(name = "Get List Commodity", description = "get list commodity data")
-    public List<CommodityResponseDTO> getCommodityList(@RequestParam int page, @RequestParam int size) {
+    public List<CommodityResponseDTOPageable> getCommodityList(@RequestParam int page, @RequestParam int size) {
         return commodityService.getCommodityList(page, size);
     }
 
@@ -99,7 +100,9 @@ public class MainController {
     @GetMapping("/public/user/v1/avatar/get/all")
     @Tag(name = "Get Image Avatar", description = "get images Avatar for User")
     public List<String> getAvatar(@RequestParam int page, @RequestParam int size) {
-        return avatarRepo.findAll(PageRequest.of(page, size)).map(item -> item.getName()).getContent();
+        Page<Avatar> avatarPage = avatarRepo.findAll(PageRequest.of(page, size));
+//        return avatarPage.map(item -> new AvatarResponseDTOPageable(item.getName(),avatarPage.getTotalPages())).getContent();
+        return avatarPage.map(item -> item.getName()).getContent();
     }
 
     @PostMapping(value = "/user/v1/avatar/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -164,7 +167,8 @@ public class MainController {
     public StringResponse signUp(@ModelAttribute UserDTO userDTO) {
         User user = new User.Builder().email(userDTO.getEmail()).
                 image(userDTO.getImage()).password(new SCryptPasswordEncoder().encode(userDTO.getPassword())).
-                username(userDTO.getUsername()).status(Status.getFromLabel(userDTO.getStatus())).build();
+                username(userDTO.getUsername()).status(Status.getFromLabel(userDTO.getStatus()))
+                .fullName(userDTO.getFullName()).build();
         user.setDisable(false);
         User user1 = userRepo.save(user);
         return new StringResponse.Builder().status("success").message("Success to signup "+user1.getUsername()+" ready to make new discover, good luck").build();
@@ -176,7 +180,8 @@ public class MainController {
     public StringResponse signUpExpert(@ModelAttribute UserDTO userDTO) {
         User user = new User.Builder().email(userDTO.getEmail()).
                 image(userDTO.getImage()).password(new SCryptPasswordEncoder().encode(userDTO.getPassword())).
-                username(userDTO.getUsername()).status(Status.EXPERTS).build();
+                username(userDTO.getUsername()).status(Status.EXPERTS).fullName(userDTO.getFullName())
+                .build();
         user.setDisable(false);
         User user1 = userRepo.save(user);
         return new StringResponse.Builder().status("success").message("Success add new user expert "+user1.getUsername()+", please be careful and pay attention to this user").build();
@@ -192,7 +197,8 @@ public class MainController {
             TokenManager.bindToken(usr.getUsername(),usr.getId(), usr.getEmail(),
                     usr.getStatus(), response);
             return new UserResponseDTO.Builder().id(usr.getId()).email(usr.getEmail()).image(usr.getImage()).
-                    status(usr.getStatus().getLabel()).username(usr.getUsername()).build();
+                    status(usr.getStatus().getLabel()).username(usr.getUsername()).fullName(usr.getFullName()).
+                    build();
         }
         throw new NullPointerException(username);
     }

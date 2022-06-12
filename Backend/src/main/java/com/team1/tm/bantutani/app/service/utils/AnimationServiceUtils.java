@@ -1,12 +1,14 @@
 package com.team1.tm.bantutani.app.service.utils;
 
 import com.team1.tm.bantutani.app.configuration.StorageConfig;
+import com.team1.tm.bantutani.app.dto.response.AnimationResponseDTOPageable;
 import com.team1.tm.bantutani.app.model.Animation;
 import com.team1.tm.bantutani.app.model.other.AnimationType;
 import com.team1.tm.bantutani.app.repository.AnimationRepo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +37,9 @@ public class AnimationServiceUtils {
 
     @Cacheable(value = "allAnimationTipsNTrick")
     public List<String> getAnimations(int page, int size, String type) {
-        return animationRepo.findByAnimationType(AnimationType.valueOf(type),PageRequest.of(page, size)).map(item -> item.getFilename()).getContent();
+        Page<Animation> animations = animationRepo.findByAnimationType(AnimationType.valueOf(type),PageRequest.of(page, size));
+//        return animations.map(item -> new AnimationResponseDTOPageable(item.getFilename(), animations.getTotalPages())).getContent();
+        return animations.map(item -> item.getFilename()).getContent();
     }
 
     @Transactional

@@ -22,6 +22,8 @@ public class User {
     @NotEmpty
     @Column(unique = true)
     private String username;
+//    @NotEmpty
+    private String fullName;
     @JsonIgnore
     private String password;
     @Email
@@ -52,6 +54,7 @@ public class User {
 
     public User(Builder builder) {
         this.username = builder.username;
+        this.fullName = builder.fullName;
         this.password = builder.password;
         this.email = builder.email;
         this.image = builder.image;
@@ -74,6 +77,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPassword() {
@@ -182,6 +193,7 @@ public class User {
 
     public static class Builder {
         private String username;
+        private String fullName;
         private String password;
         private String email;
         private String image;
@@ -190,6 +202,10 @@ public class User {
         private Status status;
         public Builder username(String username) {
             this.username = username;
+            return this;
+        }
+        public Builder fullName(String fullName) {
+            this.fullName = fullName;
             return this;
         }
         public Builder password(String password) {

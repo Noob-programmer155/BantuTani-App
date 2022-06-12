@@ -2,7 +2,9 @@ package com.team1.tm.bantutani.app.service;
 
 import com.team1.tm.bantutani.app.configuration.StorageConfig;
 import com.team1.tm.bantutani.app.dto.response.CommodityResponseDTO;
+import com.team1.tm.bantutani.app.dto.response.CommodityResponseDTOPageable;
 import com.team1.tm.bantutani.app.dto.response.PlantTypeResponseDTO;
+import com.team1.tm.bantutani.app.model.plants.CostPlant;
 import com.team1.tm.bantutani.app.model.plants.PlantTypeImpl;
 import com.team1.tm.bantutani.app.repository.CostPlantsRepo;
 import com.team1.tm.bantutani.app.repository.PlantTypeImplRepo;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -41,8 +44,9 @@ public class CommodityService {
     }
 
     @Cacheable(value = "listCommodityCache")
-    public List<CommodityResponseDTO> getCommodityList(int page, int size) {
-        return costPlantsRepo.findAll(PageRequest.of(page, size)).map(item -> {
+    public List<CommodityResponseDTOPageable> getCommodityList(int page, int size) {
+        Page<CostPlant> data = costPlantsRepo.findAll(PageRequest.of(page, size, Sort.by("plantsName")));
+        return data.map(item -> {
             String filename = item.getPlants().getPlantTypeImpl().getType()+".png";
             if(!storageConfig.checkFileExist(filename, StorageConfig.SubDir.ICON))
                 filename = fileNotFound;
@@ -53,9 +57,9 @@ public class CommodityService {
                 if(item.getRegionCost() < ((item.getPreviousCost()!=null)?item.getPreviousCost():item.getRegionCost()))
                     status = false;
             }
-            return new CommodityResponseDTO.Builder().icon(filename).currentCost(item.getRegionCost()).
+            return new CommodityResponseDTOPageable.Builder().icon(filename).currentCost(item.getRegionCost()).
                     previousCost((item.getPreviousCost()!=null)?item.getPreviousCost():-1).name(item.getPlants().getName()).
-                    isIncrease(status).
+                    isIncrease(status).pageCount(data.getTotalPages()).
                     build();
         }).getContent();
     }

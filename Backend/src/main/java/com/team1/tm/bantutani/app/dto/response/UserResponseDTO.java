@@ -5,6 +5,7 @@ import com.team1.tm.bantutani.app.dto.UserDTO;
 public class UserResponseDTO {
     private Long id;
     private String username;
+    private String fullName;
     private String email;
     private String image;
     private String status;
@@ -15,6 +16,7 @@ public class UserResponseDTO {
     public UserResponseDTO(Builder builder) {
         this.id = builder.id;
         this.username = builder.username;
+        this.fullName = builder.fullName;
         this.email = builder.email;
         this.image = builder.image;
         this.status = builder.status;
@@ -34,6 +36,14 @@ public class UserResponseDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getEmail() {
@@ -63,6 +73,7 @@ public class UserResponseDTO {
     public static class Builder {
         private Long id;
         private String username;
+        private String fullName;
         private String email;
         private String image;
         private String status;
@@ -72,6 +83,10 @@ public class UserResponseDTO {
         }
         public Builder username(String username){
             this.username = username;
+            return this;
+        }
+        public Builder fullName(String fullName){
+            this.fullName = fullName;
             return this;
         }
         public Builder email(String email){

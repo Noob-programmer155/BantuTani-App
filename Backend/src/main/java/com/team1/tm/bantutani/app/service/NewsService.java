@@ -107,7 +107,7 @@ public class NewsService {
     }
 
     @Transactional
-    @CacheEvict(value = "newsCache", allEntries = true)
+    @CacheEvict(value = {"newsCache","allNews"}, allEntries = true)
     public void addNews(NewsDTO newsDTO, List<String> newTags) {
         Date date = new Date(new java.util.Date().getTime());
         News news = new News.Builder().date(date).

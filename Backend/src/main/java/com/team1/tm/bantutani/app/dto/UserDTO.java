@@ -3,6 +3,7 @@ package com.team1.tm.bantutani.app.dto;
 public class UserDTO {
     private Long id;
     private String username;
+    private String fullName;
     private String password;
     private String email;
     private String image;
@@ -14,6 +15,7 @@ public class UserDTO {
     public UserDTO(Builder builder) {
         this.id = builder.id;
         this.username = builder.username;
+        this.fullName = builder.fullName;
         this.password = builder.password;
         this.email = builder.email;
         this.image = builder.image;
@@ -34,6 +36,14 @@ public class UserDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPassword() {
@@ -71,6 +81,7 @@ public class UserDTO {
     public static class Builder {
         private Long id;
         private String username;
+        private String fullName;
         private String password;
         private String email;
         private String image;
@@ -81,6 +92,10 @@ public class UserDTO {
         }
         public Builder username(String username){
             this.username = username;
+            return this;
+        }
+        public Builder fullName(String fullName){
+            this.fullName = fullName;
             return this;
         }
         public Builder password(String password){
