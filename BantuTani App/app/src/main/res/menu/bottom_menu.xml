@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/home_menu"
+        android:title="Home"
+        android:icon="@drawable/ic_home"/>
+
+    <item android:id="@+id/kamus_menu"
+        android:title="@string/kamus"
+        android:icon="@drawable/ic_ency"/>
+
+    <item android:id="@+id/placeholder"
+        android:title="" />
+
+    <item android:id="@+id/berita_menu"
+        android:title="@string/berita"
+        android:icon="@drawable/ic_news" />
+
+    <item android:id="@+id/harga_menu"
+        android:title="@string/harga_pasar"
+        android:icon="@drawable/ic_price" />
+
+</menu>

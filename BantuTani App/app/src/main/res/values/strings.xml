@@ -1,0 +1,73 @@
+<resources>
+    <string name="app_name">Bantu Tani</string>
+    <string name="logo">logo</string>
+    <string name="beranda">Beranda</string>
+    <string name="kamus">Tanipedia</string>
+    <string name="scan">Scan</string>
+    <string name="berita">Berita</string>
+    <string name="akun">Akun</string>
+    <string name="content_description_start_icon">Search</string>
+    <string name="label_search">Cari disini!</string>
+    <string name="harga_pasar">Harga Pasar</string>
+    <string name="content_description_media">Gambar Komoditi</string>
+    <string name="comodityPrice">Rp 10.000\t/Kg</string>
+    <string name="password_too_short">Password minimal 8 Karakter!</string>
+    <string name="invalid_email_address">Formal Email salah!</string>
+    <string name="name_error_too_long">Nama maksimal 20 Karakter!</string>
+    <string name="username_error_too_long">Username maksimal 8 Karakter!</string>
+    <string name="text_empty">Form harus diisi!</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="login">Masuk</string>
+    <string name="register">Buat Akun</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="forget_password">Lupa Password?</string>
+    <string name="atau">Atau</string>
+    <string name="daftar">Daftar</string>
+    <string name="nama">Nama Lengkap</string>
+    <string name="confirm_password">Konfirmasi Password</string>
+    <string name="profil">Akun Saya</string>
+    <string name="dtl_info">Data Akun</string>
+    <string name="settings">Pengaturan</string>
+    <string name="bantuan">Pusat Bantuan</string>
+    <string name="syarat">Syarat dan Ketentuan</string>
+    <string name="privasi">Kebijakan Privasi</string>
+    <string name="logout">Keluar</string>
+    <string name="edit">Edit Profile</string>
+    <string name="fail_info_cam">Gagal Membuka Kamera!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="save">Simpan Data</string>
+    <string name="skipButton">Lewati</string>
+
+    <string name="heading_one">Bantu Tani</string>
+    <string name="heading_two">Waktunya beralih ke Pertanian berbasis Teknologi Industri 4.0</string>
+    <string name="heading_three">Lengkapi berbagai kebutuhan pertanianmu</string>
+    <string name="heading_fourth">Mendukung Petani lokal</string>
+
+
+    <string name="desc_one">Satu Aplikasi untuk kemudahan bidang pertanian berbasis Teknologi</string>
+    <string name="desc_two"> Didukung dengan Teknologi Kecerdasan Buatan dan <i>Machine Learning</i>, sehingga dapat meningkatkan kualitas pertanianmu</string>
+    <string name="desc_three">Dilengkapi menu Tanipedia untuk menambah wawasan terbaru para petani dan TaniMarket yang menyediakan perlengkapan pertanianmu dengan harga yang direkomendasikan</string>
+    <string name="desc_fourth">Kami mendukung kesejahteraan petani dengan informasi secara transparan dan <i>realtime</i>, semuanya terverifikasi oleh para ahli!</string>
+
+    <string name="cg_fp">Ubah Foto Profil</string>
+    <string name="cancel">Cancel</string>
+    <string name="no_permission">Tidak mendapatkan permission.</string>
+    <string name="result">Hasil Analisa</string>
+    <string name="kembali">Kembali</string>
+    <string name="pindai">Pindai Lagi</string>
+    <string name="desc">Deskripsi :</string>
+    <string name="tips">Tips Penanaman dan Perawatan :</string>
+    <string name="camera">Kamera</string>
+    <string name="galeri">Galeri</string>
+    <string name="check">Mulai Pindai</string>
+    <string name="pindai_gambar">Pindai Gambar</string>
+    <string name="info_scan">Gunakan objek foto secara jelas dan dekat untuk hasil yang Akurat!</string>
+    <string name="permission">Akses Ditolak!</string>
+    <string name="choose_picture">Pilih Gambar</string>
+    <string name="welcome">Selamat Datang,\n%1$s,</string>
+    <string name="mulai">Mulai</string>
+    <string name="empty_img_scan">Pilih/Foto dulu dong Hamanya,nanti kita pindai apa itu</string>
+    <string name="text_password_not_match">Passsword Tidak Cocok,Cek Kembali!</string>
+</resources>
