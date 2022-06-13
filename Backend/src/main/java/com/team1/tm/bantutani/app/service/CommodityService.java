@@ -48,7 +48,7 @@ public class CommodityService {
     public CommodityResponseDTOAll getCommodityList(int page, int size) {
         Page<CostPlant> data = costPlantsRepo.findAll(PageRequest.of(page-1, size, Sort.by("plantsName")));
         return new CommodityResponseDTOAll(data.map(item -> {
-            String filename = item.getPlants().getPlantTypeImpl().getType()+".png";
+            String filename = item.getPlants().getPlantTypeImpl().getType()+".jpg";
             if(!storageConfig.checkFileExist(filename, StorageConfig.SubDir.ICON))
                 filename = fileNotFound;
             Boolean status = null;
