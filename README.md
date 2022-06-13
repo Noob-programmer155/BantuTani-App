@@ -1,7 +1,9 @@
 # BantuTani-App
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![TensorFlow 2.6](https://img.shields.io/badge/TensorFlow-2.6.0-FF6F00?logo=tensorflow)](https://github.com/tensorflow/tensorflow/releases/tag/v2.6.0)
-[![made-with-javascript](https://img.shields.io/badge/Made%20with-JavaScript-1f425f.svg)](https://www.javascript.com)
+[![made-with-java](https://img.shields.io/badge/Made%20with-Java-0066ff.svg)](https://www.java.com/en/)
+[![made-with-javascript](https://img.shields.io/badge/Made%20with-JavaScript-ff9900.svg)](https://www.javascript.com)
+[![made-with-kotlin](https://img.shields.io/badge/Made%20with-Kotlin-0099ff.svg)](https://developer.android.com/kotlin)
 
 
 *BantuTani* was created to **help overcome problems and use technology in agriculture**, especially agricultural plant diseases and weeds, by **detecting and providing recommendations** for appropriate and efficient treatment based on detected infections. This project also has other special features, namely **Tips & Tricks, News, Recommendations on the prices, then Expert Consultation, Marketplace, IoT system, and also Maps spreads disease and pest of agricultural commodities for future development**. Latest. This project was motivated by the lack of technology in agriculture and the lack of information on how to plant, care for, and provide the latest prices for a commodity.
