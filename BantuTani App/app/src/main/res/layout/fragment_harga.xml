@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_harga"
+    tools:context=".ui.harga.HargaFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/harga_placeholder">
+        <include layout="@layout/harga_placeholder" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/rectangle_5"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:background="@drawable/round_bg"
+            app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/harga_pasar"
+            android:textSize="28sp"
+            android:fontFamily="@font/concertone_regular"
+            android:layout_gravity="center"
+            android:layout_marginTop="-40dp"
+            android:textColor="@color/white"/>
+        <EditText
+            android:id="@+id/search_harga"
+            android:layout_width="380dp"
+            android:layout_height="32dp"
+            android:background="@drawable/round_tv"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/ssp_reg"
+            android:hint="@string/label_search"
+            android:inputType="text"
+            android:layout_gravity="center"
+            android:layout_marginTop="18dp"
+            android:paddingStart="5dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_price"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            tools:itemCount="6"
+            tools:listitem="@layout/pricelist_ext"/>
+
+    </LinearLayout>
+
+</FrameLayout>

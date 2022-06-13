@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <View
+        android:id="@+id/rectangle_5"
+        android:layout_width="match_parent"
+        android:layout_height="123dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/round_bg"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        android:layout_marginStart="-85dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView4"
+        app:layout_constraintEnd_toStartOf="@+id/textView4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/concertone_regular"
+        android:text="@string/profil"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_profile"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="-500dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/edit"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginTop="5dp"
+        android:text="@string/edit"
+        android:textAllCaps="false"
+        android:fontFamily="@font/inter_semibold"
+        android:textSize="10sp"
+        android:textColor="@color/orange"
+        android:background="@drawable/button_edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_profile" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/inter_semibold"
+        android:text="@string/dtl_info"
+        android:drawableStart="@drawable/ic_info"
+        android:drawablePadding="8dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit" />
+
+    <TextView
+        android:id="@+id/nama_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nama"
+        android:paddingStart="20dp"
+        android:layout_marginTop="5dp"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"/>
+    <TextView
+        android:id="@+id/nama_lkp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="@string/nama"
+        android:textStyle="bold"
+        android:paddingStart="20dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nama_tv" />
+    <TextView
+        android:id="@+id/username_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/username"
+        android:paddingStart="20dp"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nama_lkp"/>
+    <TextView
+        android:id="@+id/username_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="@string/username"
+        android:textStyle="bold"
+        android:paddingStart="20dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username_tv" />
+
+    <TextView
+        android:id="@+id/email_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/email"
+        android:paddingStart="20dp"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username_info"/>
+    <TextView
+        android:id="@+id/email_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="@string/email"
+        android:inputType="textEmailAddress"
+        android:textStyle="bold"
+        android:paddingStart="20dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/email_tv" />
+
+    <TextView
+        android:id="@+id/password_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/password"
+        android:paddingStart="20dp"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/email_info"/>
+    <TextView
+        android:id="@+id/password_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="@string/password"
+        android:textStyle="bold"
+        android:inputType="textPassword"
+        android:paddingStart="20dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password_tv" />
+
+<!--    <TextView-->
+<!--        android:id="@+id/textView6"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:layout_marginTop="25dp"-->
+<!--        android:fontFamily="@font/inter_semibold"-->
+<!--        android:text="@string/settings"-->
+<!--        android:drawableStart="@drawable/ic_settings"-->
+<!--        android:drawablePadding="8dp"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="20sp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/password_info" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/test1"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/nama"-->
+<!--        android:paddingStart="20dp"-->
+<!--        android:layout_marginTop="5dp"-->
+<!--        android:textSize="14sp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textView6"/>-->
+<!--    <TextView-->
+<!--        android:id="@+id/test2"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/nama"-->
+<!--        android:paddingStart="20dp"-->
+<!--        android:textSize="16sp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/test1" />-->
+
+    <TextView
+        android:id="@+id/bantuan"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:text="@string/bantuan"
+        android:paddingStart="20dp"
+        android:drawableEnd="@drawable/ic_next"
+        android:fontFamily="@font/ssp_reg"
+        android:textStyle="bold"
+        android:layout_marginTop="40dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password_info"/>
+    <TextView
+        android:id="@+id/syarat"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:text="@string/syarat"
+        android:paddingStart="20dp"
+        android:drawableEnd="@drawable/ic_next"
+        android:fontFamily="@font/ssp_reg"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bantuan"/>
+    <TextView
+        android:id="@+id/privasi"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:text="@string/privasi"
+        android:paddingStart="20dp"
+        android:drawableEnd="@drawable/ic_next"
+        android:fontFamily="@font/ssp_reg"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/syarat"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/logout"
+        android:layout_width="170dp"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginTop="10dp"
+        android:text="@string/logout"
+        android:textAllCaps="false"
+        android:fontFamily="@font/inter_semibold"
+        android:textSize="18sp"
+        android:textColor="@color/red"
+        android:background="@drawable/button_logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/privasi" />
+</androidx.constraintlayout.widget.ConstraintLayout>

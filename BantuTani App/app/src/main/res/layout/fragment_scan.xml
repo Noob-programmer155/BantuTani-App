@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#c6c6c4"
+    tools:context=".ui.scan.ScanFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#c6c6c4"
+        android:layout_marginTop="10dp">
+
+        <View
+            android:id="@+id/rectangle_6"
+            android:layout_width="370dp"
+            android:layout_height="43dp"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            tools:alpha="0.55"
+            android:alpha="0.55"
+            android:background="@drawable/bg_info_scan"/>
+
+        <TextView
+            android:id="@+id/info_scan"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:text="@string/info_scan"
+            android:textSize="12sp"
+            android:drawablePadding="5dp"
+            android:fontFamily="@font/nunitosans_semibold"
+            android:layout_gravity="center"
+            android:justificationMode="inter_word"
+            android:layout_marginTop="-40dp"
+            android:textColor="@color/blue3"
+            app:drawableStartCompat="@drawable/ic_info_scan" />
+
+        <ImageView
+            android:id="@+id/previewImageView"
+            android:layout_width="300dp"
+            android:layout_height="350dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            app:srcCompat="@drawable/ic_placeholder"
+            tools:src="@drawable/scanner" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/camera"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_custom_camera"
+            android:drawableStart="@drawable/camera"
+            android:drawablePadding="-20dp"
+            android:paddingStart="20dp"
+            android:text="@string/camera"
+            android:fontFamily="@font/nunitosans_semibold"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/gallery"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_custom_gallery"
+            android:text="@string/galeri"
+            android:drawableStart="@drawable/folder"
+            android:drawablePadding="-20dp"
+            android:fontFamily="@font/nunitosans_semibold"
+            android:paddingStart="20dp"
+            android:textColor="@color/white"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="center"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button"
+            android:layout_width="335dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_scan"
+            android:text="@string/pindai_gambar"
+            android:drawableStart="@drawable/virus2"
+            android:drawablePadding="-20dp"
+            android:paddingStart="20dp"
+            android:fontFamily="@font/nunitosans_semibold"
+            android:textColor="@color/white"
+            android:layout_marginTop="50dp"
+            android:enabled="true"
+            android:layout_gravity="center"/>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:visibility="invisible"
+            android:layout_marginTop="-450dp"
+            android:layout_gravity="center"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+</FrameLayout>

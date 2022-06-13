@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/bg_result"
+    android:orientation="vertical"
+    tools:context=".ui.result.ResultActivity">
+    <View
+        android:id="@+id/rectangle_5"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:background="@drawable/round_bg"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/result"
+        android:textSize="28sp"
+        android:fontFamily="@font/concertone_regular"
+        android:layout_gravity="center"
+        android:layout_marginTop="-40dp"
+        android:textColor="@color/white"/>
+    <ImageView
+        android:id="@+id/image_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        tools:src="@tools:sample/avatars"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ssp_reg"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_gravity="center|top"
+                tools:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/other_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/ssp_reg"
+                android:textSize="14sp"
+                android:textStyle="italic"
+                tools:text="@string/app_name" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/desc"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/inter_semibold"
+                android:textSize="14sp"/>
+            <TextView
+                android:id="@+id/text_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ssp_reg"
+                android:textSize="12sp"
+                android:justificationMode="inter_word"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"/>
+<!--            <ImageView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tips"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/inter_semibold"
+                android:textSize="14sp"/>
+            <TextView
+                android:id="@+id/text_tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ssp_reg"
+                android:textSize="12sp"
+                android:justificationMode="inter_word"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/kembali"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_btn_wn"
+        android:text="@string/kembali"
+        android:textColor="@color/white"
+        android:layout_marginStart="10dp"
+        android:layout_gravity="center|bottom"/>
+
+</LinearLayout>

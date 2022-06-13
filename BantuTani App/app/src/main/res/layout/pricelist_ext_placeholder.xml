@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_price"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginStart="4dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginBottom="8dp"
+    android:orientation="vertical">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/comodity_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        card_view:layout_constraintBottom_toBottomOf="parent"
+        card_view:layout_constraintStart_toStartOf="parent"
+        card_view:layout_constraintTop_toTopOf="parent"
+        android:background="@color/grey"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/comodity_image"
+        android:fontFamily="@font/ssp_reg"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:background="@color/grey"
+        card_view:layout_constraintBottom_toBottomOf="@+id/comodity_image"
+        card_view:layout_constraintStart_toEndOf="@+id/comodity_image"
+        card_view:layout_constraintTop_toTopOf="@+id/comodity_image"
+        tools:text="@string/app_name" />
+
+    <TextView
+        android:id="@+id/tvPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="-125dp"
+        android:layout_marginBottom="25dp"
+        android:layout_toEndOf="@id/comodity_image"
+        android:fontFamily="@font/inter_semibold"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:background="@color/grey"
+        card_view:layout_constraintBottom_toBottomOf="parent"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        card_view:layout_constraintStart_toEndOf="@+id/tvName"
+        card_view:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/app_name" />
+    <TextView
+        android:id="@+id/tvProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="-125dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/grey"
+        android:layout_toEndOf="@id/comodity_image"
+        android:fontFamily="@font/ssp_light"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        card_view:layout_constraintBottom_toBottomOf="parent"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        card_view:layout_constraintStart_toEndOf="@+id/tvName"
+        tools:text="@string/app_name" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_progress"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="-130dp"
+        android:background="@color/grey"
+        android:src="@drawable/ic_high_triangle"
+        card_view:layout_constraintBottom_toBottomOf="parent"
+        card_view:layout_constraintEnd_toStartOf="@+id/tvProgress"
+        card_view:layout_constraintStart_toEndOf="@+id/tvName" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_progress2"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="-130dp"
+        android:src="@drawable/ic_low_triangle"
+        card_view:layout_constraintBottom_toBottomOf="parent"
+        card_view:layout_constraintEnd_toStartOf="@+id/tvProgress"
+        card_view:layout_constraintStart_toEndOf="@+id/tvName" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey1"
+        android:orientation="vertical"
+        card_view:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

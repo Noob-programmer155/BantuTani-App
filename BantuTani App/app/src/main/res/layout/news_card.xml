@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/news_card"
+    android:layout_marginTop="5dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    app:cardCornerRadius="15dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="270dp"
+        android:layout_height="100dp"
+        app:cardElevation="50dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="15dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/img_news"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="bannerNews"
+                android:src="@drawable/slider2"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/txt_news"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="65dp"
+                android:layout_marginBottom="5dp"
+                android:maxWidth="150sp"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp"
+                android:text="Kementan Dorong Pemanfaatan Industri 4.0 Sektor Pertanian"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
