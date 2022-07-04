@@ -72,7 +72,7 @@ utilization in this apps as remote control device
 - Configure android environment
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Creadit For:**
+**Credit For:**
 
 *©BantuTani Team's*
 *Bangkit Academy 2022*
