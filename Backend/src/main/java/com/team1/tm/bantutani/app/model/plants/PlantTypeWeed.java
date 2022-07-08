@@ -15,7 +15,7 @@ public class PlantTypeWeed implements PlantType{
     private Long id;
     @Column(unique = true,nullable = false)
     private String type;
-    @OneToMany(mappedBy = "plantTypeWeed")
+    @OneToMany(mappedBy = "plantTypeWeed", cascade = CascadeType.ALL)
     private List<PlantsWeeds> plantsWeeds = new LinkedList<>();
 
     @Override

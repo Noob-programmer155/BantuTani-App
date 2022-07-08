@@ -16,7 +16,7 @@ public class CostPlant {
     private Integer regionCost; // mean
     private Integer previousCost;
     private Date dateUpdateCost;
-    @OneToOne(mappedBy = "plantsCost", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "plantsCost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Plants plants;
 
     public CostPlant() {

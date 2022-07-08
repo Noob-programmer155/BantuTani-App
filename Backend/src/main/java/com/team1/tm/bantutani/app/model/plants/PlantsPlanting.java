@@ -30,7 +30,7 @@ public class PlantsPlanting {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable(name="AuthorPlantsPlantingTable")
     private User authorPlantsPlanting;
-    @OneToMany(mappedBy = "plantsPlantingTips", orphanRemoval = true)
+    @OneToMany(mappedBy = "plantsPlantingTips", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TipsNTrick> tipsNTricks = new LinkedList<>();
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable(name = "PlantingPlantsTable")

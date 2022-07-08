@@ -131,7 +131,7 @@ public class MainController {
     // ================================== API User ========================================
 
     @GetMapping(value = "/user/v1/data/image/{name}", produces = MediaType.IMAGE_PNG_VALUE)
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER','FARMER','EXPERTS','DISTRIBUTOR','SALES')")
+    @PreAuthorize("isAuthenticated()")
     @Tag(name = "Get Image User", description = "getting data image user")
     @Cacheable("userDataImageCache")
     public byte[] getDataImage(@PathVariable String name) {
@@ -208,7 +208,7 @@ public class MainController {
     }
 
     @PutMapping("/user/v1/modify")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER','FARMER','EXPERTS','DISTRIBUTOR','SALES')")
+    @PreAuthorize("isAuthenticated()")
     @Tag(name = "Modify User", description = "modify user data, except password")
     @Transactional
     public StringResponse modify(@ModelAttribute UserDTO userDTO) {
@@ -226,7 +226,7 @@ public class MainController {
     }
 
     @PutMapping("/user/v1/password/modify")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER','FARMER','EXPERTS','DISTRIBUTOR','SALES')")
+    @PreAuthorize("isAuthenticated()")
     @Tag(name = "Modify User Password", description = "modify user password")
     @Transactional
     public StringResponse modifyPassword(@RequestParam Long id, @RequestParam String oldPassword, @RequestParam String newPassword) {

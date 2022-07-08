@@ -29,17 +29,17 @@ public class Plants {
     private String characteristic;
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     private CostPlant plantsCost;
-    @OneToMany(mappedBy = "caringPlants", orphanRemoval = true)
+    @OneToMany(mappedBy = "caringPlants", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlantsCare> cares = new LinkedList<>();
-    @OneToMany(mappedBy = "plantingPlants", orphanRemoval = true)
+    @OneToMany(mappedBy = "plantingPlants", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlantsPlanting> planting = new LinkedList<>();
-    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @ManyToMany
     @JoinTable(name = "DiseasePlantsTable")
     private Set<PlantsDisease> diseasePlants = new LinkedHashSet<>();
-    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @ManyToMany
     @JoinTable(name = "WeedPlantsTable")
     private Set<PlantsWeeds> weedPlants = new LinkedHashSet<>();
-    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @ManyToMany
     @JoinTable(name = "PestPlantsTable")
     private Set<PlantsPest> pestPlants = new LinkedHashSet<>();
 

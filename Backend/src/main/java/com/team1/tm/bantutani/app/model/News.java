@@ -24,7 +24,7 @@ public class News {
     private Date dates;
     private Date dateUpdate;
     private String sources;
-    @ManyToMany(mappedBy = "newsListTags")
+    @ManyToMany(mappedBy = "newsListTags", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Set<NewsTags> keywords = new LinkedHashSet<>();
     @ElementCollection
     private List<String> images = new LinkedList<>();

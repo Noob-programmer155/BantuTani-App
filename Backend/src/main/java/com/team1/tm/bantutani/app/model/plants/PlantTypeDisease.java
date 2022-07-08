@@ -16,7 +16,7 @@ public class PlantTypeDisease implements PlantType{
     private Long id;
     @Column(unique = true,nullable = false)
     private String type;
-    @OneToMany(mappedBy = "plantTypeDisease")
+    @OneToMany(mappedBy = "plantTypeDisease", cascade = CascadeType.ALL)
     private List<PlantsDisease> plantsDiseases = new LinkedList<>();
 
     public void setId(Long id) {

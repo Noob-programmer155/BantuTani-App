@@ -36,17 +36,17 @@ public class User {
     @Enumerated
     private Status status;
     private Boolean disable;
-    @OneToMany(mappedBy = "authorPlantsCare")
+    @OneToMany(mappedBy = "authorPlantsCare", cascade = CascadeType.ALL)
     private List<PlantsCare> care = new LinkedList<>();
-    @OneToMany(mappedBy = "authorPlantsPlanting")
+    @OneToMany(mappedBy = "authorPlantsPlanting", cascade = CascadeType.ALL)
     private List<PlantsPlanting> plantings = new LinkedList<>();
-    @OneToMany(mappedBy = "authorPlantsAttribute")
+    @OneToMany(mappedBy = "authorPlantsAttribute", cascade = CascadeType.ALL)
     private List<PlantsDisease> diseases = new LinkedList<>();
-    @OneToMany(mappedBy = "authorPlantsWeeds")
+    @OneToMany(mappedBy = "authorPlantsWeeds", cascade = CascadeType.ALL)
     private List<PlantsWeeds> weeds = new LinkedList<>();
-    @OneToMany(mappedBy = "authorPlantsPest")
+    @OneToMany(mappedBy = "authorPlantsPest", cascade = CascadeType.ALL)
     private List<PlantsPest> pests = new LinkedList<>();
-    @OneToMany(mappedBy = "authorTipsNTrick")
+    @OneToMany(mappedBy = "authorTipsNTrick", cascade = CascadeType.ALL)
     private List<TipsNTrick> tipsNTricks = new LinkedList<>();
 
     public User() {

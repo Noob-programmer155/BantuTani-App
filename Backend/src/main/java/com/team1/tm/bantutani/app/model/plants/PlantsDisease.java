@@ -30,9 +30,9 @@ public class PlantsDisease {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinTable(name = "AuthorPlantsDiseaseTable")
     private User authorPlantsAttribute;
-    @OneToMany(mappedBy = "plantsDiseaseCare", orphanRemoval = true)
+    @OneToMany(mappedBy = "plantsDiseaseCare", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlantsCare> plantsCares = new LinkedList<>();
-    @ManyToMany(mappedBy = "diseasePlants")
+    @ManyToMany(mappedBy = "diseasePlants", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Set<Plants> plants = new LinkedHashSet<>();
 
     public PlantsDisease() {

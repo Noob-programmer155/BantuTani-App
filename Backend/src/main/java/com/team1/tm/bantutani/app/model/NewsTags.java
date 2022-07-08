@@ -17,7 +17,7 @@ public class NewsTags {
     private Long id;
     @Column(unique = true,nullable = false)
     private String name;
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany
     @JoinTable(name = "NewsListTagsTable")
     private Set<News> newsListTags = new LinkedHashSet<>();
 

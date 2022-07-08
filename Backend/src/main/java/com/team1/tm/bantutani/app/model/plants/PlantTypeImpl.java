@@ -17,7 +17,7 @@ public class PlantTypeImpl implements PlantType{
     @Column(unique = true,nullable = false)
     private String type;
     private Boolean icon;
-    @OneToMany(mappedBy = "plantTypeImpl")
+    @OneToMany(mappedBy = "plantTypeImpl", cascade = CascadeType.ALL)
     private List<Plants> plants = new LinkedList<>();
 
     @Override
